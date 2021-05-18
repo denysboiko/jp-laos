@@ -1,0 +1,9 @@
+Django
+django-registration
+django-widget-tweaks
+djangorestframework
+django-smart-selects
+django_excel
+mysqlclient
+django-mysql
+setuptools

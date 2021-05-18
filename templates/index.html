@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JP Laos – 3W Dashboard</title>
+
+    {% load static %}
+
+    <script src="{% static 'lib/d3.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'lib/semantic/semantic.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
+    <script src="{% static 'lib/d3-scale-cluster.min.js' %}"></script>
+    <script src="{% static 'lib/crossfilter.min.js' %}"></script>
+    <script src="{% static 'lib/d3-queue.v3.min.js' %}"></script>
+    <script src="{% static 'lib/d3-legend.min.js' %}"></script>
+    <script src="{% static 'lib/FileSaver.min.js' %}"></script>
+
+    <script src="{% static 'lib/dc.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/dc.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+
+
+<div class="ui menu">
+
+    <div class="ui container">
+        <div class="item">
+            <img height="35px" src="{% static 'img/jp_logo_square.png' %}">
+        </div>
+        <a class="item" href="/">Home</a>
+        <a class="item" href="/upload">Upload</a>
+        <div class="right menu">
+            {% if user.is_authenticated %}
+                <div class="ui dropdown item">
+                    {{ user }} <i class="dropdown icon"></i>
+
+                    <div class="menu">
+                        <div class="header">ACTIONS</div>
+                        <a class="item" href="/admin">Administration</a>
+                        <a class="item" href="/admin/password_change/">Change Password</a>
+                        <div class="divider"></div>
+                        <a class="item" href="/admin/logout/">Log Out</a>
+                    </div>
+                </div>
+            {% else %}
+                <a class="item" href="/admin/login/">Sign In</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="ui container">
+    {#    style="max-width: 1500px; margin: 0 auto"#}
+
+
+    <div class="ui top attached tabular menu">
+        <div class="active item" data-tab="first" id="projects">Projects</div>
+        <div class="item" data-tab="second" id="funding">Funding</div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="first">
+
+    </div>
+    <div class="ui bottom attached tab segment active" data-tab="second">
+
+    </div>
+
+
+    {#    <select name="skills" multiple="" class="ui fluid dropdown">#}
+    {#        <option value="">Skills</option>#}
+    {#        <option value="angular">Angular</option>#}
+    {#        <option value="css">CSS</option>#}
+    {#    </select>#}
+
+    <div class="ui grid">
+        <div class="ui active inverted dimmer" id="loader">
+            <div class="ui text loader">Loading</div>
+        </div>
+        <div class="large screen only six column row">
+            <div class="ui statistic left floated column">
+                <div class="value" id="count">
+                    <span class="filter-count"></span>
+                </div>
+                <div class="label">
+                    projects
+                </div>
+            </div>
+            <div class="ui statistic left floated column">
+                <button class="ui button" id="download">
+                    Download Data
+                </button>
+                <button class="ui button" id="reset">
+                    Clear
+                </button>
+            </div>
+            <div class="ui statistic right floated column">
+                <div class="value">
+                    <span class="filter-funding" id="funding-total"></span>
+                </div>
+                <div class="label">
+                    funding
+                </div>
+            </div>
+            {#            <div class="ui statistic right floated column">#}
+            {#                <div class="value">#}
+            {#                    <span class="filter-funding" id="funding-province"></span>#}
+            {#                </div>#}
+            {#                <div class="label">#}
+            {#                    for selected provinces#}
+            {#                </div>#}
+            {#            </div>#}
+
+        </div>
+
+        {#        <div class="large screen only row">#}
+        {#            <div class="right floated right aligned six wide column">#}
+        {##}
+        {#            </div>#}
+        {#        </div>#}
+
+        <div class="row">
+            <div class="ten wide column">
+
+                <h2 class="ui header">Map of projects by <span id="geolabel">province</span>s</h2>
+
+                <div id="admin-level-switcher">
+                    <select name="admin-level" id="geolevel" class="ui fluid dropdown">
+                        <option value="province">Province</option>
+                        <option value="district">District</option>
+                    </select>
+                </div>
+
+                <div id="map"></div>
+                <div id="map-district" style="display: none"></div>
+
+
+                <svg id="legend"></svg>
+
+            </div>
+
+
+            <div class="six wide column">
+                <h2 class="ui header">Projects by provinces</h2>
+                <div id="provinces"></div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="ten wide column">
+                <h2 class="ui header">Projects by sector</h2>
+                <div id="sector"></div>
+            </div>
+            <div class="six wide column">
+                <h2 class="ui header">Projects by subsector</h2>
+                <div id="subsector"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="ten wide column">
+                <h2 class="ui header">Projects by implementing partners (TOP 25)</h2>
+                <div id="implementing_partners"></div>
+            </div>
+            <div class="six wide column">
+                <div class="cleanrow">
+                    <h2 class="ui header">Projects by partners</h2>
+                    <div id="partners"></div>
+                </div>
+                <div class="ui">
+                    <h2 class="ui header">Projects by status</h2>
+                    <div id="status"></div>
+                </div>
+                <div class="ui" id="districts" style="display: none">
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+        <div class="ui stackable divided grid">
+            <div class="nine wide column">
+                <div class="ui message">
+                    <div class="header">
+                        Disclaimer
+                    </div>
+                    <ul class="list">
+                        <li>This platform has been developed as a tool for internal coordination purposes among the
+                            Joint Programming partners.
+                        </li>
+                        <li>The information content in this platform is for internal use only.</li>
+                        <li>The figures represented in this platform are based on the total amount of the projects, and
+                            therefore should be considered as an estimated amount at the province and district level.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="seven wide column">
+                <img src="{% static 'img/jp_logo.png' %}" height="140px" class="ui centered image">
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+    $('.menu .dropdown').dropdown({
+        action: 'nothing'
+    });
+    $('#geolevel').dropdown();
+
+    $('.menu .item')
+        .tab()
+    ;
+
+</script>
+<script src="{% static 'js/charts.js' %}"></script>
+<script>
+
+    d3.queue()
+        .defer(d3.json, '{% static "data/laos.geojson" %}')
+        .defer(d3.json, "/projects/")
+        .defer(d3.json, "/districts/")
+        .defer(d3.json, "/provinces/")
+        .defer(d3.json, '{% static "data/laos-districts.geojson" %}')
+        .await(loadData);
+
+    function ResetAll() {
+        dc.filterAll();
+        dc.redrawAll();
+    }
+
+    $('#reset').on('click', function (e) {
+        ResetAll();
+    });
+
+
+</script>
+</html>

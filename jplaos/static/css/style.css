@@ -1,0 +1,65 @@
+#legend {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    width: 300px;
+    height: 200px
+}
+
+.tabular .item {
+    cursor: pointer;
+}
+
+.tab.segment {
+    opacity: 0
+}
+
+#count {
+    float: none;
+}
+
+.dc-chart g.row text {
+    fill: #000;
+    text-shadow: -1px 0 1px #fff, 0 1px 1px #fff, 1px 0 1px #fff, 0 -1px 1px #fff;
+}
+
+.dc-chart g.state path {
+    stroke: #111;
+}
+
+.dc-chart .selected path {
+    stroke-width: 1;
+    fill-opacity: 1;
+}
+
+.dc-chart rect.bar {
+    fill-opacity: .8;
+}
+
+.cleanrow {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: inherit;
+    align-items: stretch;
+    width: 100% !important;
+}
+
+#admin-level-switcher {
+    width: 200px;
+    position: absolute;
+    top: 50px;
+    right: 0;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 70px;
+    border-top: 1px solid #D4D4D5 !important;
+}
+
+.ui.footer.segment {
+    margin: 4em 0 0;
+    padding: 2em 0;
+}
