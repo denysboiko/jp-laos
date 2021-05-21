@@ -79,8 +79,9 @@ class DistrictAdmin(admin.ModelAdmin):
         'province'
     ]
 
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ImplementingPartner, ImplementingParntersAdmin)
 admin.site.register(Province, ProvinceAdmin)
 admin.site.register(District, DistrictAdmin)
-admin.site.register([Sector, Partner, Subsector])
+admin.site.register([Sector, Partner, Subsector, PriorityArea, CrossCuttingIssue, SustainableDevelopmentGoal, NSEDPOutput, NSEDPOutcome])

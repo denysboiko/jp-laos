@@ -1,4 +1,8 @@
-var mapChart = dc.geoChoroplethChart("#map"),
+const CHART_COLOR = "#026CB6";
+const PROJECTION = d3.geo.mercator().center([106, 19]).scale(3600);
+
+
+let mapChart = dc.geoChoroplethChart("#map"),
     mapDistrictChart = dc.geoChoroplethChart("#map-district"),
     provinceChart = dc.rowChart("#provinces"),
     districtChart = dc.rowChart("#districts"),
@@ -11,12 +15,12 @@ var mapChart = dc.geoChoroplethChart("#map"),
 
 function wrap(text, width) {
     text.each(function () {
-        var text = d3.select(this),
+        let text = d3.select(this),
             tspans = text.selectAll('tspan'),
-            words = [];
+            words;
 
         if (tspans[0].length > 0) {
-            tss = [];
+            let tss = [];
             tspans[0].map(function (d) {
                 tss = tss.concat(d3.select(d).text().split(/\s+/));
             }).reverse();
@@ -27,10 +31,10 @@ function wrap(text, width) {
         }
 
 
-        var word,
+        let word,
             line = [],
             lineNumber = 0,
-            lineHeight = 1.1, // ems
+            lineHeight = 1.1,
             y = text.attr("y"),
             dy = parseFloat(text.attr("dy")),
             tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
@@ -45,13 +49,11 @@ function wrap(text, width) {
                 line.pop();
                 tspan.text(line.join(" "));
                 line = [word];
-                // console.log(line)
                 tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(line.join(" "));
             }
         }
     });
 }
-
 
 function loadData(err, geodata, data, districts_list, provinces_list, districts) {
 
@@ -60,21 +62,21 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         return;
     }
 
-    var districtsDict = {};
-    var provincesDict = {};
-    var districtsNames = {};
-    var f = d3.format(",.0f");
+    let districtsDict = {};
+    let provincesDict = {};
+    let districtsNames = {};
+    let f = d3.format(",.0f");
 
 
-    data.forEach(function (datum, index, arr) {
+    data.forEach(datum => {
         datum.districts = [].concat.apply([], datum.locations.map(function (d) {
             return d.districts;
         }));
     });
 
     districts_list.forEach(function (e, i, arr) {
-        districtsDict[e.dcode] = e.province;
-        districtsNames[e.dcode] = e.name;
+        districtsDict[e['dcode']] = e.province;
+        districtsNames[e['dcode']] = e.name;
     });
 
     provinces_list.forEach(function (e, i, arr) {
@@ -82,190 +84,140 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
     });
 
 
-    var config = {
+    let config = {
         level: 'province',
         measure: 'count'
     };
 
     $('#loader').toggleClass('active');
+    $('#dashboard').css('visibility', 'visible');
+    $('#footer').css('visibility', 'visible');
 
-    var cf = crossfilter(data);
+    const cf = crossfilter(data);
 
-    var province = cf.dimension(function (d) {
-        return d['locations'].map(function (d) {
-            return d.province
-        })
-    }, true);
+    let province = cf.dimension(d => d['locations'].map(d => d.province), true);
 
-
-    // var location = cf.dimension(function (d) {
-    //     return d['locations']
-    // }, true);
-
-    // function mergeArrays(arrays) {
-    //     var result = [];
-    //     arrays.forEach(function (d, i) {
-    //         result.concat(d)
-    //     });
-    //
-    //     return result;
-    // }
-
-    var district = cf.dimension(function (d) {
-
-        var districts = d['districts'].map(function (d) {
-            return d;
-        });
-
+    let district = cf.dimension(d => {
+        let districts = d['districts'].map(d => d);
         return districts ? districts : 'No district';
-
     }, true);
 
-    // console.log(district.group().all())
-
-    var sector = cf.dimension(function (d) {
+    let sector = cf.dimension(function (d) {
         return d['sector'];
     });
 
-    var partner = cf.dimension(function (d) {
+    let partner = cf.dimension(function (d) {
         return d["partner"];
     });
 
-    var status = cf.dimension(function (d) {
+    let status = cf.dimension(function (d) {
         return d['status'];
     });
 
-    var implementing_partner = cf.dimension(function (d) {
+    let implementing_partner = cf.dimension(function (d) {
         return d['implementing_partner'] ? d['implementing_partner'] : 'No implementing partner';
     }, true);
 
-    var other_subsector = cf.dimension(function (d) {
+    let other_subsector = cf.dimension(function (d) {
         return d['other_subsector'] ? d['other_subsector'] : 'No subsector';
     });
 
     // Groups for Dimensions
 
-    var count_by_province = province.group()
+    let count_by_province = province.group()
         .reduceCount(function (d) {
             return d["project_title"];
         });
 
-    var funding_by_province = province.group()
+    let funding_by_province = province.group()
         .reduceSum(function (d) {
             return Math.round(d["planed_amount"] / d.locations.length);
         });
 
-    var count_by_district = district.group()
+    let count_by_district = district.group()
         .reduceCount(function (d) {
             return d["project_title"];
         });
 
-    var funding_by_district = district.group()
+    let funding_by_district = district.group()
         .reduceSum(function (d) {
             return Math.round(d["planed_amount"] / d.districts.length);
         });
 
-    var count_by_sector = sector.group()
+    let count_by_sector = sector.group()
         .reduceCount(function (d) {
             return d['sector']
         });
 
-    var funding_by_sector = sector.group()
+    let funding_by_sector = sector.group()
         .reduceSum(function (d) {
             return Math.round(d['planed_amount']);
         });
 
-    var count_by_other_subsector = other_subsector.group()
+    let count_by_other_subsector = other_subsector.group()
         .reduceCount(function (d) {
             return d["other_subsector"];
         });
 
-    var funding_by_other_subsector = other_subsector.group()
+    let funding_by_other_subsector = other_subsector.group()
         .reduceSum(function (d) {
             return Math.round(d['planed_amount']);
         });
-    var count_by_implementing_partner = implementing_partner.group()
+    let count_by_implementing_partner = implementing_partner.group()
         .reduceCount(function (d) {
             return d["implementing_partner"];
         });
 
-    var funding_by_implementing_partner = implementing_partner.group()
+    let funding_by_implementing_partner = implementing_partner.group()
         .reduceSum(function (d) {
             return Math.round(d['planed_amount'] / d.implementing_partner.length);
         });
 
 
-    var count_by_status = status.group()
+    let count_by_status = status.group()
         .reduceCount(function (d) {
             return d["status"];
         });
 
-    var funding_by_status = status.group()
+    let funding_by_status = status.group()
         .reduceSum(function (d) {
             return Math.round(d['planed_amount']);
         });
 
-    var count_by_partner = partner.group()
+    let count_by_partner = partner.group()
         .reduceCount(function (d) {
             return d["partner"];
         });
 
-    var funding_by_partner = partner.group()
+    let funding_by_partner = partner.group()
         .reduceSum(function (d) {
             return Math.round(d['planed_amount']);
         });
 
-    function reduceAdd(p, v) {
-        ++p.count;
-        p.total += d3.format('.0f')(v["planed_amount"] / p.count);
-        return p;
-    }
-
-    function reduceRemove(p, v) {
-        --p.count;
-        p.total -= v["planed_amount"] / p.count;
-        return p;
-    }
-
-    function reduceInitial() {
-        return {
-            count: 0,
-            total: 0
-        };
-    }
-
-    var by_province = province.group()
-        .reduce(reduceAdd, reduceRemove, reduceInitial);
+    status.filterExact('Ongoing');
+    statusChart.filter('Ongoing');
 
 
-    var projection = d3.geo.mercator().center([106, 19]).scale(3600);
 
     function returnScale(group) {
 
-        var breaks = [0].concat(group.all().map(function (d) {
+        let breaks = [0].concat(group.all().map(function (d) {
             return d.value;
         }));
 
-        var colors = ['#ece7f2', '#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#034e7b'];
+        let colors = ['#ece7f2', '#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#034e7b'];
         // https://github.com/schnerd/d3-scale-cluster
 
-        var scale = d3.scaleCluster()
+        let scale = d3.scaleCluster()
             .domain(breaks)
             .range(colors);
 
-        var clusters = scale.clusters();
+        let clusters = scale.clusters();
 
 
         if (clusters.length < colors.length) {
-
-            var ranges = clusters.length > 1 ? clusters.length + 1 : 3;
-            // if (clusters.length > 1) {
+            let ranges = clusters.length > 1 ? clusters.length + 1 : 3;
             colors = colors.slice(0, ranges);
-            // }
-
-            //    colors.length - clusters.length - 1
-
-
         }
 
         return d3.scaleCluster()
@@ -290,12 +242,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         )
         .title(function (p) {
             return districtsNames[p.key] + ': ' + f(p.value);
-            // + '\n'
-            // + 'Funding: ' + p.value;
-            // d3.format('.3s')()
-            // + 'Index Gain in Percentage: ' + numberFormat(p.value.percentageGain) + '%\n';
         })
-        .projection(projection);
+        .projection(PROJECTION);
 
 
     mapChart
@@ -306,40 +254,20 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
         // funding_by_province
         .colors(returnScale(province.group()))
-        // d3.scale.quantize().range(['#fff7fb','#ece7f2','#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#034e7b']))
-        // ["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]
         .overlayGeoJson(
-            // districts.features
             geodata.features
             , "state"
             , function (d) {
                 return d.properties['pr_name2'];
-                // return d.properties['DName'];
-
             }
         )
-        // .valueAccessor(function (d) {
-        //     return d.value.count;
-        // })
-        // .keyAccessor(function (d) {
-        //     return d.key.province;
-        // })
         .title(function (p) {
             return p.key + ': ' + f(p.value);
-            // + '\n'
-            // + 'Funding: ' + p.value;
-            // + 'Index Gain in Percentage: ' + numberFormat(p.value.percentageGain) + '%\n';
         })
         .on('filtered', function (chart, filter) {
 
         })
-        .projection(projection);
-
-
-    // mapChart.on('renderlet', function (chart) {
-    //     console.log($('#geolevel').val())
-    //     mapChart.colors(returnScale(count_by_province))
-    // })
+        .projection(PROJECTION);
 
     provinceChart
         .width(400)
@@ -351,20 +279,14 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             return -d.value;
         })
         .transitionDuration(500)
-        // .xAxisLabel('Provinces')
         .gap(10)
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .elasticX(true)
         .title(function (p) {
             return p.key + ': ' + f(p.value);
         })
         .on('filtered', function (chart, filter) {
-
             chart.filters();
-            // if ($('#geolevel').val() === 'district') {
-            //     console.log(filter);
-            //     mapChart.filter(['Bualapha District'])
-            // }
         })
         .xAxis()
         .ticks(5)
@@ -381,17 +303,11 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             return -d.value;
         })
         .transitionDuration(500)
-        // .xAxisLabel('Provinces')
         .gap(10)
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .elasticX(true)
         .on('filtered', function (chart, filter) {
-
             chart.filters();
-            // if ($('#geolevel').val() === 'district') {
-            //     console.log(filter);
-            //     mapChart.filter(['Bualapha District'])
-            // }
         })
         .title(function (p) {
             return p.key + ': ' + f(p.value);
@@ -407,20 +323,16 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .dimension(implementing_partner)
         .group(count_by_implementing_partner)
         .data(function (group) {
-            // console.log(group.top(25))
-
             return group.top(25).filter(function (d) {
                 return d.key !== 'No implementing partner'
             });
-            // return group.top(25);
         })
         .ordering(function (d) {
             return -d.value;
         })
         .transitionDuration(500)
-        // .xAxisLabel('Provinces')
         .gap(10)
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .elasticX(true)
         .on('filtered', function (chart, filter) {
         })
@@ -443,7 +355,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             return -d.value;
         })
         .transitionDuration(500)
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .x(d3.scale.ordinal())
         .elasticX(true)
         .on('filtered', function (chart, filter) {
@@ -465,7 +377,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .ordering(function (d) {
             return d.key === 'Other' ? 999 : 1;
         })
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .gap(10)
         .transitionDuration(500)
         .centerBar(false)
@@ -487,7 +399,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             .call(wrap, 60);
     });
 
-    var subsector_height = (other_subsector.group().all().length) * (20 + 10) + 25
+    let subsector_height = (other_subsector.group().all().length) * (20 + 10) + 25
 
     subsectorChart
         .width(350)
@@ -506,9 +418,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             return -d.value;
         })
         .transitionDuration(500)
-        // .xAxisLabel('Provinces')
         .gap(10)
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .elasticX(true)
         .title(function (p) {
             return p.key + ': ' + f(p.value);
@@ -530,8 +441,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             return -d.value;
         })
         .transitionDuration(500)
-        // .gap(5) // 65 = norm
-        .colors("#026CB6")
+        .colors(CHART_COLOR)
         .title(function (p) {
             return p.key + ': ' + f(p.value);
         })
@@ -545,14 +455,14 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .tickFormat(d3.format('d'));
 
 
-    var all = cf.groupAll();
+    let all = cf.groupAll();
 
     dc.dataCount("#count")
         .dimension(cf)
         .group(all);
 
 
-    var total_funding = cf.groupAll().reduceSum(function (d) {
+    let total_funding = cf.groupAll().reduceSum(function (d) {
         return d["planed_amount"];
     });
 
@@ -562,18 +472,11 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         })
         .group(total_funding);
 
-
-    // dc.numberDisplay("#funding-province")
-    //     .valueAccessor(function (d) {
-    //         return Math.round(d.value);
-    //     })
-    //     .group(funding_by_province);
-
     dc.renderAll();
 
 
     // Initialize legend container with .legendQuant class
-    var svg = d3.select("#legend");
+    let svg = d3.select("#legend");
     svg.append("g")
         .attr("class", "legendQuant")
         .attr("transform", "translate(20,20)");
@@ -583,7 +486,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
         // Aplly colorscale and number format to the legend
 
-        var legend = d3.legend.color()
+        let legend = d3.legend.color()
             .scale(scale)
             .labelFormat(format);
 
@@ -592,7 +495,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
         function clearLabel(labels) {
             labels.each(function () {
-                var label = d3.select(this);
+                let label = d3.select(this);
                 label.text(label.text().replace('to NaN', 'and more'));
             });
         }
@@ -606,19 +509,16 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     // fix interactions between map and oblast charts
     mapChart.onClick = function (datum, layerIndex) {
-        var selectedRegion = mapChart.geoJsons()[layerIndex].keyAccessor(datum);
+        let selectedRegion = mapChart.geoJsons()[layerIndex].keyAccessor(datum);
         provinceChart.filter(selectedRegion);
-        // districtChart.filter(provincesDict[selectedRegion])
         mapChart.redrawGroup()
     };
 
-    var districtFilters = [];
-
     mapDistrictChart.onClick = function (datum, layerIndex) {
-        var selectedRegion = mapDistrictChart.geoJsons()[layerIndex].keyAccessor(datum);
-        var filters = provinceChart.filters();
-        districtFilters.push(selectedRegion);
-        if (filters.indexOf(districtsDict[selectedRegion]) == -1) {
+        let selectedRegion = mapDistrictChart.geoJsons()[layerIndex].keyAccessor(datum);
+        let filters = provinceChart.filters();
+
+        if (filters.indexOf(districtsDict[selectedRegion]) === -1) {
             provinceChart.filter(districtsDict[selectedRegion]);
         }
         districtChart.filter(selectedRegion);
@@ -628,11 +528,11 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     provinceChart.onClick = function (datum) {
 
-        var selectedRegion = datum.key;
+        let selectedRegion = datum.key;
 
         provinceChart.filter(selectedRegion);
 
-        if (config.level == 'district') {
+        if (config.level === 'district') {
             provincesDict[selectedRegion].forEach(function (e, i) {
                 districtChart.filter(e.toString());
             });
@@ -644,47 +544,26 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
 
     mapChart.hasFilter = function (filter) {
-        var filters = provinceChart.filters();
-
+        let filters = provinceChart.filters();
         if (!filter) {
             return filters.length > 0
         }
-
-        return filters.indexOf(filter) != -1
+        return filters.indexOf(filter) !== -1
     };
 
 
     mapDistrictChart.hasFilter = function (filter) {
-        // var groups = {
-        //
-        //     'district': {
-        //         'count': count_by_district,
-        //         'funding': funding_by_district
-        //     }
-        // };
-        // var current_group = groups['district'][config.measure]
-        // mapDistrictChart.colors(returnScale(current_group))
-        // updateLegend(returnScale(current_group), d3.format(".0f"))
-        //
-        var filters = districtChart.filters();
-
-        // var filters = [];
-        // provinceFilters.forEach(function (e, i) {
-        //     filters.concat(provincesDict[e]);
-        // });
+        let filters = districtChart.filters();
 
         if (!filter) {
             return filters.length > 0
         }
-
-        x = parseInt(filter)
-        return filters.indexOf(filter) != -1
+        return filters.indexOf(filter) !== -1
 
     };
 
     cf.onChange(function (e) {
-
-        var groups = {
+        let groups = {
             'province': {
                 'count': count_by_province,
                 'funding': funding_by_province
@@ -695,7 +574,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             }
         };
 
-        var current_group = [
+        let current_group = [
             groups['province'][config.measure],
             groups['district'][config.measure]
         ];
@@ -709,27 +588,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
 
     function changeChoropleth(chart, group, colors, type) {
-
-        var format = {
-            c: ".0f",
-            f: ",.3s"
-        };
-
-        chart
-            .group(group)
-            // .valueAccessor(group)
+        chart.group(group)
             .colors(colors);
-
-        // format[type]
-
-    }
-
-    function projects(d) {
-        return d.value.count;
-    }
-
-    function funding(d) {
-        return d.value.total;
     }
 
     function changeFormat(format) {
@@ -743,9 +603,9 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     }
 
-    $("#projects").on('click', function (e) {
+    $("#projects").on('click', () => {
 
-        var geolevel = config.level;
+        let geolevel = config.level;
         config.measure = 'count';
         changeChoropleth(mapChart, count_by_province, returnScale(count_by_province), 'c');
         changeChoropleth(mapDistrictChart, count_by_district, returnScale(count_by_district), 'c');
@@ -761,9 +621,9 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     });
 
-    $("#funding").on('click', function (e) {
+    $("#funding").on('click', () => {
 
-        var geolevel = config.level;
+        let geolevel = config.level;
         config.measure = 'funding';
         changeChoropleth(mapChart, funding_by_province, returnScale(funding_by_province), 'f');
         changeChoropleth(mapDistrictChart, funding_by_district, returnScale(funding_by_district), 'f');
@@ -789,10 +649,10 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     $('#geolevel').on('change', function (e) {
 
-        var geolevel = $(this).val();
+        let geolevel = $(this).val();
         config.level = geolevel;
 
-        if (geolevel == 'province') {
+        if (geolevel === 'province') {
             show('map', mapChart);
         } else {
             show('map-district', mapDistrictChart);
@@ -804,7 +664,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     function downloadData() {
 
-        var header = [
+        let header = [
             'id',
             'project_code',
             'project_title',
@@ -816,7 +676,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             'districts'
         ];
 
-        var data = partner.top(Infinity)
+        let data = partner.top(Infinity)
             .map(function (record) {
                 return [
                     record['id'],
@@ -834,19 +694,11 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
                     }).join('; ')
 
                 ];
-
-
-                // header.map(function (field) {
-                //     return (record[field] instanceof Array ? record[field].join(';') : record[field])
-                //
-                // })
-
-
             });
 
         data.unshift(header);
-        var result = d3.csv.formatRows(data);
-        var blob = new Blob([result], {type: "text/csv;charset=utf-8"});
+        let result = d3.csv.formatRows(data);
+        let blob = new Blob([result], {type: "text/csv;charset=utf-8"});
         saveAs(blob, 'jp-projects-laos-dataset-' + (new Date()).getTime() + '.csv')
 
     }

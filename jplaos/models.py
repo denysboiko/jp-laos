@@ -6,7 +6,6 @@ from smart_selects.db_fields import ChainedManyToManyField
 
 
 class Status(models.Model):
-
     status = models.CharField(max_length=50)
 
     def __str__(self):
@@ -18,7 +17,6 @@ class Status(models.Model):
 
 
 class Province(models.Model):
-
     pcode = models.IntegerField()
     name = models.CharField(max_length=120)
     name_l = models.CharField(max_length=120)
@@ -34,7 +32,6 @@ class Province(models.Model):
 
 
 class District(models.Model):
-
     dcode = models.IntegerField()
     name = models.CharField(max_length=120)
     name_l = models.CharField(max_length=120)
@@ -48,9 +45,50 @@ class District(models.Model):
         db_table = 'districts'
 
 
-class Sector(models.Model):
+class SustainableDevelopmentGoal(models.Model):
+    goal = models.CharField(max_length=120)
 
+    def __str__(self):
+        return self.goal
+
+    class Meta:
+        db_table = 'sustainable_development_goals'
+
+
+class CrossCuttingIssue(models.Model):
+    issue = models.CharField(max_length=120)
+
+    def __str__(self):
+        return self.issue
+
+    class Meta:
+        db_table = 'cross_cutting_issues'
+
+
+class NSEDPOutcome(models.Model):
+    outcome = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.outcome
+
+    class Meta:
+        db_table = 'nsedp_outcomes'
+
+
+class NSEDPOutput(models.Model):
+    output = models.CharField(max_length=250)
+    outcome = models.ForeignKey(NSEDPOutcome, related_name='outputs', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.output
+
+    class Meta:
+        db_table = 'nsedp_outputs'
+
+
+class Sector(models.Model):
     sector_name = models.CharField(max_length=120)
+    sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='sustainable_development_goals')
 
     def __str__(self):
         return self.sector_name
@@ -59,8 +97,18 @@ class Sector(models.Model):
         db_table = 'sectors'
 
 
-class Subsector(models.Model):
+class PriorityArea(models.Model):
+    priority_area = models.CharField(max_length=120)
+    sector = models.ForeignKey(Sector, related_name='sector', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.priority_area
+
+    class Meta:
+        db_table = 'priority_areas'
+
+
+class Subsector(models.Model):
     other_subsector_name = models.CharField(max_length=80)
 
     def __str__(self):
@@ -71,7 +119,6 @@ class Subsector(models.Model):
 
 
 class Responsible(models.Model):
-
     responsible_name = models.CharField(max_length=80)
 
     def __str__(self):
@@ -82,7 +129,6 @@ class Responsible(models.Model):
 
 
 class Partner(models.Model):
-
     partner_name = models.CharField(max_length=80)
     users_access = models.ManyToManyField(User, blank=True)
 
@@ -94,7 +140,6 @@ class Partner(models.Model):
 
 
 class ImplementingPartner(models.Model):
-
     implementing_partner_name = models.CharField(max_length=120)
 
     def __str__(self):
@@ -106,7 +151,6 @@ class ImplementingPartner(models.Model):
 
 
 class Project(models.Model):
-
     project_code = models.CharField(max_length=40, blank=True, null=True)
     project_title = models.TextField(max_length=280)
     start_date = models.DateField()
@@ -116,6 +160,8 @@ class Project(models.Model):
     implementing_partner = models.ManyToManyField(ImplementingPartner, blank=True)
     sector = models.ForeignKey(Sector, related_name='sector_id', on_delete=models.CASCADE)
     other_subsector = models.ForeignKey(Subsector, on_delete=models.CASCADE, blank=True, null=True)
+
+    cross_cutting_issues = models.ManyToManyField(CrossCuttingIssue, blank=True)
 
     def __str__(self):
         return self.project_title
@@ -136,12 +182,10 @@ class Project(models.Model):
 
 
 class Location(models.Model):
-
     project = models.ForeignKey(Project, blank=True, null=True, related_name='locations', on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.CASCADE)
     districts = ChainedManyToManyField(
         District,
-        # horizontal=True,
         verbose_name='districts',
         chained_field="province",
         chained_model_field="province",

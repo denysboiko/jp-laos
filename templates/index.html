@@ -52,80 +52,60 @@
         </div>
 
     </div>
-
-
 </div>
 
-<div class="ui container">
-    {#    style="max-width: 1500px; margin: 0 auto"#}
 
+<div id="dashboard" class="ui container" style="visibility: hidden">
 
     <div class="ui top attached tabular menu">
         <div class="active item" data-tab="first" id="projects">Projects</div>
         <div class="item" data-tab="second" id="funding">Funding</div>
     </div>
-    <div class="ui bottom attached tab segment" data-tab="first">
-
-    </div>
-    <div class="ui bottom attached tab segment active" data-tab="second">
-
-    </div>
-
-
-    {#    <select name="skills" multiple="" class="ui fluid dropdown">#}
-    {#        <option value="">Skills</option>#}
-    {#        <option value="angular">Angular</option>#}
-    {#        <option value="css">CSS</option>#}
-    {#    </select>#}
+    <div class="ui bottom attached tab segment" data-tab="first"></div>
+    <div class="ui bottom attached tab segment active" data-tab="second"></div>
 
     <div class="ui grid">
-        <div class="ui active inverted dimmer" id="loader">
-            <div class="ui text loader">Loading</div>
-        </div>
-        <div class="large screen only six column row">
-            <div class="ui statistic left floated column">
-                <div class="value" id="count">
-                    <span class="filter-count"></span>
-                </div>
-                <div class="label">
-                    projects
-                </div>
-            </div>
-            <div class="ui statistic left floated column">
-                <button class="ui button" id="download">
+
+        <div class="row">
+            <div class="sixteen wide mobile eight wide computer column">
+                <button class="ui button left floated" id="download">
                     Download Data
                 </button>
-                <button class="ui button" id="reset">
+            </div>
+            <div class="sixteen wide mobile eight wide computer column">
+                <button class="ui button right floated" id="reset">
                     Clear
                 </button>
             </div>
-            <div class="ui statistic right floated column">
-                <div class="value">
-                    <span class="filter-funding" id="funding-total"></span>
-                </div>
-                <div class="label">
-                    funding
+        </div>
+
+        <div class="row">
+
+            <div class="sixteen wide mobile eight wide computer column">
+                <div class="ui statistic">
+                    <div class="value" id="count">
+                        <span class="filter-count"></span>
+                    </div>
+                    <div class="label">
+                        projects
+                    </div>
                 </div>
             </div>
-            {#            <div class="ui statistic right floated column">#}
-            {#                <div class="value">#}
-            {#                    <span class="filter-funding" id="funding-province"></span>#}
-            {#                </div>#}
-            {#                <div class="label">#}
-            {#                    for selected provinces#}
-            {#                </div>#}
-            {#            </div>#}
+            <div class="sixteen wide mobile eight wide computer column">
+                <div class="ui statistic right floated">
+                    <div class="value">
+                        <span class="filter-funding" id="funding-total"></span>
+                    </div>
+                    <div class="label">
+                        funding
+                    </div>
+                </div>
+            </div>
 
         </div>
 
-        {#        <div class="large screen only row">#}
-        {#            <div class="right floated right aligned six wide column">#}
-        {##}
-        {#            </div>#}
-        {#        </div>#}
-
         <div class="row">
-            <div class="ten wide column">
+            <div class="sixteen wide mobile ten wide computer column">
 
                 <h2 class="ui header">Map of projects by <span id="geolabel">province</span>s</h2>
 
@@ -145,7 +125,7 @@
             </div>
 
 
-            <div class="six wide column">
+            <div class="sixteen wide mobile six wide computer column">
                 <h2 class="ui header">Projects by provinces</h2>
                 <div id="provinces"></div>
             </div>
@@ -153,22 +133,22 @@
         </div>
 
         <div class="row">
-            <div class="ten wide column">
+            <div class="sixteen wide mobile ten wide computer column">
                 <h2 class="ui header">Projects by sector</h2>
                 <div id="sector"></div>
             </div>
-            <div class="six wide column">
+            <div class="sixteen wide mobile six wide computer column">
                 <h2 class="ui header">Projects by subsector</h2>
                 <div id="subsector"></div>
             </div>
         </div>
 
         <div class="row">
-            <div class="ten wide column">
+            <div class="sixteen wide mobile ten wide computer column">
                 <h2 class="ui header">Projects by implementing partners (TOP 25)</h2>
                 <div id="implementing_partners"></div>
             </div>
-            <div class="six wide column">
+            <div class="sixteen wide mobile six wide computer column">
                 <div class="cleanrow">
                     <h2 class="ui header">Projects by partners</h2>
                     <div id="partners"></div>
@@ -186,10 +166,10 @@
 
     </div>
 </div>
-<div class="ui vertical footer segment">
+<div id="footer" class="ui vertical footer segment" style="visibility: hidden">
     <div class="ui center aligned container">
         <div class="ui stackable divided grid">
-            <div class="nine wide column">
+            <div class="sixteen wide mobile nine wide computer column">
                 <div class="ui message">
                     <div class="header">
                         Disclaimer
@@ -205,11 +185,15 @@
                     </ul>
                 </div>
             </div>
-            <div class="seven wide column">
+            <div class="sixteen wide mobile seven wide computer column">
                 <img src="{% static 'img/jp_logo.png' %}" height="140px" class="ui centered image">
             </div>
         </div>
     </div>
+</div>
+<div class="ui active inverted dimmer" id="loader">
+    <div class="ui text loader">Loading</div>
+</div>
 </body>
 
 
@@ -218,13 +202,11 @@
         action: 'nothing'
     });
     $('#geolevel').dropdown();
-
-    $('.menu .item')
-        .tab()
-    ;
-
+    $('.menu .item').tab();
 </script>
+
 <script src="{% static 'js/charts.js' %}"></script>
+
 <script>
 
     d3.queue()
@@ -244,6 +226,6 @@
         ResetAll();
     });
 
-
 </script>
+
 </html>

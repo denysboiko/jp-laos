@@ -92,7 +92,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'jplaos',
         'USER': 'root',
-        'PASSWORD': ''
+        'PASSWORD': 'csdjhjnrf4'
     }
 }
 
