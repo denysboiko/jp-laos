@@ -7,3 +7,6 @@ django_excel
 mysqlclient
 django-mysql
 setuptools
+gunicorn
+dj-database-url
+psycopg2
