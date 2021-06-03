@@ -86,8 +86,20 @@ class NSEDPOutput(models.Model):
         db_table = 'nsedp_outputs'
 
 
+class PriorityArea(models.Model):
+
+    priority_area = models.CharField(max_length=120)
+
+    def __str__(self):
+        return self.priority_area
+
+    class Meta:
+        db_table = 'priority_areas'
+
+
 class Sector(models.Model):
     sector_name = models.CharField(max_length=120)
+    priority_area = models.ForeignKey(PriorityArea, related_name="sectorm", on_delete=models.CASCADE)
     sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='sustainable_development_goals')
 
     def __str__(self):
@@ -95,17 +107,6 @@ class Sector(models.Model):
 
     class Meta:
         db_table = 'sectors'
-
-
-class PriorityArea(models.Model):
-    priority_area = models.CharField(max_length=120)
-    sector = models.ForeignKey(Sector, related_name='sector', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.priority_area
-
-    class Meta:
-        db_table = 'priority_areas'
 
 
 class Subsector(models.Model):
