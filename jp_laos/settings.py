@@ -62,8 +62,7 @@ ROOT_URLCONF = 'jp_laos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -92,12 +91,15 @@ WSGI_APPLICATION = 'jp_laos.wsgi.application'
 if DEVELOPMENT_MODE is True:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'HOST': '127.0.0.1',
-            'PORT': '3306',
+            'ENGINE': 'django.db.backends.postgresql',
+            'OPTIONS': {
+                'options': '-c search_path=jplaos,public'
+            },
             'NAME': 'jplaos',
-            'USER': 'root',
-            'PASSWORD': 'csdjhjnrf4'
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
         }
     }
 elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':

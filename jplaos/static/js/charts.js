@@ -9,9 +9,11 @@ let mapChart = dc.geoChoroplethChart("#map"),
     impPartnersChart = dc.rowChart("#implementing_partners"),
     partnersChart = dc.rowChart("#partners"),
     sectorChart = dc.barChart("#sector"),
-    subsectorChart = dc.rowChart("#subsector"),
-    statusChart = dc.rowChart("#status");
+    statusChart = dc.rowChart("#status")
+priorityChart = dc.pieChart('#priority_chart');
 
+const retrieveSectorField = record => record['sector']['sector_name']
+retrievePriorityArea = record => record['sector']['priority_area'];
 
 function wrap(text, width) {
     text.each(function () {
@@ -102,9 +104,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         return districts ? districts : 'No district';
     }, true);
 
-    let sector = cf.dimension(function (d) {
-        return d['sector'];
-    });
+    let sector = cf.dimension(retrieveSectorField);
 
     let partner = cf.dimension(function (d) {
         return d["partner"];
@@ -118,12 +118,20 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         return d['implementing_partner'] ? d['implementing_partner'] : 'No implementing partner';
     }, true);
 
-    let other_subsector = cf.dimension(function (d) {
-        return d['other_subsector'] ? d['other_subsector'] : 'No subsector';
-    });
+    const priority_area_dim = cf.dimension(retrievePriorityArea);
+
+
+    const priority_area = {
+        dim: cf.dimension(retrievePriorityArea),
+        count: priority_area_dim.group()
+            .reduceCount(retrievePriorityArea),
+        funding: priority_area_dim.group()
+            .reduceSum(function (d) {
+                return Math.round(d["planed_amount"]);
+            })
+    }
 
     // Groups for Dimensions
-
     let count_by_province = province.group()
         .reduceCount(function (d) {
             return d["project_title"];
@@ -145,24 +153,13 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         });
 
     let count_by_sector = sector.group()
-        .reduceCount(function (d) {
-            return d['sector']
-        });
+        .reduceCount(retrieveSectorField);
 
     let funding_by_sector = sector.group()
         .reduceSum(function (d) {
             return Math.round(d['planed_amount']);
         });
 
-    let count_by_other_subsector = other_subsector.group()
-        .reduceCount(function (d) {
-            return d["other_subsector"];
-        });
-
-    let funding_by_other_subsector = other_subsector.group()
-        .reduceSum(function (d) {
-            return Math.round(d['planed_amount']);
-        });
     let count_by_implementing_partner = implementing_partner.group()
         .reduceCount(function (d) {
             return d["implementing_partner"];
@@ -196,7 +193,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     status.filterExact('Ongoing');
     statusChart.filter('Ongoing');
-
 
 
     function returnScale(group) {
@@ -368,6 +364,16 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .ticks(5)
         .tickFormat(d3.format('d'));
 
+    priorityChart
+        .title(d => d.key + ': ' + d.value)
+        .width(600)
+        .height(400)
+        .cx(130)
+        .dimension(priority_area.dim)
+        .group(priority_area.count)
+        .innerRadius(50)
+        .radius(120)
+        .legend(dc.legend().x(400).y(100).gap(5));
 
     sectorChart.width(700)
         .height(350)
@@ -398,37 +404,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         chart.selectAll(".x text")
             .call(wrap, 60);
     });
-
-    let subsector_height = (other_subsector.group().all().length) * (20 + 10) + 25
-
-    subsectorChart
-        .width(350)
-        .height(subsector_height)
-        .fixedBarHeight(20)
-        .margins({top: 10, right: 40, bottom: 35, left: 40})
-        .dimension(other_subsector)
-        .group(other_subsector.group())
-        .data(function (group) {
-            // TODO: REPLACE TO ALL OR TOP(INFINITY)
-            return group.top(25).filter(function (d) {
-                return d.key !== 'No subsector'
-            });
-        })
-        .ordering(function (d) {
-            return -d.value;
-        })
-        .transitionDuration(500)
-        .gap(10)
-        .colors(CHART_COLOR)
-        .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
-        .on('filtered', function (chart, filter) {
-        })
-        .xAxis()
-        .ticks(5)
-        .tickFormat(d3.format('d'));
 
 
     statusChart
@@ -598,7 +573,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         impPartnersChart.xAxis().tickFormat(d3.format(format));
         partnersChart.xAxis().tickFormat(d3.format(format));
         sectorChart.yAxis().tickFormat(d3.format(format));
-        subsectorChart.xAxis().tickFormat(d3.format(format));
         statusChart.xAxis().tickFormat(d3.format(format));
 
     }
@@ -612,7 +586,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         updateLegend(returnScale(geolevel === 'province' ? count_by_province : count_by_district), f);
         provinceChart.group(count_by_province);
         partnersChart.group(count_by_partner);
-        subsectorChart.group(count_by_other_subsector);
         impPartnersChart.group(count_by_implementing_partner);
         sectorChart.group(count_by_sector);
         statusChart.group(count_by_status);
@@ -630,7 +603,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         updateLegend(returnScale(geolevel === 'province' ? funding_by_province : funding_by_district), f);
         provinceChart.group(funding_by_province);
         partnersChart.group(funding_by_partner);
-        subsectorChart.group(funding_by_other_subsector);
         impPartnersChart.group(funding_by_implementing_partner);
         sectorChart.group(funding_by_sector);
         statusChart.group(funding_by_status);
@@ -683,7 +655,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
                     record['project_code'],
                     record['project_title'],
                     record['status'],
-                    record['sector'],
+                    retrieveSectorField(record),
                     record['partner'],
                     record['planed_amount'],
                     record['locations'].map(function (d) {

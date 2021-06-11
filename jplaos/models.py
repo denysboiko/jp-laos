@@ -99,8 +99,9 @@ class PriorityArea(models.Model):
 
 class Sector(models.Model):
     sector_name = models.CharField(max_length=120)
-    priority_area = models.ForeignKey(PriorityArea, related_name="sectorm", on_delete=models.CASCADE)
-    sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='sustainable_development_goals')
+    priority_area = models.ForeignKey(PriorityArea, related_name='sectors', on_delete=models.CASCADE)
+    sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='sectors')
+    outputs = models.ManyToManyField(NSEDPOutput, related_name='sectors')
 
     def __str__(self):
         return self.sector_name

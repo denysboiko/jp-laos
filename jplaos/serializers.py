@@ -32,6 +32,16 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ('province', 'districts')
 
 
+class SectorSerializer(serializers.ModelSerializer):
+    sector_name = serializers.CharField()
+    priority_area = serializers.StringRelatedField()
+    sdg = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Sector
+        fields = ('sector_name', 'priority_area', 'sdg')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     project_code = serializers.ReadOnlyField()
@@ -43,8 +53,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     cross_cutting_issues = serializers.StringRelatedField(many=True)
 
-    sector = serializers.StringRelatedField()
-    other_subsector = serializers.StringRelatedField()
+    sector = SectorSerializer()
     locations = LocationSerializer(many=True)
 
     class Meta:
@@ -58,7 +67,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             'sector',
             'partner',
             'planed_amount',
-            'other_subsector',
             'cross_cutting_issues',
-            'locations'
+            'locations',
         ]
