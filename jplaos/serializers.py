@@ -32,14 +32,24 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ('province', 'districts')
 
 
+class OutputSerializer(serializers.ModelSerializer):
+    output = serializers.CharField()
+    outcome = serializers.StringRelatedField()
+
+    class Meta:
+        model = NSEDPOutput
+        fields = ('output', 'outcome')
+
+
 class SectorSerializer(serializers.ModelSerializer):
     sector_name = serializers.CharField()
     priority_area = serializers.StringRelatedField()
     sdg = serializers.StringRelatedField(many=True)
+    outputs = OutputSerializer(many=True)
 
     class Meta:
         model = Sector
-        fields = ('sector_name', 'priority_area', 'sdg')
+        fields = ('sector_name', 'priority_area', 'sdg', 'outputs',)
 
 
 class ProjectSerializer(serializers.ModelSerializer):

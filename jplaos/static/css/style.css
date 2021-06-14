@@ -1,9 +1,10 @@
 #legend {
-    position: absolute;
-    bottom: 0;
+    position: relative;
+    top: -200px;
     left: 50px;
     width: 300px;
-    height: 200px
+    z-index: 10000;
+    height: 200px;
 }
 
 .tabular .item {
@@ -47,10 +48,7 @@
 }
 
 #admin-level-switcher {
-    width: 200px;
-    position: absolute;
-    top: 50px;
-    right: 0;
+    width: 150px;
 }
 
 .footer {

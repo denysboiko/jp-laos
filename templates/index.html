@@ -6,19 +6,22 @@
 
     {% load static %}
 
-    <script src="{% static 'lib/d3.min.js' %}"></script>
+{#    <script src="{% static 'lib/d3.v6.min.js' %}"></script>#}
+{#    <script src="https://unpkg.com/dc@4/dist/dc.js"></script>#}
     <script src="{% static 'lib/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'lib/semantic/semantic.min.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
-    <script src="{% static 'lib/d3-scale-cluster.min.js' %}"></script>
+    <script src="{% static 'lib/FileSaver.min.js' %}"></script>
     <script src="{% static 'lib/crossfilter.min.js' %}"></script>
+    <script src="{% static 'lib/d3.min.js' %}"></script>
+    <script src="{% static 'lib/d3-scale-cluster.min.js' %}"></script>
     <script src="{% static 'lib/d3-queue.v3.min.js' %}"></script>
     <script src="{% static 'lib/d3-legend.min.js' %}"></script>
-    <script src="{% static 'lib/FileSaver.min.js' %}"></script>
-
     <script src="{% static 'lib/dc.min.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/dc.min.css' %}">
 
+
+{#    <link rel="stylesheet" href="https://unpkg.com/dc@4/dist/style/dc.css">#}
+    <link rel="stylesheet" href="{% static 'lib/dc.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
@@ -106,14 +109,20 @@
 
         <div class="row">
             <div class="sixteen wide mobile ten wide computer column">
-
-                <h2 class="ui header">Map of projects by <span id="geolabel">province</span>s</h2>
-
-                <div id="admin-level-switcher">
-                    <select name="admin-level" id="geolevel" class="ui fluid dropdown">
-                        <option value="province">Province</option>
-                        <option value="district">District</option>
-                    </select>
+                <div class="ui middle aligned two column doubling stackable grid row">
+                    <div class="column">
+                        <h2 class="ui header">
+                            Projects by
+                        </h2>
+                    </div>
+                    <div id="admin-level-switcher" class="column">
+                        <select name="admin-level" id="geolevel" class="ui fluid dropdown">
+                            <option value="province">Province</option>
+                            <option value="district">District</option>
+                        </select>
+                    </div>
+{#                    <div class="column">#}
+{#                    </div>#}
                 </div>
 
                 <div id="map"></div>
@@ -126,8 +135,15 @@
 
 
             <div class="sixteen wide mobile six wide computer column">
-                <h2 class="ui header">Projects by provinces</h2>
-                <div id="provinces"></div>
+                <div>
+                    <h2 class="ui header">Projects by priority areas</h2>
+                    <div id="priority_chart"></div>
+                </div>
+                <div>
+                    <h2 class="ui header">Projects by partners</h2>
+                    <div id="partners"></div>
+                </div>
+
             </div>
 
         </div>
@@ -138,32 +154,25 @@
                 <div id="sector"></div>
             </div>
             <div class="sixteen wide mobile six wide computer column">
-                <h2 class="ui header">Projects by priority areas</h2>
-                <div id="priority_chart"></div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="sixteen wide mobile ten wide computer column">
-                <h2 class="ui header">Projects by implementing partners (TOP 25)</h2>
-                <div id="implementing_partners"></div>
-            </div>
-            <div class="sixteen wide mobile six wide computer column">
-                <div class="cleanrow">
-                    <h2 class="ui header">Projects by partners</h2>
-                    <div id="partners"></div>
-                </div>
                 <div class="ui">
                     <h2 class="ui header">Projects by status</h2>
                     <div id="status"></div>
                 </div>
-                <div class="ui" id="districts" style="display: none">
-                </div>
             </div>
-
         </div>
-
-
+        <div class="row">
+            <div class="sixteen wide mobile eight wide computer column">
+                <div id="nsedc"></div>
+            </div>
+            <div class="sixteen wide mobile eight wide computer column">
+                <div id="cross_cutting_issues"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen wide column">
+                <div id="sdg"></div>
+            </div>
+        </div>
     </div>
 </div>
 <div id="footer" class="ui vertical footer segment" style="visibility: hidden">

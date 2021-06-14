@@ -46,6 +46,7 @@ class District(models.Model):
 
 
 class SustainableDevelopmentGoal(models.Model):
+    short_name = models.CharField(max_length=10)
     goal = models.CharField(max_length=120)
 
     def __str__(self):
@@ -53,6 +54,7 @@ class SustainableDevelopmentGoal(models.Model):
 
     class Meta:
         db_table = 'sustainable_development_goals'
+        verbose_name = "Sustainable Development Goal"
 
 
 class CrossCuttingIssue(models.Model):
@@ -73,6 +75,7 @@ class NSEDPOutcome(models.Model):
 
     class Meta:
         db_table = 'nsedp_outcomes'
+        verbose_name = "NSEDP Outcome"
 
 
 class NSEDPOutput(models.Model):
@@ -84,6 +87,7 @@ class NSEDPOutput(models.Model):
 
     class Meta:
         db_table = 'nsedp_outputs'
+        verbose_name = "NSEDP Output"
 
 
 class PriorityArea(models.Model):

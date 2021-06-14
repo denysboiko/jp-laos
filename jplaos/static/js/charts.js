@@ -1,16 +1,21 @@
 const CHART_COLOR = "#026CB6";
-const PROJECTION = d3.geo.mercator().center([106, 19]).scale(3600);
+const PROJECTION = d3.geo.mercator().center([107.5, 19]).scale(3600);
+// const PROJECTION = d3.geoMercator().center([106, 19]).scale(3600);
 
 
 let mapChart = dc.geoChoroplethChart("#map"),
     mapDistrictChart = dc.geoChoroplethChart("#map-district"),
-    provinceChart = dc.rowChart("#provinces"),
+    // provinceChart = dc.rowChart("#provinces"),
     districtChart = dc.rowChart("#districts"),
-    impPartnersChart = dc.rowChart("#implementing_partners"),
     partnersChart = dc.rowChart("#partners"),
     sectorChart = dc.barChart("#sector"),
-    statusChart = dc.rowChart("#status")
-priorityChart = dc.pieChart('#priority_chart');
+    statusChart = dc.rowChart("#status"),
+
+    nsedcChart = dc.rowChart("#nsedc"),
+    issuesChart = dc.rowChart("#cross_cutting_issues"),
+    sdgChart = dc.barChart("#sdg"),
+
+    priorityChart = dc.pieChart('#priority_chart');
 
 const retrieveSectorField = record => record['sector']['sector_name']
 retrievePriorityArea = record => record['sector']['priority_area'];
@@ -120,7 +125,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     const priority_area_dim = cf.dimension(retrievePriorityArea);
 
-
     const priority_area = {
         dim: cf.dimension(retrievePriorityArea),
         count: priority_area_dim.group()
@@ -130,6 +134,10 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
                 return Math.round(d["planed_amount"]);
             })
     }
+
+    const nsedc_dim = cf.dimension(d => d['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
+    const sdg_dim = cf.dimension(d => d['sector']['sdg'].map(d => d), true)
+    const cci_dim = cf.dimension(d => d['cross_cutting_issues'].map(d => d), true)
 
     // Groups for Dimensions
     let count_by_province = province.group()
@@ -243,7 +251,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
 
     mapChart
-        .width(700)
+        .width(500)
         .height(600)
         .dimension(province)
         .group(province.group())
@@ -265,28 +273,28 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         })
         .projection(PROJECTION);
 
-    provinceChart
-        .width(400)
-        .height(650)
-        .margins({top: 10, right: 40, bottom: 35, left: 40})
-        .dimension(province)
-        .group(province.group())
-        .ordering(function (d) {
-            return -d.value;
-        })
-        .transitionDuration(500)
-        .gap(10)
-        .colors(CHART_COLOR)
-        .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
-        .on('filtered', function (chart, filter) {
-            chart.filters();
-        })
-        .xAxis()
-        .ticks(5)
-        .tickFormat(d3.format('d'));
+    // provinceChart
+    //     .width(400)
+    //     .height(650)
+    //     .margins({top: 10, right: 40, bottom: 35, left: 40})
+    //     .dimension(province)
+    //     .group(province.group())
+    //     .ordering(function (d) {
+    //         return -d.value;
+    //     })
+    //     .transitionDuration(500)
+    //     .gap(10)
+    //     .colors(CHART_COLOR)
+    //     .elasticX(true)
+    //     .title(function (p) {
+    //         return p.key + ': ' + f(p.value);
+    //     })
+    //     .on('filtered', function (chart, filter) {
+    //         chart.filters();
+    //     })
+    //     .xAxis()
+    //     .ticks(5)
+    //     .tickFormat(d3.format('d'));
 
 
     districtChart
@@ -312,34 +320,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .ticks(5);
 
 
-    impPartnersChart
-        .width(700)
-        .height(750)
-        .margins({top: 10, right: 40, bottom: 35, left: 40})
-        .dimension(implementing_partner)
-        .group(count_by_implementing_partner)
-        .data(function (group) {
-            return group.top(25).filter(function (d) {
-                return d.key !== 'No implementing partner'
-            });
-        })
-        .ordering(function (d) {
-            return -d.value;
-        })
-        .transitionDuration(500)
-        .gap(10)
-        .colors(CHART_COLOR)
-        .elasticX(true)
-        .on('filtered', function (chart, filter) {
-        })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
-        .xAxis()
-        .ticks(5)
-        .tickFormat(d3.format('d'));
-
-
     partnersChart
         .width(350)
         .height(380)
@@ -363,6 +343,87 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
+
+
+    nsedcChart
+        .width(350)
+        .height(380)
+        .gap(10)
+        .margins({top: 10, right: 40, bottom: 35, left: 40})
+        .dimension(nsedc_dim)
+        .group(nsedc_dim.group())
+        .ordering(function (d) {
+            return -d.value;
+        })
+        .transitionDuration(500)
+        .colors(CHART_COLOR)
+        .x(d3.scale.ordinal())
+        .elasticX(true)
+        .on('filtered', function (chart, filter) {
+
+        })
+        .title(function (p) {
+            return p.key + ': ' + f(p.value);
+        })
+        .xAxis()
+        .ticks(5)
+        .tickFormat(d3.format('d'));
+
+    issuesChart
+        .width(350)
+        .height(380)
+        .gap(10)
+        .margins({top: 10, right: 40, bottom: 35, left: 40})
+        .dimension(cci_dim)
+        .group(cci_dim.group())
+        .ordering(function (d) {
+            return -d.value;
+        })
+        .transitionDuration(500)
+        .colors(CHART_COLOR)
+        .x(d3.scale.ordinal())
+        .elasticX(true)
+        .on('filtered', function (chart, filter) {
+
+        })
+        .title(function (p) {
+            return p.key + ': ' + f(p.value);
+        })
+        .xAxis()
+        .ticks(5)
+        .tickFormat(d3.format('d'));
+
+
+    sdgChart.width(1100)
+        .height(350)
+        .margins({top: 10, right: 10, bottom: 60, left: 50})
+        .dimension(sdg_dim)
+        .group(sdg_dim.group())
+        .ordering(function (d) {
+            return d.key === 'Other' ? 999 : 1;
+        })
+        .colors(CHART_COLOR)
+        .gap(10)
+        .transitionDuration(500)
+        .centerBar(false)
+        .on('filtered', function (chart, filter) {
+
+        })
+        .title(function (p) {
+            return p.key + ': ' + f(p.value);
+        })
+        .x(d3.scale.ordinal())
+        .xUnits(dc.units.ordinal)
+        .elasticY(true)
+        .yAxisLabel('Number of Projects')
+        .yAxis()
+        .tickFormat(d3.format("d"));
+
+        sdgChart.on('renderlet', function (chart) {
+            chart.selectAll(".x text")
+                .call(wrap, 60);
+        });
+
 
     priorityChart
         .title(d => d.key + ': ' + d.value)
@@ -482,49 +543,48 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
     updateLegend(returnScale(count_by_province), f);
 
 
-    // fix interactions between map and oblast charts
-    mapChart.onClick = function (datum, layerIndex) {
-        let selectedRegion = mapChart.geoJsons()[layerIndex].keyAccessor(datum);
-        provinceChart.filter(selectedRegion);
-        mapChart.redrawGroup()
-    };
+    // mapChart.onClick = function (datum, layerIndex) {
+    //     let selectedRegion = mapChart.geoJsons()[layerIndex].keyAccessor(datum);
+    //     provinceChart.filter(selectedRegion);
+    //     mapChart.redrawGroup()
+    // };
 
     mapDistrictChart.onClick = function (datum, layerIndex) {
         let selectedRegion = mapDistrictChart.geoJsons()[layerIndex].keyAccessor(datum);
-        let filters = provinceChart.filters();
-
-        if (filters.indexOf(districtsDict[selectedRegion]) === -1) {
-            provinceChart.filter(districtsDict[selectedRegion]);
-        }
+        // let filters = provinceChart.filters();
+        //
+        // if (filters.indexOf(districtsDict[selectedRegion]) === -1) {
+        //     provinceChart.filter(districtsDict[selectedRegion]);
+        // }
         districtChart.filter(selectedRegion);
         mapDistrictChart.redrawGroup();
     };
 
 
-    provinceChart.onClick = function (datum) {
+    // provinceChart.onClick = function (datum) {
+    //
+    //     let selectedRegion = datum.key;
+    //
+    //     provinceChart.filter(selectedRegion);
+    //
+    //     if (config.level === 'district') {
+    //         provincesDict[selectedRegion].forEach(function (e, i) {
+    //             districtChart.filter(e.toString());
+    //         });
+    //     }
+    //
+    //     provinceChart.redrawGroup()
+    //
+    // };
 
-        let selectedRegion = datum.key;
 
-        provinceChart.filter(selectedRegion);
-
-        if (config.level === 'district') {
-            provincesDict[selectedRegion].forEach(function (e, i) {
-                districtChart.filter(e.toString());
-            });
-        }
-
-        provinceChart.redrawGroup()
-
-    };
-
-
-    mapChart.hasFilter = function (filter) {
-        let filters = provinceChart.filters();
-        if (!filter) {
-            return filters.length > 0
-        }
-        return filters.indexOf(filter) !== -1
-    };
+    // mapChart.hasFilter = function (filter) {
+    //     let filters = provinceChart.filters();
+    //     if (!filter) {
+    //         return filters.length > 0
+    //     }
+    //     return filters.indexOf(filter) !== -1
+    // };
 
 
     mapDistrictChart.hasFilter = function (filter) {
@@ -569,8 +629,7 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
 
     function changeFormat(format) {
 
-        provinceChart.xAxis().tickFormat(d3.format(format));
-        impPartnersChart.xAxis().tickFormat(d3.format(format));
+        // provinceChart.xAxis().tickFormat(d3.format(format));
         partnersChart.xAxis().tickFormat(d3.format(format));
         sectorChart.yAxis().tickFormat(d3.format(format));
         statusChart.xAxis().tickFormat(d3.format(format));
@@ -584,9 +643,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         changeChoropleth(mapChart, count_by_province, returnScale(count_by_province), 'c');
         changeChoropleth(mapDistrictChart, count_by_district, returnScale(count_by_district), 'c');
         updateLegend(returnScale(geolevel === 'province' ? count_by_province : count_by_district), f);
-        provinceChart.group(count_by_province);
+        // provinceChart.group(count_by_province);
         partnersChart.group(count_by_partner);
-        impPartnersChart.group(count_by_implementing_partner);
         sectorChart.group(count_by_sector);
         statusChart.group(count_by_status);
         changeFormat('d');
@@ -601,9 +659,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         changeChoropleth(mapChart, funding_by_province, returnScale(funding_by_province), 'f');
         changeChoropleth(mapDistrictChart, funding_by_district, returnScale(funding_by_district), 'f');
         updateLegend(returnScale(geolevel === 'province' ? funding_by_province : funding_by_district), f);
-        provinceChart.group(funding_by_province);
+        // provinceChart.group(funding_by_province);
         partnersChart.group(funding_by_partner);
-        impPartnersChart.group(funding_by_implementing_partner);
         sectorChart.group(funding_by_sector);
         statusChart.group(funding_by_status);
         changeFormat('.2s');
