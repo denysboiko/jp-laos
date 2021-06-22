@@ -1,5 +1,10 @@
 const CHART_COLOR = "#026CB6";
-const PROJECTION = d3.geo.mercator().center([107.5, 19]).scale(3600);
+// const PROJECTION = d3.geo.mercator().center([107.5, 19]).scale(3600);
+
+const mapContainer = document.getElementById("map-container");
+const width = mapContainer.clientWidth - 28;
+const PROJECTION = d3.geo.mercator().center([100 -0.0101 * width + 14.5, 19]).scale(3.17 * width + 1400);
+
 // const PROJECTION = d3.geoMercator().center([106, 19]).scale(3600);
 
 
@@ -249,13 +254,12 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         })
         .projection(PROJECTION);
 
-
+    const mapContainer = document.getElementById("map-container");
     mapChart
-        .width(500)
+        .width(mapContainer.clientWidth - 28)
         .height(600)
         .dimension(province)
         .group(province.group())
-
         // funding_by_province
         .colors(returnScale(province.group()))
         .overlayGeoJson(
@@ -393,8 +397,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .ticks(5)
         .tickFormat(d3.format('d'));
 
-
-    sdgChart.width(1100)
+    const sdgContainer = document.getElementById("sdg-container");
+    sdgChart.width(sdgContainer.clientWidth - 28)
         .height(350)
         .margins({top: 10, right: 10, bottom: 60, left: 50})
         .dimension(sdg_dim)

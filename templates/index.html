@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>JP Laos – 3W Dashboard</title>
 
     {% load static %}
@@ -28,11 +29,10 @@
 <body>
 
 
-<div class="ui menu">
+<div class="ui stackable menu">
 
-    <div class="ui container">
         <div class="item">
-            <img height="35px" src="{% static 'img/jp_logo_square.png' %}">
+            <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
         </div>
         <a class="item" href="/">Home</a>
         <a class="item" href="/upload">Upload</a>
@@ -54,11 +54,10 @@
             {% endif %}
         </div>
 
-    </div>
 </div>
 
 
-<div id="dashboard" class="ui container" style="visibility: hidden">
+<div id="dashboard" class="ui stackable container" style="visibility: hidden">
 
     <div class="ui top attached tabular menu">
         <div class="active item" data-tab="first" id="projects">Projects</div>
@@ -70,12 +69,12 @@
     <div class="ui grid">
 
         <div class="row">
-            <div class="sixteen wide mobile eight wide computer column">
+            <div class="eight wide column">
                 <button class="ui button left floated" id="download">
                     Download Data
                 </button>
             </div>
-            <div class="sixteen wide mobile eight wide computer column">
+            <div class="eight wide column">
                 <button class="ui button right floated" id="reset">
                     Clear
                 </button>
@@ -84,7 +83,7 @@
 
         <div class="row">
 
-            <div class="sixteen wide mobile eight wide computer column">
+            <div class="eight wide column">
                 <div class="ui statistic">
                     <div class="value" id="count">
                         <span class="filter-count"></span>
@@ -94,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="sixteen wide mobile eight wide computer column">
+            <div class="eight wide column">
                 <div class="ui statistic right floated">
                     <div class="value">
                         <span class="filter-funding" id="funding-total"></span>
@@ -108,7 +107,7 @@
         </div>
 
         <div class="row">
-            <div class="sixteen wide mobile ten wide computer column">
+            <div id="map-container" class="sixteen wide mobile ten wide computer column">
                 <div class="ui middle aligned two column doubling stackable grid row">
                     <div class="column">
                         <h2 class="ui header">
@@ -121,8 +120,6 @@
                             <option value="district">District</option>
                         </select>
                     </div>
-{#                    <div class="column">#}
-{#                    </div>#}
                 </div>
 
                 <div id="map"></div>
@@ -171,7 +168,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="sixteen wide column">
+            <div id="sdg-container" class="sixteen wide column">
                 <h2 class="ui header">Sustainable Development Goals</h2>
                 <div id="sdg"></div>
             </div>
