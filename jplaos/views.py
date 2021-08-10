@@ -1,9 +1,12 @@
 import django_excel as excel
+# import django_filters
+# import django_filters
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets
+from django.db.models import Q
 
 from .serializers import *
 
@@ -39,8 +42,45 @@ class ProjectViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Project.objects.all()
+
     serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Project.objects.all()
+        status = self.request.query_params.get('status')
+        if status is not None:
+            statuses = status.split(',')
+            queryset = queryset.filter(get_dates_filter(statuses))
+        return queryset
+
+
+def get_dates_filter(statuses):
+    queries = list(map(get_status_filter, statuses))
+    if len(queries) == 3:
+        return queries[0] | queries[1] | queries[2]
+    elif len(queries) == 2:
+        return queries[0] | queries[1]
+    elif len(queries) == 1:
+        return queries[0]
+
+
+def get_status_filter(status):
+    today = datetime.datetime.today().date()
+    ongoing_filter = Q(start_date__lte=today, end_date__gt=today)
+    closed_filter = Q(end_date__lte=today)
+    planned_filter = Q(start_date__gte=today)
+    if status == 'ongoing':
+        return ongoing_filter
+    elif status == 'closed':
+        return closed_filter
+    elif status == 'planned':
+        return planned_filter
 
 
 class UploadFileForm(forms.Form):

@@ -2,6 +2,7 @@ Django
 django-registration
 django-widget-tweaks
 djangorestframework
+django-filter
 django-smart-selects
 django_excel
 mysqlclient

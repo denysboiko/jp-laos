@@ -156,6 +156,21 @@ class ImplementingPartner(models.Model):
         ordering = ['implementing_partner_name']
 
 
+class GreenCategory(models.Model):
+    category = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.category
+
+
+class GreenSubCategory(models.Model):
+    category = models.ForeignKey(GreenCategory, related_name='sub_category', on_delete=models.CASCADE)
+    sub_category = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.sub_category
+
+
 class Project(models.Model):
     project_code = models.CharField(max_length=40, blank=True, null=True)
     project_title = models.TextField(max_length=280)
@@ -187,6 +202,12 @@ class Project(models.Model):
         db_table = 'projects'
 
 
+class GreenSubCategoryFundingAllocation(models.Model):
+    sub_category = models.ForeignKey(GreenSubCategory, related_name='funding_allocation', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, blank=True, null=True, related_name='green_categories_funding', on_delete=models.CASCADE)
+    funding_allocation = models.PositiveIntegerField()
+
+
 class Location(models.Model):
     project = models.ForeignKey(Project, blank=True, null=True, related_name='locations', on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.CASCADE)
@@ -201,3 +222,24 @@ class Location(models.Model):
 
     class Meta:
         db_table = 'location'
+
+
+
+
+class Pipeline(models.Model):
+    partner = models.ForeignKey(Partner, blank=True, null=True, related_name='pipelines', on_delete=models.CASCADE)
+    sector = models.ForeignKey(Sector, blank=True, null=True, related_name='pipelines', on_delete=models.CASCADE)
+    class Meta:
+        db_table = 'pipeline'
+
+class PipelinePlannedAmount(models.Model):
+    sector = models.ForeignKey(Sector, blank=True, null=True, on_delete=models.CASCADE)
+    planed_amount_2021 = models.FloatField()
+    planed_amount_2022 = models.FloatField()
+    planed_amount_2023 = models.FloatField()
+    planed_amount_2024 = models.FloatField()
+    planed_amount_2025 = models.FloatField()
+    planed_amount_2026 = models.FloatField()
+    planed_amount_2027 = models.FloatField()
+    pipeline = models.ForeignKey(Pipeline, blank=True, null=True, related_name='planned_amount',
+                                on_delete=models.CASCADE)

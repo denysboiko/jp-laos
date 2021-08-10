@@ -7,8 +7,14 @@
 
     {% load static %}
 
-{#    <script src="{% static 'lib/d3.v6.min.js' %}"></script>#}
-{#    <script src="https://unpkg.com/dc@4/dist/dc.js"></script>#}
+    {#    <script src="{% static 'lib/d3.v6.min.js' %}"></script>#}
+    {#    <script src="https://unpkg.com/dc@4/dist/dc.js"></script>#}
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'img/favicon/site.webmanifest' %}">
+
     <script src="{% static 'lib/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'lib/semantic/semantic.min.js' %}"></script>
     <script src="{% static 'lib/FileSaver.min.js' %}"></script>
@@ -20,7 +26,7 @@
     <script src="{% static 'lib/dc.min.js' %}"></script>
 
 
-{#    <link rel="stylesheet" href="https://unpkg.com/dc@4/dist/style/dc.css">#}
+    {#    <link rel="stylesheet" href="https://unpkg.com/dc@4/dist/style/dc.css">#}
     <link rel="stylesheet" href="{% static 'lib/dc.min.css' %}">
     <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -31,43 +37,84 @@
 
 <div class="ui stackable menu">
 
-        <div class="item">
-            <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
-        </div>
-        <a class="item" href="/">Home</a>
-        <a class="item" href="/upload">Upload</a>
-        <div class="right menu">
-            {% if user.is_authenticated %}
-                <div class="ui dropdown item">
-                    {{ user }} <i class="dropdown icon"></i>
+    <div class="item">
+        <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
+    </div>
+    <a class="item" href="/">Home</a>
+    <a class="item" href="/upload">Upload</a>
+    <div class="right menu">
+        {% if user.is_authenticated %}
+            <div class="ui dropdown item">
+                {{ user }} <i class="dropdown icon"></i>
 
-                    <div class="menu">
-                        <div class="header">ACTIONS</div>
-                        <a class="item" href="/admin">Administration</a>
-                        <a class="item" href="/admin/password_change/">Change Password</a>
-                        <div class="divider"></div>
-                        <a class="item" href="/admin/logout/">Log Out</a>
-                    </div>
+                <div class="menu">
+                    <div class="header">ACTIONS</div>
+                    <a class="item" href="/admin">Administration</a>
+                    <a class="item" href="/admin/password_change/">Change Password</a>
+                    <div class="divider"></div>
+                    <a class="item" href="/admin/logout/">Log Out</a>
                 </div>
-            {% else %}
-                <a class="item" href="/admin/login/">Sign In</a>
-            {% endif %}
-        </div>
+            </div>
+        {% else %}
+            <a class="item" href="/admin/login/">Sign In</a>
+        {% endif %}
+    </div>
 
 </div>
 
 
-<div id="dashboard" class="ui stackable container" style="visibility: hidden">
+<div id="dashboard" class="ui" style="visibility: hidden">
 
     <div class="ui top attached tabular menu">
-        <div class="active item" data-tab="first" id="projects">Projects</div>
-        <div class="item" data-tab="second" id="funding">Funding</div>
+        <div class="active item" data-tab="projects" id="projects">Projects</div>
+        <div class="item" data-tab="team-europe" id="team-europe">Team Europe</div>
+        <div class="item" data-tab="pipeline" id="pipeline">Pipeline</div>
     </div>
-    <div class="ui bottom attached tab segment" data-tab="first"></div>
-    <div class="ui bottom attached tab segment active" data-tab="second"></div>
-
     <div class="ui grid">
-
+        {#        <div class="ui left close rail">#}
+        {#            <div class="ui card">#}
+        {#                <div class="content">#}
+        {#                    <div class="header">Filters</div>#}
+        {#                </div>#}
+        {#                <div class="content">#}
+        {#                    <div class="ui form">#}
+        {#                        <div class="grouped fields">#}
+        {#                            <label>Status</label>#}
+        {#                            <div class="field">#}
+        {#                                <div class="ui checkbox">#}
+        {#                                    <input type="checkbox" name="ongoing">#}
+        {#                                    <label>Ongoing</label>#}
+        {#                                </div>#}
+        {#                            </div>#}
+        {#                            <div class="field">#}
+        {#                                <div class="ui checkbox">#}
+        {#                                    <input type="checkbox" name="planned">#}
+        {#                                    <label>Planned</label>#}
+        {#                                </div>#}
+        {#                            </div>#}
+        {#                            <div class="field">#}
+        {#                                <div class="ui checkbox">#}
+        {#                                    <input type="checkbox" name="closed">#}
+        {#                                    <label>Closed</label>#}
+        {#                                </div>#}
+        {#                            </div>#}
+        {#                        </div>#}
+        {#                        <div class="grouped fields">#}
+        {#                            <label>Measure</label>#}
+        {#                            <div class="field">#}
+        {#                                <div id="measure-toggle" class="ui toggle checkbox">#}
+        {#                                    <input type="checkbox" name="public">#}
+        {#                                    <label>Funding</label>#}
+        {#                                </div>#}
+        {#                            </div>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#                <div class="extra content">#}
+        {#                    <button class="ui button">Apply Filters</button>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </div>#}
         <div class="row">
             <div class="eight wide column">
                 <button class="ui button left floated" id="download">
@@ -107,7 +154,7 @@
         </div>
 
         <div class="row">
-            <div id="map-container" class="sixteen wide mobile ten wide computer column">
+            <div id="map-container" class="sixteen wide mobile four wide computer column">
                 <div class="ui middle aligned two column doubling stackable grid row">
                     <div class="column">
                         <h2 class="ui header">
@@ -124,39 +171,34 @@
 
                 <div id="map"></div>
                 <div id="map-district" style="display: none"></div>
-
-
-                <svg id="legend"></svg>
+{#                <svg id="legend"></svg>#}
 
             </div>
-
-
-            <div class="sixteen wide mobile six wide computer column">
-                <div>
-                    <h2 class="ui header">Projects by priority areas</h2>
-                    <div id="priority_chart"></div>
+            <div class="sixteen wide mobile twelve wide computer column">
+                <div class="ui grid two column">
+                    <div class="row">
+                        <div>
+                            <h2 class="ui header">Projects by priority areas</h2>
+                            <div id="priority_chart"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column" id="sectorContainer">
+                            <h2 class="ui header">Projects by sector</h2>
+                            <div id="sector"></div>
+                        </div>
+                        <div class="column">
+                            <h2 class="ui header">Projects by partners</h2>
+                            <div id="partners"></div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="ui header">Projects by partners</h2>
-                    <div id="partners"></div>
-                </div>
+
 
             </div>
-
         </div>
 
-        <div class="row">
-            <div class="sixteen wide mobile ten wide computer column">
-                <h2 class="ui header">Projects by sector</h2>
-                <div id="sector"></div>
-            </div>
-            <div class="sixteen wide mobile six wide computer column">
-                <div class="ui">
-                    <h2 class="ui header">Projects by status</h2>
-                    <div id="status"></div>
-                </div>
-            </div>
-        </div>
+
         <div class="row">
             <div class="sixteen wide mobile eight wide computer column">
                 <h2 class="ui header">NSEDP Outcomes</h2>
@@ -173,7 +215,29 @@
                 <div id="sdg"></div>
             </div>
         </div>
+        <div class="row">
+            <h2 class="ui header">Sustainable Development Goals</h2>
+        </div>
+        <div class="row">
+            <div class="five wide column" id="sdg-sub-container">
+                <div id="sdg1"></div>
+            </div>
+            <div class="five wide column">
+                <div id="sdg2"></div>
+            </div>
+            <div class="five wide column">
+                <div id="sdg3"></div>
+            </div>
+        </div>
+
     </div>
+    <div class="ui bottom attached tab segment" data-tab="projects">
+
+    </div>
+    <div class="ui bottom attached tab segment active" data-tab="team-europe"></div>
+    <div class="ui bottom attached tab segment active" data-tab="pipeline"></div>
+
+
 </div>
 <div id="footer" class="ui vertical footer segment" style="visibility: hidden">
     <div class="ui center aligned container">
@@ -220,7 +284,7 @@
 
     d3.queue()
         .defer(d3.json, '{% static "data/laos.geojson" %}')
-        .defer(d3.json, "/projects/")
+        .defer(d3.json, "/projects?status=ongoing")
         .defer(d3.json, "/districts/")
         .defer(d3.json, "/provinces/")
         .defer(d3.json, '{% static "data/laos-districts.geojson" %}')

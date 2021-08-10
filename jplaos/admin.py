@@ -11,13 +11,21 @@ class LocationInline(admin.TabularInline):
     extra = 1
 
 
+class GreenCategoryInline(admin.StackedInline):
+    model = GreenSubCategoryFundingAllocation
+    extra = 1
+
+class PipelineAllocationInline(admin.TabularInline):
+    model = PipelinePlannedAmount
+    extra = 1
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
 
-    inlines = (LocationInline,)
+    inlines = (LocationInline, GreenCategoryInline,)
     list_filter = ['partner', 'sector']
     search_fields = ['project_title', 'project_code']
-    filter_horizontal = ('implementing_partner',)
+    # filter_horizontal = ('implementing_partner',)
     list_display = [
         'id',
         'project_code',
@@ -41,6 +49,17 @@ class ProjectAdmin(admin.ModelAdmin):
                 kwargs["queryset"] = Partner.objects.filter(id__in=request.user.partner_set.values_list('pk'))
         return super(ProjectAdmin, self).formfield_for_foreignkey(
             db_field, request, **kwargs)
+
+
+@admin.register(Pipeline)
+class PipelineAdmin(admin.ModelAdmin):
+
+    inlines = (PipelineAllocationInline, )
+    list_display = [
+        'id',
+        'partner',
+        'sector',
+    ]
 
 
 @admin.register(ImplementingPartner)
@@ -86,4 +105,6 @@ admin.site.register([
     SustainableDevelopmentGoal,
     NSEDPOutput,
     NSEDPOutcome,
+    GreenCategory,
+    GreenSubCategory
 ])

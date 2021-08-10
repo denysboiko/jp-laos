@@ -14,11 +14,14 @@ let mapChart = dc.geoChoroplethChart("#map"),
     districtChart = dc.rowChart("#districts"),
     partnersChart = dc.rowChart("#partners"),
     sectorChart = dc.barChart("#sector"),
-    statusChart = dc.rowChart("#status"),
 
     nsedcChart = dc.rowChart("#nsedc"),
     issuesChart = dc.rowChart("#cross_cutting_issues"),
     sdgChart = dc.barChart("#sdg"),
+
+    sdgChart1 = dc.rowChart("#sdg1"),
+    sdgChart2 = dc.rowChart("#sdg2"),
+    sdgChart3 = dc.rowChart("#sdg3"),
 
     priorityChart = dc.pieChart('#priority_chart');
 
@@ -120,9 +123,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         return d["partner"];
     });
 
-    let status = cf.dimension(function (d) {
-        return d['status'];
-    });
 
     let implementing_partner = cf.dimension(function (d) {
         return d['implementing_partner'] ? d['implementing_partner'] : 'No implementing partner';
@@ -141,7 +141,8 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
     }
 
     const nsedc_dim = cf.dimension(d => d['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
-    const sdg_dim = cf.dimension(d => d['sector']['sdg'].map(d => d), true)
+    const sdg_dim = cf.dimension(d => d['sector']['sdg']
+        .map(d => d), true)
     const cci_dim = cf.dimension(d => d['cross_cutting_issues'].map(d => d), true)
 
     // Groups for Dimensions
@@ -183,17 +184,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
             return Math.round(d['planed_amount'] / d.implementing_partner.length);
         });
 
-
-    let count_by_status = status.group()
-        .reduceCount(function (d) {
-            return d["status"];
-        });
-
-    let funding_by_status = status.group()
-        .reduceSum(function (d) {
-            return Math.round(d['planed_amount']);
-        });
-
     let count_by_partner = partner.group()
         .reduceCount(function (d) {
             return d["partner"];
@@ -203,9 +193,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .reduceSum(function (d) {
             return Math.round(d['planed_amount']);
         });
-
-    status.filterExact('Ongoing');
-    statusChart.filter('Ongoing');
 
 
     function returnScale(group) {
@@ -397,6 +384,93 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         .ticks(5)
         .tickFormat(d3.format('d'));
 
+    const sdgSubContainer = document.getElementById("sdg-sub-container");
+    sdgChart1
+        .width(sdgSubContainer.clientWidth - 28)
+        .height(380)
+        .gap(10)
+        .margins({top: 10, right: 40, bottom: 35, left: 40})
+        .dimension(sdg_dim)
+        .group(sdg_dim.group())
+        .transitionDuration(500)
+        .colors(CHART_COLOR)
+        .x(d3.scale.ordinal())
+        .elasticX(true)
+        .on('filtered', function (chart, filter) {
+
+        })
+        .colors(d3.scale.ordinal().range([
+            '#da3737',
+            '#caa041',
+            '#4c9851',
+            '#b43136',
+            '#dc4e38',
+            '#4aabd3']))
+        .ordering(function (d) {
+            return -d.value;
+        })
+        .data(function (group) { return group.top(6); })
+        .title(function (p) {
+            return p.key + ': ' + f(p.value);
+        })
+        .xAxis()
+        .ticks(5)
+        .tickFormat(d3.format('d'));
+
+
+    // var group = reductio().count(true)
+    //     .filter(function(d) { return d.action === "C1"; })(dim.group());
+    //
+    // .dimension(d => d['sector']['sdg'].)
+
+    sdgChart2
+        .width(sdgSubContainer.clientWidth - 28)
+        .height(380)
+        .gap(10)
+        .margins({top: 10, right: 40, bottom: 35, left: 40})
+        .dimension(sdg_dim)
+        .group(sdg_dim.group(), "count")
+        .ordering(function (d) {
+            return -d.value;
+        })
+        .transitionDuration(500)
+        .colors(CHART_COLOR)
+        .x(d3.scale.ordinal())
+        .elasticX(true)
+        .on('filtered', function (chart, filter) {
+
+        })
+        .data((group) => { return group.top(6); })
+        .title(function (p) {
+            return p.key + ': ' + f(p.value);
+        })
+        .xAxis()
+        .ticks(5)
+        .tickFormat(d3.format('d'));
+
+    sdgChart3
+        .width(sdgSubContainer.clientWidth - 28)
+        .height(380)
+        .gap(10)
+        .margins({top: 10, right: 40, bottom: 35, left: 40})
+        .dimension(sdg_dim)
+        .group(sdg_dim.group())
+        .transitionDuration(500)
+        .colors(CHART_COLOR)
+        .x(d3.scale.ordinal())
+        .elasticX(true)
+        .on('filtered', function (chart, filter) {
+
+        })
+        // .takeFront(false)
+        .data(function (group) { return group.top(6); })
+        .title(function (p) {
+            return p.key + ': ' + f(p.value);
+        })
+        .xAxis()
+        .ticks(5)
+        .tickFormat(d3.format('d'));
+
     const sdgContainer = document.getElementById("sdg-container");
     sdgChart.width(sdgContainer.clientWidth - 28)
         .height(350)
@@ -432,15 +506,19 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
     priorityChart
         .title(d => d.key + ': ' + d.value)
         .width(600)
-        .height(400)
-        .cx(130)
+        .height(200)
+        // .cx(160)
+        // .cy(0)
         .dimension(priority_area.dim)
         .group(priority_area.count)
         .innerRadius(50)
-        .radius(120)
-        .legend(dc.legend().x(400).y(100).gap(5));
+        .radius(80)
+        .renderLabel(false)
+        .legend(dc.legend().gap(5));
 
-    sectorChart.width(700)
+
+    const sectorContainer = document.getElementById("sectorContainer");
+    sectorChart.width(sectorContainer.clientWidth - 28)
         .height(350)
         .margins({top: 10, right: 10, bottom: 60, left: 50})
         .dimension(sector)
@@ -469,31 +547,6 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         chart.selectAll(".x text")
             .call(wrap, 60);
     });
-
-
-    statusChart
-        .width(350)
-        // .height(400)
-        .margins({top: 10, right: 40, bottom: 35, left: 40})
-        .dimension(status)
-        .group(count_by_status)
-        .ordering(function (d) {
-            return -d.value;
-        })
-        .transitionDuration(500)
-        .colors(CHART_COLOR)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
-        .x(d3.scale.ordinal())
-        .elasticX(true)
-        .on('filtered', function (chart, filter) {
-
-        })
-        .xAxis()
-        .ticks(5)
-        .tickFormat(d3.format('d'));
-
 
     let all = cf.groupAll();
 
@@ -636,41 +689,35 @@ function loadData(err, geodata, data, districts_list, provinces_list, districts)
         // provinceChart.xAxis().tickFormat(d3.format(format));
         partnersChart.xAxis().tickFormat(d3.format(format));
         sectorChart.yAxis().tickFormat(d3.format(format));
-        statusChart.xAxis().tickFormat(d3.format(format));
 
     }
 
-    $("#projects").on('click', () => {
+    $('#measure-toggle')
+        .checkbox({
+            onChecked: () => {
+                let geolevel = config.level;
+                config.measure = 'funding';
+                changeChoropleth(mapChart, funding_by_province, returnScale(funding_by_province), 'f');
+                changeChoropleth(mapDistrictChart, funding_by_district, returnScale(funding_by_district), 'f');
+                updateLegend(returnScale(geolevel === 'province' ? funding_by_province : funding_by_district), f);
+                partnersChart.group(funding_by_partner);
+                sectorChart.group(funding_by_sector);
+                changeFormat('.2s');
+                dc.renderAll();
+            },
+            onUnchecked: () => {
+                let geolevel = config.level;
+                config.measure = 'count';
+                changeChoropleth(mapChart, count_by_province, returnScale(count_by_province), 'c');
+                changeChoropleth(mapDistrictChart, count_by_district, returnScale(count_by_district), 'c');
+                updateLegend(returnScale(geolevel === 'province' ? count_by_province : count_by_district), f);
+                partnersChart.group(count_by_partner);
+                sectorChart.group(count_by_sector);
+                changeFormat('d');
+                dc.renderAll();
+            }
+        });
 
-        let geolevel = config.level;
-        config.measure = 'count';
-        changeChoropleth(mapChart, count_by_province, returnScale(count_by_province), 'c');
-        changeChoropleth(mapDistrictChart, count_by_district, returnScale(count_by_district), 'c');
-        updateLegend(returnScale(geolevel === 'province' ? count_by_province : count_by_district), f);
-        // provinceChart.group(count_by_province);
-        partnersChart.group(count_by_partner);
-        sectorChart.group(count_by_sector);
-        statusChart.group(count_by_status);
-        changeFormat('d');
-        dc.renderAll();
-
-    });
-
-    $("#funding").on('click', () => {
-
-        let geolevel = config.level;
-        config.measure = 'funding';
-        changeChoropleth(mapChart, funding_by_province, returnScale(funding_by_province), 'f');
-        changeChoropleth(mapDistrictChart, funding_by_district, returnScale(funding_by_district), 'f');
-        updateLegend(returnScale(geolevel === 'province' ? funding_by_province : funding_by_district), f);
-        // provinceChart.group(funding_by_province);
-        partnersChart.group(funding_by_partner);
-        sectorChart.group(funding_by_sector);
-        statusChart.group(funding_by_status);
-        changeFormat('.2s');
-        dc.renderAll();
-
-    });
 
     function show(container, chart) {
         document.getElementById('map').style.display = 'none';

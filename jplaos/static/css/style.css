@@ -1,3 +1,7 @@
+#dashboard {
+    margin: 1em;
+}
+
 #legend {
     position: relative;
     top: -200px;
