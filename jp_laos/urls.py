@@ -1,16 +1,16 @@
 from django.contrib import admin
-
-from django.urls import path, include, re_path
+from django.urls import path, include
 from rest_framework import routers
 
-from jplaos.views import home, ProvinceViewSet, DistrictViewSet, ProjectViewSet, import_sheet
+from jplaos.views import home, ProvinceViewSet, DistrictViewSet, ProjectViewSet, import_sheet, GreenCategories, \
+    PipelineView
 
 router = routers.DefaultRouter()
 router.register(r'provinces', ProvinceViewSet)
 router.register(r'districts', DistrictViewSet)
 router.register(r'projects', ProjectViewSet)
-
-
+router.register(r'green-categories', GreenCategories)
+router.register(r'pipelines', PipelineView)
 
 urlpatterns = [
     path('', home),

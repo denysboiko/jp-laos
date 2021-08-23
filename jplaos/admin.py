@@ -9,21 +9,61 @@ admin.site.site_title = '3W administration'
 class LocationInline(admin.TabularInline):
     model = Location
     extra = 1
+    classes = ['collapse']
+
+
+class PartnerInline(admin.TabularInline):
+    model = PartnerFunding
+    extra = 1
 
 
 class GreenCategoryInline(admin.StackedInline):
     model = GreenSubCategoryFundingAllocation
     extra = 1
+    classes = ['collapse']
+
 
 class PipelineAllocationInline(admin.TabularInline):
     model = PipelinePlannedAmount
     extra = 1
+    classes = ['collapse']
+
+
+class FundingByModalityInline(admin.TabularInline):
+    model = FundingByModality
+    extra = 1
+    classes = ['collapse']
+
+
+# PhakhaoLaoCategory
+# ForestPartnershipCategory
+# forest_partnership_categories
+# phakhao_lao_categories
+# FundingByPhakhaoLaoCategory
+# FundingByForestPartnershipCategory
+class FundingByPhakhaoLaoCategoryInline(admin.TabularInline):
+    model = FundingByPhakhaoLaoCategory
+    extra = 1
+    classes = ['collapse']
+
+
+class FundingByForestPartnershipCategoryInline(admin.TabularInline):
+    model = FundingByForestPartnershipCategory
+    extra = 1
+    classes = ['collapse']
+
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-
-    inlines = (LocationInline, GreenCategoryInline,)
-    list_filter = ['partner', 'sector']
+    inlines = (
+        LocationInline,
+        FundingByModalityInline,
+        FundingByPhakhaoLaoCategoryInline,
+        FundingByForestPartnershipCategoryInline,
+        GreenCategoryInline,
+        PartnerInline
+    )
+    list_filter = ['sector', 'is_regional']
     search_fields = ['project_title', 'project_code']
     # filter_horizontal = ('implementing_partner',)
     list_display = [
@@ -31,9 +71,10 @@ class ProjectAdmin(admin.ModelAdmin):
         'project_code',
         'project_title',
         'status_code',
-        'partner',
         'sector',
-        'planed_amount'
+        'is_regional',
+        'get_is_cofounded',
+        'total_funding'
     ]
 
     def get_queryset(self, request):
@@ -57,8 +98,7 @@ class PipelineAdmin(admin.ModelAdmin):
     inlines = (PipelineAllocationInline, )
     list_display = [
         'id',
-        'partner',
-        'sector',
+        'partner'
     ]
 
 
@@ -85,7 +125,6 @@ class ProvinceAdmin(admin.ModelAdmin):
 
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
-
     list_filter = ['province']
     search_fields = ['name']
     list_display = [
@@ -96,8 +135,15 @@ class DistrictAdmin(admin.ModelAdmin):
     ]
 
 
+@admin.register(Sector)
+class SectorAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'sector_name',
+    ]
+
+
 admin.site.register([
-    Sector,
     Partner,
     Subsector,
     PriorityArea,
@@ -106,5 +152,8 @@ admin.site.register([
     NSEDPOutput,
     NSEDPOutcome,
     GreenCategory,
-    GreenSubCategory
+    GreenSubCategory,
+    ComplementaryAreaCategory,
+    GreenCatalysersCategory,
+    Modality
 ])

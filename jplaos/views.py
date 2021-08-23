@@ -22,6 +22,16 @@ def home(request):
     )
 
 
+class PipelineView(viewsets.ModelViewSet):
+    queryset = PipelinePlannedAmount.objects.all()
+    serializer_class = PipelineFundingSerializer
+
+
+class GreenCategories(viewsets.ModelViewSet):
+    queryset = GreenSubCategory.objects.all()
+    serializer_class = GreenCatSerializer
+
+
 class ProvinceViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.

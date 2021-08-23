@@ -19,148 +19,175 @@
     <script src="{% static 'lib/semantic/semantic.min.js' %}"></script>
     <script src="{% static 'lib/FileSaver.min.js' %}"></script>
     <script src="{% static 'lib/crossfilter.min.js' %}"></script>
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"#}
+    {#            integrity="sha512-nlO6OGj6wb0uu/thpSry7qFal63hfhCLExpWxYomYB3tBznqWmKggsDHNHSLjnVaoade9tv/rErN498NSzwBnA=="#}
+    {#            crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
     <script src="{% static 'lib/d3.min.js' %}"></script>
     <script src="{% static 'lib/d3-scale-cluster.min.js' %}"></script>
     <script src="{% static 'lib/d3-queue.v3.min.js' %}"></script>
     <script src="{% static 'lib/d3-legend.min.js' %}"></script>
-    <script src="{% static 'lib/dc.min.js' %}"></script>
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.5.4/crossfilter.min.js"#}
+    {#            integrity="sha512-YTblpiY3CE9zQBW//UMBfvDF2rz6bS7vhhT5zwzqQ8P7Z0ikBGG8hfcRwmmg3IuLl2Rwk95NJUEs1HCQD4EDKQ=="#}
+    {#            crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.5.4/crossfilter.js"#}
+    {#            integrity="sha512-9LbNNlYA/tM4I3VSQFfCZE5uP0dF8rwNpVYPIPbUtH0ICSQ5n6bWrczj7x4w6EzedI/37mEMHZHJzX8Y7fiQeg=="#}
+    {#            crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
+    {#    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.5/dc.min.js"
+            integrity="sha512-tWTME0s10d+2xuRlQpzRZejymSnTEfs8zoL9YUurn4ivq5nWyiQi+kc0j1QLnDcrAylzp3sRVCltdr0rH8866g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.5/dc.css"
+          integrity="sha512-5eIV6XPqjep5ooxLNRZFEmBU6gqG0Q8NqG/pKHacrt7yyDFE0tNc8IdEcJnL1+aftxM77E9OWP4ZqAJxBxJl1g=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.5/dc.js"
+            integrity="sha512-DipdmVOB3qyoKP+CkQvBXfgs6z2leoTSV+Ry8/NATbnarbQji5oqjHIFtBbWn6GbuLj3lMnteV+ybaYVTlArbA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.5/dc.min.css"
+          integrity="sha512-rPj4TjIdKojBjv6IYbfrLvyJ0oz2+BShBKIKAafxad1drMjlb3gmyQFpAbzkF/JE6bma0guh+BmP+bbW3Md+sw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/dc.min.js"#}
+    {#            integrity="sha512-vIRU1/ofrqZ6nA3aOsDQf8kiJnAHnLrzaDh4ob8yBcJNry7Czhb8mdKIP+p8y7ixiNbT/As1Oii9IVk+ohSFiA=="#}
+    {#            crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/dc.js"#}
+    {#            integrity="sha512-ULRjYchIGoNAXgktDOljo9I6068lh36z4K2a8fDMQLp5xHHxGpvCdLr7TPbYYxDlT2ik585NeCO9xDIFS9SiEg=="#}
+    {#            crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
+    {#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/style/dc.css"#}
+    {#          integrity="sha512-ZCK4qcVpG4m3G6VG2CWs5Tl870Xn9xhT3SWJLmbsbTfU9/hzyZDeCzyLpjsCc27YxlDi19URyKlY+h4cQIifig=="#}
+    {#          crossorigin="anonymous" referrerpolicy="no-referrer"/>#}
+    {#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/style/dc.min.css"#}
+    {#          integrity="sha512-t38Qn1jREPvzPvDLgIP2fjtOayaA1KKBuNpNj9BGgiMi+tGLOdvDB+aWLMe2BvokHg1OxRLQLE7qrlLo+A+MLA=="#}
+    {#          crossorigin="anonymous" referrerpolicy="no-referrer"/>#}
 
+    {#    <script src="{% static 'lib/dc.min.js' %}"></script>#}
     {#    <link rel="stylesheet" href="https://unpkg.com/dc@4/dist/style/dc.css">#}
-    <link rel="stylesheet" href="{% static 'lib/dc.min.css' %}">
+    {#    <link rel="stylesheet" href="{% static 'lib/dc.min.css' %}">#}
     <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 <body>
+<div class="ui sticky">
+    <div class="ui stackable menu">
 
+        <div class="item">
+            <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
+        </div>
+        <a class="item" href="/">Home</a>
+        <a class="item" href="/upload">Upload</a>
+        <div class="right menu">
+            {% if user.is_authenticated %}
+                <div class="ui dropdown item">
+                    {{ user }} <i class="dropdown icon"></i>
 
-<div class="ui stackable menu">
-
-    <div class="item">
-        <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
-    </div>
-    <a class="item" href="/">Home</a>
-    <a class="item" href="/upload">Upload</a>
-    <div class="right menu">
-        {% if user.is_authenticated %}
-            <div class="ui dropdown item">
-                {{ user }} <i class="dropdown icon"></i>
-
-                <div class="menu">
-                    <div class="header">ACTIONS</div>
-                    <a class="item" href="/admin">Administration</a>
-                    <a class="item" href="/admin/password_change/">Change Password</a>
-                    <div class="divider"></div>
-                    <a class="item" href="/admin/logout/">Log Out</a>
+                    <div class="menu">
+                        <div class="header">ACTIONS</div>
+                        <a class="item" href="/admin">Administration</a>
+                        <a class="item" href="/admin/password_change/">Change Password</a>
+                        <div class="divider"></div>
+                        <a class="item" href="/admin/logout/">Log Out</a>
+                    </div>
                 </div>
-            </div>
-        {% else %}
-            <a class="item" href="/admin/login/">Sign In</a>
-        {% endif %}
+            {% else %}
+                <a class="item" href="/admin/login/">Sign In</a>
+            {% endif %}
+        </div>
     </div>
-
 </div>
 
 
 <div id="dashboard" class="ui" style="visibility: hidden">
-
-    <div class="ui top attached tabular menu">
-        <div class="active item" data-tab="projects" id="projects">Projects</div>
+    <div class="ui secondary pointing menu">
+        <div class="item active" data-tab="projects" id="projects">Projects</div>
         <div class="item" data-tab="team-europe" id="team-europe">Team Europe</div>
         <div class="item" data-tab="pipeline" id="pipeline">Pipeline</div>
     </div>
-    <div class="ui grid">
-        {#        <div class="ui left close rail">#}
-        {#            <div class="ui card">#}
-        {#                <div class="content">#}
-        {#                    <div class="header">Filters</div>#}
-        {#                </div>#}
-        {#                <div class="content">#}
-        {#                    <div class="ui form">#}
-        {#                        <div class="grouped fields">#}
-        {#                            <label>Status</label>#}
-        {#                            <div class="field">#}
-        {#                                <div class="ui checkbox">#}
-        {#                                    <input type="checkbox" name="ongoing">#}
-        {#                                    <label>Ongoing</label>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                            <div class="field">#}
-        {#                                <div class="ui checkbox">#}
-        {#                                    <input type="checkbox" name="planned">#}
-        {#                                    <label>Planned</label>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                            <div class="field">#}
-        {#                                <div class="ui checkbox">#}
-        {#                                    <input type="checkbox" name="closed">#}
-        {#                                    <label>Closed</label>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                        </div>#}
-        {#                        <div class="grouped fields">#}
-        {#                            <label>Measure</label>#}
-        {#                            <div class="field">#}
-        {#                                <div id="measure-toggle" class="ui toggle checkbox">#}
-        {#                                    <input type="checkbox" name="public">#}
-        {#                                    <label>Funding</label>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                        </div>#}
-        {#                    </div>#}
-        {#                </div>#}
-        {#                <div class="extra content">#}
-        {#                    <button class="ui button">Apply Filters</button>#}
-        {#                </div>#}
-        {#            </div>#}
-        {#        </div>#}
-        <div class="row">
-            <div class="eight wide column">
-                <button class="ui button left floated" id="download">
-                    Download Data
-                </button>
-            </div>
-            <div class="eight wide column">
-                <button class="ui button right floated" id="reset">
-                    Clear
-                </button>
-            </div>
-        </div>
 
-        <div class="row">
-
-            <div class="eight wide column">
-                <div class="ui statistic">
-                    <div class="value" id="count">
-                        <span class="filter-count"></span>
-                    </div>
-                    <div class="label">
-                        projects
+    <div class="ui tab active" data-tab="projects" id="projects-tab">
+        <div class="ui grid">
+            <div class="two column row">
+                <div class="column">
+                    <button class="ui button left floated" id="download">
+                        Download Data
+                    </button>
+                </div>
+                <div class="column">
+                    <button class="ui button right floated" id="reset">
+                        Clear
+                    </button>
+                    <button class="ui right floated labeled icon button" id="filter">
+                        <i class="filter icon"></i>
+                        <span class="text ">Filters</span>
+                    </button>
+                    <div class="ui flowing popup top left transition hidden card">
+                        <div class="content">
+                            <div class="header">Filters</div>
+                        </div>
+                        <div class="content">
+                            <div class="ui form">
+                                <div class="grouped fields">
+                                    <label>Status</label>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input checked="checked" name="ongoing" type="checkbox">
+                                            <label>Ongoing</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" name="planned">
+                                            <label>Planned</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" name="closed">
+                                            <label>Closed</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grouped fields">
+                                    <label>Measure</label>
+                                    <div class="field">
+                                        <div id="measure-toggle" class="ui toggle checkbox">
+                                            <input type="checkbox" name="public">
+                                            <label>Funding</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="extra content">
+                            <button class="ui button disabled">Reload Data</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="eight wide column">
-                <div class="ui statistic right floated">
-                    <div class="value">
-                        <span class="filter-funding" id="funding-total"></span>
+            <div class="two column row">
+                <div class="column">
+                    <div class="ui statistic">
+                        <div class="value" id="count">
+                            <span class="filter-count"></span>
+                        </div>
+                        <div class="label">
+                            projects
+                        </div>
                     </div>
-                    <div class="label">
-                        funding
+                </div>
+                <div class="column">
+                    <div class="ui statistic right floated">
+                        <div class="value">
+                            <span class="filter-funding" id="funding-total"></span>
+                        </div>
+                        <div class="label">
+                            funding
+                        </div>
                     </div>
                 </div>
             </div>
-
-        </div>
-
-        <div class="row">
-            <div id="map-container" class="sixteen wide mobile four wide computer column">
-                <div class="ui middle aligned two column doubling stackable grid row">
-                    <div class="column">
-                        <h2 class="ui header">
-                            Projects by
-                        </h2>
-                    </div>
+            <div id="map-container"
+                 class="sixteen wide mobile eight wide tablet four wide computer column">
+                <div class="ui middle aligned two column grid">
                     <div id="admin-level-switcher" class="column">
                         <select name="admin-level" id="geolevel" class="ui fluid dropdown">
                             <option value="province">Province</option>
@@ -171,71 +198,247 @@
 
                 <div id="map"></div>
                 <div id="map-district" style="display: none"></div>
-{#                <svg id="legend"></svg>#}
-
+                <div>
+                    <svg id="legend"></svg>
+                </div>
             </div>
-            <div class="sixteen wide mobile twelve wide computer column">
-                <div class="ui grid two column">
-                    <div class="row">
-                        <div>
-                            <h2 class="ui header">Projects by priority areas</h2>
-                            <div id="priority_chart"></div>
-                        </div>
+            <div class="sixteen wide mobile eight wide tablet twelve wide computer column">
+                <div class="ui grid">
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="priority-chart-container">
+                        <h2 class="ui header">Priority Areas</h2>
+                        <div id="priority-chart"></div>
                     </div>
-                    <div class="row">
-                        <div class="column" id="sectorContainer">
-                            <h2 class="ui header">Projects by sector</h2>
-                            <div id="sector"></div>
-                        </div>
-                        <div class="column">
-                            <h2 class="ui header">Projects by partners</h2>
-                            <div id="partners"></div>
-                        </div>
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="modality-chart-containet">
+                        <h2 class="ui header">Modality</h2>
+                        <div id="modality-chart"></div>
                     </div>
                 </div>
-
-
+                <div class="ui grid">
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
+                        <h2 class="ui header">Implementing Partner Category</h2>
+                        <div id="ip-category"></div>
+                    </div>
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="partners-chart-container">
+                        <h2 class="ui header">Partner</h2>
+                        <div id="partners"></div>
+                    </div>
+                </div>
             </div>
         </div>
-
-
-        <div class="row">
-            <div class="sixteen wide mobile eight wide computer column">
-                <h2 class="ui header">NSEDP Outcomes</h2>
-                <div id="nsedc"></div>
+        <div class="ui two column stackable grid">
+            <div class="column"
+                 id="sector-chart-container">
+                <h2 class="ui header">Sector</h2>
+                <div id="sector"></div>
             </div>
-            <div class="sixteen wide mobile eight wide computer column">
+            <div class="column" id="cci-chart-container">
                 <h2 class="ui header">Cross-cutting Issues</h2>
                 <div id="cross_cutting_issues"></div>
             </div>
         </div>
-        <div class="row">
-            <div id="sdg-container" class="sixteen wide column">
+        <div class="ui two column stackable grid">
+            <div class="column" id="sdg-1-container">
                 <h2 class="ui header">Sustainable Development Goals</h2>
-                <div id="sdg"></div>
-            </div>
-        </div>
-        <div class="row">
-            <h2 class="ui header">Sustainable Development Goals</h2>
-        </div>
-        <div class="row">
-            <div class="five wide column" id="sdg-sub-container">
                 <div id="sdg1"></div>
             </div>
-            <div class="five wide column">
-                <div id="sdg2"></div>
+            <div class="column" id="nsedc-chart-container">
+                <h2 class="ui header">NSEDP Outcomes</h2>
+                <div id="nsedc"></div>
             </div>
-            <div class="five wide column">
+            <div class="column" id="sdg-3-container">
                 <div id="sdg3"></div>
             </div>
         </div>
+        <div class="row">
+            <div id="data-table">
+                {#                <div class='header'>#}
+                {#                  <span>Date</span>#}
+                {#                  <span>Title</span>#}
+                {#                  <span>Close</span>#}
+                {#                  <span>Change</span>#}
+                {#                  <span>Volume</span>#}
+                {#              </div>#}
+            </div>
+        </div>
+    </div>
+    <div class="ui tab" data-tab="team-europe">
+        <div class="ui grid">
+            <div class="two column row">
+                <div class="column">
+                    <button class="ui button left floated" id="">
+                        Download Data
+                    </button>
+                </div>
+                <div class="column">
+                    <button class="ui button right floated" id="">
+                        Clear
+                    </button>
+                </div>
+            </div>
+            <div class="two column row">
+                <div class="column">
+                    <div class="ui statistic">
+                        <div class="value" id="green-count">
+                            <span class="filter-count"></span>
+                        </div>
+                        <div class="label">projects</div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui statistic right floated">
+                        <div class="value">
+                            <span class="filter-funding" id="green-funding"></span>
+                        </div>
+                        <div class="label">
+                            funding
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="green-map-container"
+                 class="sixteen wide mobile eight wide tablet four wide computer column">
+                <div class="ui middle aligned two column grid">
+                    <div class="column">
+                        <select name="admin-level" class="ui fluid dropdown">
+                            <option value="province">Province</option>
+                            <option value="district">District</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="green-map"></div>
+                <div id="" style="display: none"></div>
+                <div>
+                    <svg id=""></svg>
+                </div>
+            </div>
+            <div class="sixteen wide mobile eight wide tablet twelve wide computer column">
+                <div class="ui grid">
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="categories-chart-container">
+                        <h2 class="ui header">Categories</h2>
+                        <div id="green-chart-5"></div>
+                        <div id="green-chart-1"></div>
+                    </div>
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="">
+                        <h2 class="ui header"></h2>
+                        <div id="green-chart-6"></div>
+                        <div id="green-chart-2"></div>
+
+                    </div>
+                </div>
+                <div class="ui grid">
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="">
+                        <div class="ui one column grid">
+                            <div class="column">
+                                <h2 class="ui header">Complementary Areas</h2>
+                                <div id="green-chart-3"></div>
+                            </div>
+                            <div class="column">
+                                <h2 class="ui header">Green Catalyzers</h2>
+                                <div id="green-chart-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
+                         id="green-partner-container">
+                        <h2 class="ui header">Partner</h2>
+                        <div id="green-partner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui tab" data-tab="pipeline">
+        <div id="pipeline-partner-filter"></div>
+        <table class="ui celled structured table" id="pipeline-table">
+            {#            <thead class="header">#}
+            {#                <tr>#}
+            {#                    <th rowspan="2">Priority Area</th>#}
+            {#                    <th rowspan="2">Sector</th>#}
+            {#                    <th rowspan="2">Total Indicative Allocation (%)</th>#}
+            {#                    <th colspan="5">Phase 1 (EJPS 2021-2025)</th>#}
+            {#                    <th colspan="2">Phase 2 (2026-2027)</th>#}
+            {#                </tr>#}
+            {#                <tr>#}
+            {#                    <th>2021</th>#}
+            {#                    <th>2022</th>#}
+            {#                    <th>2023</th>#}
+            {#                    <th>2024</th>#}
+            {#                    <th>2025</th>#}
+            {#                    <th>2026</th>#}
+            {#                    <th>2027</th>#}
+            {#                </tr>#}
+            {#            </thead>#}
+        </table>
+        <table class="ui celled structured table">
+            <thead>
+            <tr>
+                <th rowspan="2">Priority Area</th>
+                <th rowspan="2">Sector</th>
+                <th rowspan="2">Total Indicative Allocation (%)</th>
+                <th colspan="5">Phase 1 (EJPS 2021-2025)</th>
+                <th colspan="2">Phase 2 (2026-2027)</th>
+            </tr>
+            <tr>
+                <th>2021</th>
+                <th>2022</th>
+                <th>2023</th>
+                <th>2024</th>
+                <th>2025</th>
+                <th>2026</th>
+                <th>2027</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Alpha Team</td>
+                <td>Project 1</td>
+                <td class="right aligned">2</td>
+                <td class="center aligned">
+                    <i class="large green checkmark icon"></i>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="3">Beta Team</td>
+                <td>Project 1</td>
+                <td class="right aligned">52</td>
+                <td class="center aligned">
+                    <i class="large green checkmark icon"></i>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Project 2</td>
+                <td class="right aligned">12</td>
+                <td></td>
+                <td class="center aligned">
+                    <i class="large green checkmark icon"></i>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Project 3</td>
+                <td class="right aligned">21</td>
+                <td class="center aligned">
+                    <i class="large green checkmark icon"></i>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
 
     </div>
-    <div class="ui bottom attached tab segment" data-tab="projects">
-
-    </div>
-    <div class="ui bottom attached tab segment active" data-tab="team-europe"></div>
-    <div class="ui bottom attached tab segment active" data-tab="pipeline"></div>
 
 
 </div>
@@ -267,6 +470,8 @@
 <div class="ui active inverted dimmer" id="loader">
     <div class="ui text loader">Loading</div>
 </div>
+
+
 </body>
 
 
@@ -274,8 +479,13 @@
     $('.menu .dropdown').dropdown({
         action: 'nothing'
     });
-    $('#geolevel').dropdown();
-    $('.menu .item').tab();
+    $('.ui.dropdown').dropdown();
+    $('.ui.sticky').sticky();
+    $('#filter')
+        .popup({
+            'hoverable': true
+        })
+    ;
 </script>
 
 <script src="{% static 'js/charts.js' %}"></script>
@@ -288,16 +498,13 @@
         .defer(d3.json, "/districts/")
         .defer(d3.json, "/provinces/")
         .defer(d3.json, '{% static "data/laos-districts.geojson" %}')
+        .defer(d3.json, "/pipelines/")
         .await(loadData);
-
-    function ResetAll() {
-        dc.filterAll();
-        dc.redrawAll();
-    }
 
     $('#reset').on('click', function (e) {
         ResetAll();
     });
+
 
 </script>
 

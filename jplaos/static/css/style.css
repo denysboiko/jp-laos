@@ -4,19 +4,15 @@
 
 #legend {
     position: relative;
-    top: -200px;
-    left: 50px;
+    margin-top: -200px;
+    left: 0;
     width: 300px;
     z-index: 10000;
     height: 200px;
 }
 
-.tabular .item {
+.menu .item {
     cursor: pointer;
-}
-
-.tab.segment {
-    opacity: 0
 }
 
 #count {
@@ -64,4 +60,8 @@
 .ui.footer.segment {
     margin: 4em 0 0;
     padding: 2em 0;
+}
+
+.column {
+    /*min-height: 150px*/
 }
