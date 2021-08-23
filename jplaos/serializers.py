@@ -19,6 +19,7 @@ class PipelineFundingSerializer(serializers.ModelSerializer):
             'planed_amount_2025',
             'planed_amount_2026',
             'planed_amount_2027',
+            'total_funding',
         )
 
 
@@ -77,6 +78,14 @@ class OutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = NSEDPOutput
         fields = ('output', 'outcome')
+
+
+class SectorByPriorityAreaSerializer(serializers.ModelSerializer):
+    priority_area = serializers.StringRelatedField()
+
+    class Meta:
+        model = Sector
+        fields = ('sector_name', 'priority_area')
 
 
 class SectorSerializer(serializers.ModelSerializer):

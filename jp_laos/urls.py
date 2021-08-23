@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from jplaos.views import home, ProvinceViewSet, DistrictViewSet, ProjectViewSet, import_sheet, GreenCategories, \
-    PipelineView
+    PipelineView, SectorView
 
 router = routers.DefaultRouter()
 router.register(r'provinces', ProvinceViewSet)
@@ -11,6 +11,7 @@ router.register(r'districts', DistrictViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'green-categories', GreenCategories)
 router.register(r'pipelines', PipelineView)
+router.register(r'sectors', SectorView)
 
 urlpatterns = [
     path('', home),

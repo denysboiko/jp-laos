@@ -3,10 +3,10 @@ import django_excel as excel
 # import django_filters
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
 from rest_framework import viewsets
-from django.db.models import Q
 
 from .serializers import *
 
@@ -30,6 +30,11 @@ class PipelineView(viewsets.ModelViewSet):
 class GreenCategories(viewsets.ModelViewSet):
     queryset = GreenSubCategory.objects.all()
     serializer_class = GreenCatSerializer
+
+
+class SectorView(viewsets.ModelViewSet):
+    queryset = Sector.objects.all()
+    serializer_class = SectorByPriorityAreaSerializer
 
 
 class ProvinceViewSet(viewsets.ModelViewSet):

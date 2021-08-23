@@ -341,3 +341,13 @@ class PipelinePlannedAmount(models.Model):
     planed_amount_2027 = models.FloatField()
     pipeline = models.ForeignKey(Pipeline, blank=True, null=True, related_name='planned_amount',
                                  on_delete=models.CASCADE)
+
+    @property
+    def total_funding(self):
+        return self.planed_amount_2021 \
+               + self.planed_amount_2022 \
+               + self.planed_amount_2023 \
+               + self.planed_amount_2024 \
+               + self.planed_amount_2025 \
+               + self.planed_amount_2026 \
+               + self.planed_amount_2027
