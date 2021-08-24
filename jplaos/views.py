@@ -32,6 +32,11 @@ class GreenCategories(viewsets.ModelViewSet):
     serializer_class = GreenCatSerializer
 
 
+class FundingView(viewsets.ModelViewSet):
+    queryset = PartnerFunding.objects.all()
+    serializer_class = PartnerSerializer2
+
+
 class SectorView(viewsets.ModelViewSet):
     queryset = Sector.objects.all()
     serializer_class = SectorByPriorityAreaSerializer

@@ -21,7 +21,7 @@ body {
     margin-top: -200px;
     left: 0;
     width: 240px;
-    z-index: 10000;
+    z-index: 900;
     height: 200px;
 }
 

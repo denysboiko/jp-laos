@@ -58,6 +58,8 @@ const totalFunding = dc.numberDisplay("#funding-total")
     .chartGroup("projects");
 const totalCount = dc.dataCount("#count")
     .chartGroup("projects");
+const projectsDataGrid = dc.dataTable("#projects-data-grid")
+    .chartGroup("projects");
 
 const greenMap = dc.geoChoroplethChart("#green-map")
     .chartGroup("green");
@@ -99,7 +101,8 @@ const projectCharts = [
     // dataTable,
     ipCategory,
     totalCount,
-    totalFunding
+    totalFunding,
+    projectsDataGrid
 ];
 
 function renderCharts(charts) {
@@ -383,8 +386,9 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
 
     greenChart6
         .useViewBoxResizing(true)
+        // .width(150)
         .height(350)
-        .margins({top: 10, right: 0, bottom: 60, left: 20})
+        .margins({top: 10, right: 0, bottom: 10, left: 20})
         .dimension(green_dim6)
         .group(filteredGroup(green_dim6.group()))
         .ordering(function (d) {
@@ -441,6 +445,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
             onChecked: () => {
 
                 greenMap.group(green_province.group().reduceSum(dc.pluck("total_funding")));
+                updateLegend(returnScale(green_province.group().reduceSum(dc.pluck("total_funding")), GREEN_COLORS), greenMapLegend, d3.format(",.0f"));
                 // greenPartners.render();
                 // greenCount.render();
                 // greenFunding.render();
@@ -453,11 +458,12 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                 dc.renderAll("green");
             },
             onUnchecked: () => {
+                greenMap.group(green_province.group());
+                updateLegend(returnScale(green_province.group(), GREEN_COLORS), greenMapLegend, d3.format(",.0f"));
                 dc.renderAll("green");
             }
         });
 }
-
 
 function renderProjectsDashboard(geo_data, data, districts_list, provinces_list, districts) {
     let districtsNames = {};
@@ -514,6 +520,12 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                 console.log(partners);
                 console.log(d);
             }
+            console.log(d.total_funding);
+
+            console.log(d.partners.map(p => p.planed_amount).filter(p => partners.includes(p['partner'])).reduce((a, b) => a + b, 0));
+            console.log(partner.group().reduceSum(d => d.partners.map(p => p.planed_amount).filter(p => p['partner'] === d.key).reduce((a, b) => a + b, 0)).top(100))
+
+
             return 0;
             // return d.partners
             //     .filter(p => partners.includes(p['partner']))
@@ -729,7 +741,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .ticks(5)
         .tickFormat(d3.format('d'));
 
-    const partnersContainer = document.getElementById("partners-chart-container");
+
     partnersChart
         .useViewBoxResizing(true)
         .height(380)
@@ -896,6 +908,52 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
     //     .dimension(district)
     //     .group(() => "Projects")
     //     .columns(['project_title', 'count']);
+
+
+    var tpl = _.template("<tr>\n" +
+        "                <td>Environment fund</td>\n" +
+        "                <td>Ongoing</td>\n" +
+        "                <td>Environment and Natural resources</td>\n" +
+        "                <td>France</td>\n" +
+        "                <td>65,000,000</td>\n" +
+        "            </tr>");
+
+    projectsDataGrid
+        .dimension(partner)
+        .section(d => d.id)
+        .showSections(false)
+        .columns([
+            d => d.project_title,
+            d => d.status,
+            d => d.sector.sector_name,
+            d => d.partners.map(p => p.partner).join('; '),
+            d => d.total_funding
+
+        ]);
+
+    // .dimension(partner)
+    // .section(function (d) {
+    //     return d.id;
+    // })
+    // .size(1000)
+    // .html(function (d) {
+    //     return '<div>' + d.project_title + '</div>'
+    //         + '<div>' + d.status + '</div>'
+    //         + '<div>' + d.sector + '</div>'
+    //         + '<div>' + d.partners + '</div>'
+    //         + '<div>' + d.total_funding + '</div>';
+    // })
+    // .htmlSection(d => "")
+    // // .sortBy(function (d) {
+    // //     return d.last_name;
+    // // })
+    // .order(d3.ascending)
+    // .on('renderlet', function (grid) {
+    //     // $("img.lazy-load").lazyload({
+    //     //     effect: "fadeIn"
+    //     // })
+    //     //     .removeClass("lazy-load");
+    // });
 
     renderCharts(projectCharts);
 
@@ -1122,7 +1180,8 @@ function renderPipelines(data, sectors) {
                     planed_amount_2027: 0,
                     total_amount: 0
                 }
-            });
+            })
+        .order(p => priority_areas[p.key]);
 
     function reversible_group(group) {
         return {
@@ -1142,7 +1201,6 @@ function renderPipelines(data, sectors) {
             chart.selectAll(".dc-cbox-group")
                 .classed("grouped", true)
                 .classed("fields", true)
-
             chart.selectAll(".dc-cbox-item")
                 .classed("ui", true)
                 .classed("checkbox", true);
@@ -1152,7 +1210,7 @@ function renderPipelines(data, sectors) {
 
     pipelineTable
         .dimension(reversible_group(sector_group))
-        .section(d => d['sector'])
+        .section(d => priority_areas[d['sector']])
         .showSections(false)
         .columns([
             d => priority_areas[d.key],
@@ -1166,13 +1224,30 @@ function renderPipelines(data, sectors) {
             d => d.value.planed_amount_2026,
             d => d.value.planed_amount_2027
 
-        ]);
+        ])
+        .on('renderlet', (chart) => {
+            console.log(sector_group.top(Infinity));
+            const pa_count = sector_group.top(Infinity)
+                .map(d => d.key)
+                .reduce((total, sector) => {
+
+                    total[priority_areas[sector]] = total[priority_areas[sector]] || 0;
+                    ++total[priority_areas[sector]];
+                    return total;
+                }, {});
+            console.log(pa_count)
+        })
+        .sortBy(d => priority_areas[d['sector']]);
+
 
     pipelineFilter.render();
     pipelineTable.render();
 }
 
 function loadData(geodata, data, districts_list, provinces_list, districts, pipelines, sectors) {
+
+    dc.config.defaultColors(d3.schemeBlues[10]);
+
 
     $('#loader').toggleClass('active');
 

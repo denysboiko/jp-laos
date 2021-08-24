@@ -19,7 +19,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter2/1.5.4/crossfilter.min.js"
             integrity="sha512-YTblpiY3CE9zQBW//UMBfvDF2rz6bS7vhhT5zwzqQ8P7Z0ikBGG8hfcRwmmg3IuLl2Rwk95NJUEs1HCQD4EDKQ=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js"
+            integrity="sha512-ZuOjyqq409+q6uc49UiBF3fTeyRyP8Qs0Jf/7FxH5LfhqBMzrR5cwbpDA4BgzSo884w6q/+oNdIeHenOqhISGw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"
             integrity="sha512-FHsFVKQ/T1KWJDGSbrUhTJyS1ph3eRrxI228ND0EGaEp6v4a/vGwPWd3Dtd/+9cI7ccofZvl/wulICEurHN1pg=="
@@ -92,6 +94,9 @@
                 <div class="column">
                     <button class="ui button left floated" id="download">
                         Download Data
+                    </button>
+                    <button class="ui button left floated" id="preview">
+                        Preview Data
                     </button>
                 </div>
                 <div class="column">
@@ -244,6 +249,32 @@
                 {#                  <span>Change</span>#}
                 {#                  <span>Volume</span>#}
                 {#              </div>#}
+            </div>
+        </div>
+
+        <div class="ui large modal" id="projects-table">
+            <div class="header">Header</div>
+            <div class="scrolling content">
+                <table class="ui table" id="projects-data-grid">
+                    <thead>
+                    <tr>
+                        <th>Project Title</th>
+                        <th>Status</th>
+                        <th>Sector</th>
+                        <th>Partners</th>
+                        <th>Total Funding</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Environment fund</td>
+                        <td>Ongoing</td>
+                        <td>Environment and Natural resources</td>
+                        <td>France</td>
+                        <td>65,000,000</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -432,31 +463,32 @@
                     </div>
                 </div>
             </div>
+            <div class="twelve wide computer sixteen wide mobile column">
+                <div id="pipeline-total"></div>
+                <table class="ui celled structured table" id="pipeline-table">
+                    <thead class="header">
+                    <tr>
+                        <th rowspan="2">Priority Area</th>
+                        <th rowspan="2">Sector</th>
+                        <th rowspan="2">Total Indicative Allocation (%)</th>
+                        <th colspan="5">Phase 1 (EJPS 2021-2025)</th>
+                        <th colspan="2">Phase 2 (2026-2027)</th>
+                    </tr>
+                    <tr>
+                        <th>2021</th>
+                        <th>2022</th>
+                        <th>2023</th>
+                        <th>2024</th>
+                        <th>2025</th>
+                        <th>2026</th>
+                        <th>2027</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
 
-        </div>
-        <div class="twelve wide computer sixteen wide mobile column">
-            <div id="pipeline-total"></div>
-            <table class="ui celled structured table" id="pipeline-table">
-                <thead class="header">
-                <tr>
-                    <th rowspan="2">Priority Area</th>
-                    <th rowspan="2">Sector</th>
-                    <th rowspan="2">Total Indicative Allocation (%)</th>
-                    <th colspan="5">Phase 1 (EJPS 2021-2025)</th>
-                    <th colspan="2">Phase 2 (2026-2027)</th>
-                </tr>
-                <tr>
-                    <th>2021</th>
-                    <th>2022</th>
-                    <th>2023</th>
-                    <th>2024</th>
-                    <th>2025</th>
-                    <th>2026</th>
-                    <th>2027</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
+
     </div>
 
 </div>
@@ -510,6 +542,11 @@
         .popup({
             'hoverable': true
         });
+    $('.ui.modal').modal();
+    $('#preview').on("click", () => {
+        console.log("clicked")
+        $('#projects-table').modal("show")
+    })
 </script>
 
 <script src="{% static 'js/charts.js' %}"></script>
@@ -518,7 +555,7 @@
 
     const files = [
         '{% static "data/laos.geojson" %}',
-        "/projects?status=ongoing",
+        "/funding",
         "/districts/",
         "/provinces/",
         '{% static "data/laos-districts.geojson" %}',
