@@ -98,7 +98,7 @@
                     <button class="ui button right floated" id="reset">
                         Clear
                     </button>
-                    <button class="ui right floated labeled icon button" id="filter">
+                    <button class="ui right floated labeled icon button filter" id="filter">
                         <i class="filter icon"></i>
                         <span class="text ">Filters</span>
                     </button>
@@ -259,6 +259,52 @@
                     <button class="ui button right floated" id="green-reset">
                         Clear
                     </button>
+                    <button class="ui right floated labeled icon button filter" id="green-filter">
+                        <i class="filter icon"></i>
+                        <span class="text ">Filters</span>
+                    </button>
+                    <div class="ui flowing popup top left transition hidden card">
+                        <div class="content">
+                            <div class="header">Filters</div>
+                        </div>
+                        <div class="content">
+                            <div class="ui form">
+                                {#                                <div class="grouped fields">#}
+                                {#                                    <label>Status</label>#}
+                                {#                                    <div class="field">#}
+                                {#                                        <div class="ui checkbox">#}
+                                {#                                            <input checked="checked" name="ongoing" type="checkbox">#}
+                                {#                                            <label>Ongoing</label>#}
+                                {#                                        </div>#}
+                                {#                                    </div>#}
+                                {#                                    <div class="field">#}
+                                {#                                        <div class="ui checkbox">#}
+                                {#                                            <input type="checkbox" name="planned">#}
+                                {#                                            <label>Planned</label>#}
+                                {#                                        </div>#}
+                                {#                                    </div>#}
+                                {#                                    <div class="field">#}
+                                {#                                        <div class="ui checkbox">#}
+                                {#                                            <input type="checkbox" name="closed">#}
+                                {#                                            <label>Closed</label>#}
+                                {#                                        </div>#}
+                                {#                                    </div>#}
+                                {#                                </div>#}
+                                <div class="grouped fields">
+                                    <label>Measure</label>
+                                    <div class="field">
+                                        <div id="green-measure-toggle" class="ui toggle checkbox">
+                                            <input type="checkbox" name="public">
+                                            <label>Funding</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="extra content">
+                            <button class="ui button disabled">Reload Data</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="two column row">
@@ -348,33 +394,76 @@
         </div>
     </div>
     <div class="ui tab" data-tab="pipeline">
-        <div id="pipeline-partner-filter"></div>
-        <div id="pipeline-total"></div>
-        <table class="ui celled structured table" id="pipeline-table">
-            <thead class="header">
-            <tr>
-                <th rowspan="2">Priority Area</th>
-                <th rowspan="2">Sector</th>
-                <th rowspan="2">Total Indicative Allocation (%)</th>
-                <th colspan="5">Phase 1 (EJPS 2021-2025)</th>
-                <th colspan="2">Phase 2 (2026-2027)</th>
-            </tr>
-            <tr>
-                <th>2021</th>
-                <th>2022</th>
-                <th>2023</th>
-                <th>2024</th>
-                <th>2025</th>
-                <th>2026</th>
-                <th>2027</th>
-            </tr>
-            </thead>
-        </table>
+        <div class="ui stackable grid">
+            <div class="four wide computer sixteen wide mobile column">
+                <div class="ui form">
+                    <div class="grouped fields">
+                        <label>Select Partners</label>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="example2" checked="checked">
+                                <label>Germany</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="example2">
+                                <label>France</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="example2">
+                                <label>Switzerland</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="example2">
+                                <label>Ireland</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui form">
+                    <div class="grouped fields">
+                        <label>Select Partners</label>
+                        <div id="pipeline-partner-filter"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="twelve wide computer sixteen wide mobile column">
+            <div id="pipeline-total"></div>
+            <table class="ui celled structured table" id="pipeline-table">
+                <thead class="header">
+                <tr>
+                    <th rowspan="2">Priority Area</th>
+                    <th rowspan="2">Sector</th>
+                    <th rowspan="2">Total Indicative Allocation (%)</th>
+                    <th colspan="5">Phase 1 (EJPS 2021-2025)</th>
+                    <th colspan="2">Phase 2 (2026-2027)</th>
+                </tr>
+                <tr>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                    <th>2025</th>
+                    <th>2026</th>
+                    <th>2027</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
     </div>
+
+</div>
 
 
 </div>
-<div id="footer" class="ui vertical footer segment" style="visibility: hidden">
+<footer id="footer" class="ui vertical footer segment" style="visibility: hidden">
     <div class="ui center aligned container">
         <div class="ui stackable divided grid">
             <div class="sixteen wide mobile nine wide computer column">
@@ -398,7 +487,7 @@
             </div>
         </div>
     </div>
-</div>
+</footer>
 <div class="ui inverted active dimmer" id="loader">
     <div class="ui text loader">Loading</div>
 </div>
@@ -413,7 +502,11 @@
     });
     $('.ui.dropdown').dropdown();
     $('.ui.sticky').sticky();
-    $('#filter')
+    {#$('#filter')#}
+    {#    .popup({#}
+    {#        'hoverable': true#}
+    {#    });#}
+    $('button.filter')
         .popup({
             'hoverable': true
         });

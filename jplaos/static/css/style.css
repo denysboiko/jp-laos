@@ -1,12 +1,26 @@
 #dashboard {
     margin: 1em;
+    flex: 1;
+}
+
+
+.dc-cbox-item {
+    display: block;
+    margin: .5em 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
 #legend, #green-map-legend {
     position: relative;
     margin-top: -200px;
     left: 0;
-    width: 300px;
+    width: 240px;
     z-index: 10000;
     height: 200px;
 }
