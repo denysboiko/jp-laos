@@ -4,10 +4,20 @@
 }
 
 
+.dc-cbox-group {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .dc-cbox-item {
-    display: block;
+    display: block !important;
     margin: .5em 0;
     padding: 0;
+}
+
+.dc-cbox-group input[type = reset] {
+    display: none;
 }
 
 body {

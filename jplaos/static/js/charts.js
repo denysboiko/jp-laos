@@ -240,6 +240,11 @@ function updateLegend(scale, svg, format) {
 
 function renderGreenDashboard(geo_data, data, districts_list, provinces_list, districts, projects, green_data) {
 
+    let districtsNames = {}
+    districts_list.forEach(function (e, i, arr) {
+        districtsNames[e['dcode']] = e.name;
+    });
+
     let current_measure = "count"
     const projects_by_id = {}
     projects.filter(project => project['has_green_category'] === true)
@@ -627,6 +632,12 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                 dc.renderAll("green");
             }
         });
+
+    $('#green-download').on('click', function (e) {
+        downloadData(green_partner, districtsNames, projects_by_id);
+    });
+
+
 }
 
 function renderProjectsDashboard(geo_data, data, districts_list, provinces_list, districts, projects) {
@@ -964,8 +975,6 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .xUnits(dc.units.ordinal)
         .elasticY(true)
         .yAxis();
-    // .yAxisLabel('Number of Projects')
-    // .tickFormat(d3.format("d"));
 
 
     totalFunding
@@ -1139,7 +1148,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
 
     $('#download').on('click', function (e) {
-        downloadData(partner, districtsNames);
+        downloadData(partner, districtsNames, projects_by_id);
     });
 
     $('#reset').on('click', function (e) {
@@ -1150,8 +1159,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
 }
 
-function downloadData(dimension, districtsNames) {
-
+function downloadData(dimension, districtsNames, projects) {
     let header = [
         'id',
         'project_code',
@@ -1163,25 +1171,23 @@ function downloadData(dimension, districtsNames) {
         'provinces',
         'districts'
     ];
-
-    let data = dimension.top(Infinity)
-        .map(function (d) {
-            return [
-                d.project['id'],
-                d.project['project_code'],
-                d.project['project_title'],
-                d.project['status'],
-                retrieveSectorField(d),
-                d.project['partner'],
-                d.project['total_funding'],
-                d.project['locations'].map(function (d) {
-                    return d.province
-                }).join('; '),
-                d.project['districts'].map(function (d) {
-                    return districtsNames[d]
-                }).join('; ')
-
-            ];
+    let ids = [...new Set(dimension.top(Infinity).map(d => d.project))];
+    let data = ids.map(function (id) {
+        return [
+            id,
+            projects[id]['project_code'],
+            projects[id]['project_title'],
+            projects[id]['status'],
+            projects[id]['sector']['sector_name'],
+            projects[id]['partner'],
+            projects[id]['total_funding'],
+            projects[id]['locations'].map(function (d) {
+                return d.province
+            }).join('; '),
+            projects[id]['districts'].map(function (d) {
+                return districtsNames[d]
+            }).join('; ')
+        ];
         });
 
     data.unshift(header);

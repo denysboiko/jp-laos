@@ -58,7 +58,7 @@
 
 </head>
 <body>
-<div class="ui stackable menu">
+<div class="ui stackable main menu">
     <div class="item">
         <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
     </div>
@@ -91,7 +91,7 @@
     </div>
 
     <div class="ui tab active" data-tab="projects" id="projects-tab">
-        <div class="ui grid">
+        <div class="ui stackable grid">
             <div class="two column row">
                 <div class="column">
                     <button class="ui button left floated" id="download">
@@ -193,7 +193,7 @@
                 </div>
             </div>
             <div class="sixteen wide mobile eight wide tablet twelve wide computer column">
-                <div class="ui grid">
+                <div class="ui stackable grid">
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
                          id="priority-chart-container">
                         <h2 class="ui header">Priority Areas</h2>
@@ -255,7 +255,7 @@
         </div>
 
         <div class="ui large modal" id="projects-table">
-            <div class="header">Header</div>
+            <div class="header">Data Preview</div>
             <div class="scrolling content">
                 <table class="ui table" id="projects-data-grid">
                     <thead>
@@ -284,7 +284,7 @@
         <div class="ui grid">
             <div class="two column row">
                 <div class="column">
-                    <button class="ui button left floated" id="">
+                    <button class="ui button left floated" id="green-download">
                         Download Data
                     </button>
                 </div>
@@ -429,35 +429,35 @@
     <div class="ui tab" data-tab="pipeline">
         <div class="ui stackable grid">
             <div class="four wide computer sixteen wide mobile column">
-                <div class="ui form">
-                    <div class="grouped fields">
-                        <label>Select Partners</label>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="example2" checked="checked">
-                                <label>Germany</label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="example2">
-                                <label>France</label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="example2">
-                                <label>Switzerland</label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="example2">
-                                <label>Ireland</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {#                <div class="ui form">#}
+                {#                    <div class="grouped fields">#}
+                {#                        <label>Select Partners</label>#}
+                {#                        <div class="field">#}
+                {#                            <div class="ui checkbox">#}
+                {#                                <input type="checkbox" name="example2" checked="checked">#}
+                {#                                <label>Germany</label>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                        <div class="field">#}
+                {#                            <div class="ui checkbox">#}
+                {#                                <input type="checkbox" name="example2">#}
+                {#                                <label>France</label>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                        <div class="field">#}
+                {#                            <div class="ui checkbox">#}
+                {#                                <input type="checkbox" name="example2">#}
+                {#                                <label>Switzerland</label>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                        <div class="field">#}
+                {#                            <div class="ui checkbox">#}
+                {#                                <input type="checkbox" name="example2">#}
+                {#                                <label>Ireland</label>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                </div>#}
                 <div class="ui form">
                     <div class="grouped fields">
                         <label>Select Partners</label>
