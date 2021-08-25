@@ -58,75 +58,76 @@
 {% endfor %}
 {% endblock %}
 
-{% block after_field_sets %}{% endblock %}
+    {% block after_field_sets %}{% endblock %}
 
-{% block inline_field_sets %}
-{% for inline_admin_formset in inline_admin_formsets %}
-    {% include inline_admin_formset.opts.template %}
-{% endfor %}
-{% endblock %}
+    {% block inline_field_sets %}
+        {% for inline_admin_formset in inline_admin_formsets %}
+            {% include inline_admin_formset.opts.template %}
+        {% endfor %}
+    {% endblock %}
 
-{% block after_related_objects %}{% endblock %}
-<div id="slider"></div>
-<div id="slider-value"></div>
-{% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+    {% block after_related_objects %}{% endblock %}
+    {#<div id="slider"></div>#}
+    {#<div id="slider-value"></div>#}
+    {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
 
-{% block admin_change_form_document_ready %}
-    <script id="django-admin-form-add-constants"
-            src="{% static 'admin/js/change_form.js' %}"
-            {% if adminform and add %}
+    {% block admin_change_form_document_ready %}
+        <script id="django-admin-form-add-constants"
+                src="{% static 'admin/js/change_form.js' %}"
+                {% if adminform and add %}
                 data-model-name="{{ opts.model_name }}"
-            {% endif %}
-            async>
-    </script>
+                {% endif %}
+                async>
+        </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js" integrity="sha512-jWNpWAWx86B/GZV4Qsce63q5jxx/rpWnw812vh0RE+SBIo/mmepwOSQkY2eVQnMuE28pzUEO7ux0a5sJX91g8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.css" integrity="sha512-zK13DHt+RvOBWVI7UsG9euzg5sl1QUhJKZVu20rrvPLaTito+K9elJBtEPWi3YJ+O6o5tYp6cdOc4lN9ePm9Lw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.min.js" integrity="sha512-pF+DNRwavWMukUv/LyzDyDMn8U2uvqYQdJN0Zvilr6DDo/56xPDZdDoyPDYZRSL4aOKO/FGKXTpzDyQJ8je8Qw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.default.css"
-          integrity="sha512-J0JTRxsBEJ99DP4GamwciDi8VjALSrZneBYrv98BhqHPvlQP6gLbmmuddlYXHDB8hyLtefOIJFlpZBhksCtK8g=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-{#    <script>#}
-{#        $(function () {#}
-{#            $(".related-widget-wrapper > select[multiple]").selectize({#}
-{#                plugins: ["remove_button"],#}
-{#                delimiter: ",",#}
-{#                persist: false,#}
-{#                create: function (input) {#}
-{#                    return {#}
-{#                        value: input,#}
-{#                        text: input,#}
-{#                    };#}
-{#                },#}
-{#            });#}
-{#            $(".related-widget-wrapper > select:not([multiple])").selectize();#}
-{#        });#}
-{#    </script>#}
-    <script>
-        var rangeSlider = document.getElementById('slider');
+        {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js" integrity="sha512-jWNpWAWx86B/GZV4Qsce63q5jxx/rpWnw812vh0RE+SBIo/mmepwOSQkY2eVQnMuE28pzUEO7ux0a5sJX91g8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
+        {#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.css" integrity="sha512-zK13DHt+RvOBWVI7UsG9euzg5sl1QUhJKZVu20rrvPLaTito+K9elJBtEPWi3YJ+O6o5tYp6cdOc4lN9ePm9Lw==" crossorigin="anonymous" referrerpolicy="no-referrer" />#}
+        {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.min.js" integrity="sha512-pF+DNRwavWMukUv/LyzDyDMn8U2uvqYQdJN0Zvilr6DDo/56xPDZdDoyPDYZRSL4aOKO/FGKXTpzDyQJ8je8Qw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>#}
+        {#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.default.css"#}
+        {#          integrity="sha512-J0JTRxsBEJ99DP4GamwciDi8VjALSrZneBYrv98BhqHPvlQP6gLbmmuddlYXHDB8hyLtefOIJFlpZBhksCtK8g=="#}
+        {#          crossorigin="anonymous" referrerpolicy="no-referrer"/>#}
+        {#    <script>#}
+        {#        $(function () {#}
+        {#            $(".related-widget-wrapper > select[multiple]").selectize({#}
+        {#                plugins: ["remove_button"],#}
+        {#                delimiter: ",",#}
+        {#                persist: false,#}
+        {#                create: function (input) {#}
+        {#                    return {#}
+        {#                        value: input,#}
+        {#                        text: input,#}
+        {#                    };#}
+        {#                },#}
+        {#            });#}
+        {#            $(".related-widget-wrapper > select:not([multiple])").selectize();#}
+        {#        });#}
+        {#    </script>#}
+        {#    <script>#}
+        {#        var rangeSlider = document.getElementById('slider');#}
+        {##}
+        {#        noUiSlider.create(rangeSlider, {#}
+        {#            start: [100],#}
+        {#            connect: true,#}
+        {#            tooltips: true,#}
+        {#            step: 1,#}
+        {#            range: {#}
+        {#                'min': [0],#}
+        {#                'max': [100]#}
+        {#            }#}
+        {#        });#}
+        {##}
+        {#        var rangeSliderValueElement = document.getElementById('slider-value');#}
+        {##}
+        {#        rangeSlider.noUiSlider.on('update', function (values, handle) {#}
+        {#            rangeSliderValueElement.innerHTML = values[handle];#}
+        {#        });#}
+        {#    </script>#}
+    {% endblock %}
 
-        noUiSlider.create(rangeSlider, {
-            start: [100],
-            connect: true,
-            tooltips: true,
-            step: 1,
-            range: {
-                'min': [0],
-                'max': [100]
-            }
-        });
-
-        var rangeSliderValueElement = document.getElementById('slider-value');
-
-        rangeSlider.noUiSlider.on('update', function (values, handle) {
-            rangeSliderValueElement.innerHTML = values[handle];
-        });
-    </script>
-{% endblock %}
-
-{# JavaScript for prepopulated fields #}
-{% prepopulated_fields_js %}
+    {# JavaScript for prepopulated fields #}
+    {% prepopulated_fields_js %}
 
 </div>
-</form></div>
+</form>
+</div>
 {% endblock %}

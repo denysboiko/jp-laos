@@ -33,7 +33,8 @@ class GreenCategories(viewsets.ModelViewSet):
 
 
 class FundingView(viewsets.ModelViewSet):
-    queryset = PartnerFunding.objects.all()
+    queryset = PartnerFunding.objects.filter(Q(project__start_date__lte=datetime.datetime.today().date(),
+                                               project__end_date__gt=datetime.datetime.today().date()))
     serializer_class = PartnerSerializer2
 
 

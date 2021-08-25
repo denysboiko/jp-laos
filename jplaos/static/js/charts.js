@@ -4,6 +4,8 @@ const f = d3.format(",.0f");
 
 // const PROJECTION = d3.geoMercator().center([106, 19]).scale(3600);
 
+const fundingAccessor = d => d['planed_amount'];
+
 function getProjection(selector) {
     let mapContainer = document.getElementById(selector);
     let width = mapContainer.clientWidth - 28;
@@ -56,7 +58,9 @@ const ipCategory = dc.rowChart("#ip-category")
     .chartGroup("projects");
 const totalFunding = dc.numberDisplay("#funding-total")
     .chartGroup("projects");
-const totalCount = dc.dataCount("#count")
+// const totalCount = dc.dataCount("#count")
+//     .chartGroup("projects");
+const totalCount = dc.numberDisplay("#count")
     .chartGroup("projects");
 const projectsDataGrid = dc.dataTable("#projects-data-grid")
     .chartGroup("projects");
@@ -115,8 +119,8 @@ const GREEN_COLORS = ["#edf8e9", "#c7e9c0", "#a1d99b", "#74c476",
     "#31a354", "#006d2c"];
 const colors = ['#ece7f2', '#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#034e7b'];
 
-const retrieveSectorField = record => record['sector']['sector_name']
-retrievePriorityArea = record => record['sector']['priority_area'];
+const retrieveSectorField = record => record.project['sector']['sector_name']
+retrievePriorityArea = record => record.project['sector']['priority_area'];
 
 function wrap(text, width) {
     text.each(function () {
@@ -177,28 +181,28 @@ function updateLegend(scale, svg, format) {
 
 function renderGreenDashboard(geo_data, data, districts_list, provinces_list, districts) {
 
-    const green_data = crossfilter(data.filter(d => d['has_green_category'] === true));
+    const green_data = crossfilter(data.filter(d => d.project['has_green_category'] === true));
 
-    const green_province = green_data.dimension(d => d['locations'].map(d => d.province), true);
+    const green_province = green_data.dimension(d => d.project['locations'].map(d => d.province), true);
 
     const green_dim1 = green_data.dimension(d => {
-        return d['funding_by_phakhao_lao'].map(d => d['category']);
+        return d.project['funding_by_phakhao_lao'].map(d => d['category']);
     }, true);
 
     const green_dim2 = green_data.dimension(d => {
-        return d['funding_by_forest_partnership'].map(d => d['category']);
+        return d.project['funding_by_forest_partnership'].map(d => d['category']);
     }, true);
 
     const green_dim3 = green_data.dimension(d => {
-        return d['complementary_area_categories'].map(d => d);
+        return d.project['complementary_area_categories'].map(d => d);
     }, true);
 
     const green_dim4 = green_data.dimension(d => {
-        return d['green_catalysers_categories'].map(d => d);
+        return d.project['green_catalyzers_categories'].map(d => d);
     }, true);
 
     const green_dim5 = green_data.dimension(d => {
-        if (d['funding_by_phakhao_lao'].length > 0) {
+        if (d.project['funding_by_phakhao_lao'].length > 0) {
             return 'Phakhao Lao'
         } else {
             return 'None'
@@ -217,7 +221,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
 
 
     const green_dim6 = green_data.dimension(d => {
-        if (d['funding_by_forest_partnership'].length > 0) {
+        if (d.project['funding_by_forest_partnership'].length > 0) {
             return 'Forest Partnership'
         } else {
             return 'None'
@@ -242,9 +246,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         })
         .projection(getProjection("green-map-container"));
 
-    const green_partner = green_data.dimension((d) => {
-        return d["partners"].map(d => d['partner']);
-    }, true);
+    const green_partner = green_data.dimension(d => d['partner']);
 
     greenPartners
         .useViewBoxResizing(true)
@@ -470,7 +472,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
 
     data.forEach(datum => {
-        datum.districts = [].concat.apply([], datum.locations.map(function (d) {
+        datum.project.districts = [].concat.apply([], datum.project.locations.map(function (d) {
             return d.districts;
         }));
     });
@@ -487,7 +489,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
     const cf = crossfilter(data);
 
-    let province = cf.dimension(d => d['locations'].map(d => d.province), true);
+    let province = cf.dimension(d => d.project['locations'].map(d => d.province), true);
 
     // Groups for Dimensions
     let count_by_province = province.group()
@@ -496,56 +498,30 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         });
 
     let funding_by_province = province.group()
-        .reduce(
-            (p, v) => {
-                p += getFundingByPartners(v)
-                return p;
-            },
-            (p, v) => {
-                p -= getFundingByPartners(v)
-                return p;
-            },
-            () => 0
-        );
-    // .reduceCount(d => d['total_funding']);
-    // .reduceSum(function (d) {
-    //     return Math.round(getFundingByPartners(d) / d.locations.length);
-    // });
-
-    function getFundingByPartners(d) {
-        let partners = partnersChart.filters();
-        if (partners.length > 0) {
-            console.log(partners);
-            if (d.id === 345) {
-                console.log(partners);
-                console.log(d);
-            }
-            console.log(d.total_funding);
-
-            console.log(d.partners.map(p => p.planed_amount).filter(p => partners.includes(p['partner'])).reduce((a, b) => a + b, 0));
-            console.log(partner.group().reduceSum(d => d.partners.map(p => p.planed_amount).filter(p => p['partner'] === d.key).reduce((a, b) => a + b, 0)).top(100))
-
-
-            return 0;
-            // return d.partners
-            //     .filter(p => partners.includes(p['partner']))
-            //     .map(p => p['planed_amount'])
-            //     .reduce((a, b) => a + b, 0);
-        } else {
-            return d['total_funding'];
-        }
-    }
+        // .reduce(
+        //     (p, v) => {
+        //         p += getFundingByPartners(v)
+        //         return p;
+        //     },
+        //     (p, v) => {
+        //         p -= getFundingByPartners(v)
+        //         return p;
+        //     },
+        //     () => 0
+        // );
+        // .reduceCount(d => d['total_funding']);
+        .reduceSum(function (d) {
+            return Math.round(d.planed_amount / d.project.locations.length);
+        });
 
     let district = cf.dimension(d => {
-        let districts = d['districts'].map(d => d);
+        let districts = d.project['districts'].map(d => d);
         return districts ? districts : 'No district';
     }, true);
 
     let sector = cf.dimension(retrieveSectorField);
 
-    let partner = cf.dimension((d) => {
-        return d["partners"].map(d => d['partner']);
-    }, true);
+    let partner = cf.dimension(d => d['partner']);
 
 
     let implementing_partner = cf.dimension(function (d) {
@@ -564,9 +540,22 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
             })
     }
 
-    const modality_dim = cf.dimension(d => d['funding_by_modality'].map(d => d['modality']), true);
+    const modality_dim = cf.dimension(
+        d => {
+            let key = {}
+            d.project['funding_by_modality'].forEach(modality => {
+                key[modality.modality] = modality.allocation / 100
+            })
 
-    const nsedc_dim = cf.dimension(d => d['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
+            return d.project['funding_by_modality'].map(d => {
+                return {
+                    'modality': d['modality'],
+                    'split': key
+                }
+            });
+        }, true);
+
+    const nsedc_dim = cf.dimension(d => d.project['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
 
     const list2 = [
         'Affordable and Clean Energy',
@@ -612,20 +601,20 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         '#E0292C'
     ]
 
-    const sdg_dim1 = cf.dimension(d => d['sector']['sdg']
+    const sdg_dim1 = cf.dimension(d => d.project['sector']['sdg']
         .map(d => d), true);
 
-    const cci_dim = cf.dimension(d => d['cross_cutting_issues'].map(d => d), true);
+    const cci_dim = cf.dimension(d => d.project['cross_cutting_issues'].map(d => d), true);
 
 
     let count_by_district = district.group()
         .reduceCount(function (d) {
-            return d["project_title"];
+            return d.project["project_title"];
         });
 
     let funding_by_district = district.group()
         .reduceSum(function (d) {
-            return Math.round(d["total_funding"] / d.districts.length);
+            return Math.round(d.project["total_funding"] / d.project.districts.length);
         });
 
     let count_by_sector = sector.group()
@@ -676,7 +665,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
     let funding_by_partner = partner.group()
         .reduceSum(function (d) {
-            return Math.round(d['total_funding']);
+            return Math.round(d['planed_amount']);
         });
 
 
@@ -721,7 +710,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
 
     const ip_category_dim = cf.dimension((d) => {
-        return [...new Set(d['implementing_partner'].map(d => d['category']).map(d => d))];
+        return [...new Set(d.project['implementing_partner'].map(d => d['category']).map(d => d))];
     }, true);
     ipCategory
         .useViewBoxResizing(true)
@@ -851,7 +840,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .legend(dc.legend().x(200).y(60).gap(5));
 
     modalityChart
-        .title(d => d.key + ': ' + d.value)
+        .title(d => d.key.modality + ': ' + d.value)
         .useViewBoxResizing(true)
         .height(200)
         .innerRadius(50)
@@ -860,7 +849,12 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .dimension(modality_dim)
         .group(modality_dim.group())
         .renderLabel(false)
-        .legend(dc.legend().x(200).y(60).gap(5));
+        .legend(dc.legend().x(200).y(60).gap(5))
+        .keyAccessor(d => d.key.modality)
+        .valueAccessor(d => {
+            console.log(d.key);
+            return d.value;
+        });
 
 
     sectorChart
@@ -891,43 +885,64 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
     // .yAxisLabel('Number of Projects')
     // .tickFormat(d3.format("d"));
 
-    totalCount
-        .crossfilter(cf)
-        .groupAll(cf.groupAll());
 
+    var totalGroup = cf.groupAll();
+    var reducer = reductio()
+        .exception(function (d) {
+            return d.project.id;
+        })
+        .exceptionCount(true);
+
+
+    reducer(totalGroup);
+
+
+    const distinctCount = cf.groupAll()
+        .reduce(
+            function (p, v) {
+                if (p.projects.indexOf(v.project.id) === -1) {
+                    p.projects.push(v.project.id);
+                    p.projectsCount += 1;
+                }
+                return p;
+            },
+            function (p, v) {
+                if (p.projects.indexOf(v.project.id) !== -1) {
+                    p.projects.splice(p.projects.indexOf(v.project.id), 1);
+                    p.projectsCount -= 1;
+                }
+                return p;
+            },
+            function () {
+                return {projects: [], projectsCount: 0}
+            });
+
+    // totalCount
+    //     .crossfilter(cf)
+    //     .groupAll(cf.groupAll());
 
     totalFunding
+        .group(cf.groupAll().reduceSum(fundingAccessor))
         .valueAccessor(function (d) {
             return Math.round(d);
-        })
-        .group(cf.groupAll().reduceSum(function (d) {
-            return d["total_funding"];
-        }));
+        });
 
-    // dataTable
-    //     .dimension(district)
-    //     .group(() => "Projects")
-    //     .columns(['project_title', 'count']);
-
-
-    var tpl = _.template("<tr>\n" +
-        "                <td>Environment fund</td>\n" +
-        "                <td>Ongoing</td>\n" +
-        "                <td>Environment and Natural resources</td>\n" +
-        "                <td>France</td>\n" +
-        "                <td>65,000,000</td>\n" +
-        "            </tr>");
+    totalCount
+        .group(distinctCount)
+        .valueAccessor(d => {
+            return d.projectsCount;
+        });
 
     projectsDataGrid
         .dimension(partner)
         .section(d => d.id)
         .showSections(false)
         .columns([
-            d => d.project_title,
-            d => d.status,
-            d => d.sector.sector_name,
-            d => d.partners.map(p => p.partner).join('; '),
-            d => d.total_funding
+            d => d.project.project_title,
+            d => d.project.status,
+            d => d.project.sector.sector_name,
+            d => d.project.partners.map(p => p.partner).join('; '),
+            d => d.project.total_funding
 
         ]);
 
@@ -1001,9 +1016,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         sectorChart.yAxis().tickFormat(d3.format(format));
     }
 
-    const funding = d => {
-        return d['total_funding'];
-    };
+
 
     $('#measure-toggle')
         .checkbox({
@@ -1014,13 +1027,13 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                 changeChoropleth(mapDistrictChart, funding_by_district, returnScale(funding_by_district, colors), 'f');
                 updateLegend(returnScale(geoLevel === 'province' ? funding_by_province : funding_by_district, colors), mapLegend, f);
                 partnersChart.group(funding_by_partner);
-                sectorChart.group(sector.group().reduceSum(funding));
-                nsedcChart.group(nsedc_dim.group().reduceSum(funding));
-                issuesChart.group(cci_dim.group().reduceSum(funding));
-                sdgChart1.group(sdg_dim1.group().reduceSum(funding));
-                priorityChart.group(priority_area_dim.group().reduceSum(funding));
-                modalityChart.group(modality_dim.group().reduceSum(funding));
-                ipCategory.group(ip_category_dim.group().reduceSum(funding));
+                sectorChart.group(sector.group().reduceSum(fundingAccessor));
+                nsedcChart.group(nsedc_dim.group().reduceSum(fundingAccessor));
+                issuesChart.group(cci_dim.group().reduceSum(fundingAccessor));
+                sdgChart1.group(sdg_dim1.group().reduceSum(fundingAccessor));
+                priorityChart.group(priority_area_dim.group().reduceSum(fundingAccessor));
+                modalityChart.group(modality_dim.group().reduceSum(fundingAccessor));
+                ipCategory.group(ip_category_dim.group().reduceSum(fundingAccessor));
                 changeFormat('.2s');
                 renderCharts(projectCharts);
             },
@@ -1096,17 +1109,17 @@ function downloadData(dimension, districtsNames) {
     let data = dimension.top(Infinity)
         .map(function (record) {
             return [
-                record['id'],
-                record['project_code'],
-                record['project_title'],
-                record['status'],
+                record.project['id'],
+                record.project['project_code'],
+                record.project['project_title'],
+                record.project['status'],
                 retrieveSectorField(record),
-                record['partner'],
-                record['total_funding'],
-                record['locations'].map(function (d) {
+                record.project['partner'],
+                record.project['total_funding'],
+                record.project['locations'].map(function (d) {
                     return d.province
                 }).join('; '),
-                record['districts'].map(function (d) {
+                record.project['districts'].map(function (d) {
                     return districtsNames[d]
                 }).join('; ')
 

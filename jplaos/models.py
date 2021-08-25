@@ -114,16 +114,6 @@ class Sector(models.Model):
         db_table = 'sectors'
 
 
-class Subsector(models.Model):
-    other_subsector_name = models.CharField(max_length=80)
-
-    def __str__(self):
-        return self.other_subsector_name
-
-    class Meta:
-        db_table = 'subsectors'
-
-
 class Responsible(models.Model):
     responsible_name = models.CharField(max_length=80)
 
@@ -188,6 +178,9 @@ class Modality(models.Model):
     def __str__(self):
         return self.modality
 
+    class Meta:
+        verbose_name_plural = "Modality"
+
 
 class PhakhaoLaoCategory(models.Model):
     green_category = models.CharField(max_length=120)
@@ -197,6 +190,7 @@ class PhakhaoLaoCategory(models.Model):
 
     class Meta:
         db_table = 'phakhao_lao_categories'
+        verbose_name_plural = "Phakhao Lao Categories"
 
 
 class ForestPartnershipCategory(models.Model):
@@ -207,6 +201,7 @@ class ForestPartnershipCategory(models.Model):
 
     class Meta:
         db_table = 'forest_partnership_categories'
+        verbose_name_plural = "Forest Partnership Categories"
 
 
 class ComplementaryAreaCategory(models.Model):
@@ -217,29 +212,31 @@ class ComplementaryAreaCategory(models.Model):
 
     class Meta:
         db_table = 'complementary_area_categories'
+        verbose_name_plural = "Complementary Areas"
 
 
-class GreenCatalysersCategory(models.Model):
+class GreenCatalyzersCategory(models.Model):
     green_category = models.CharField(max_length=120)
 
     def __str__(self):
         return self.green_category
 
     class Meta:
-        db_table = 'green_catalysers_categories'
+        db_table = 'green_catalyzers_categories'
+        verbose_name_plural = "Green Catalyzers"
 
 
 class Project(models.Model):
     project_code = models.CharField(max_length=40, blank=True, null=True)
     project_title = models.TextField(max_length=280)
     start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True, default='9999-12-31')
+    end_date = models.DateField(blank=True, null=True)
     implementing_partner = models.ManyToManyField(ImplementingPartner, blank=True)
     sector = models.ForeignKey(Sector, related_name='sector_id', on_delete=models.CASCADE)
     cross_cutting_issues = models.ManyToManyField(CrossCuttingIssue, blank=True)
     is_regional = models.BooleanField(default=False)
     complementary_area_categories = models.ManyToManyField(ComplementaryAreaCategory, blank=True)
-    green_catalysers_categories = models.ManyToManyField(GreenCatalysersCategory, blank=True)
+    green_catalyzers_categories = models.ManyToManyField(GreenCatalyzersCategory, blank=True)
 
     def __str__(self):
         return self.project_title
@@ -247,7 +244,7 @@ class Project(models.Model):
     @property
     def has_green_category(self):
         return (self.funding_by_phakhao_lao.count() + self.funding_by_forest_partnership.count()
-                + self.complementary_area_categories.count() + self.green_catalysers_categories.count()) > 0
+                + self.complementary_area_categories.count() + self.green_catalyzers_categories.count()) > 0
 
     @property
     def total_funding(self):
@@ -265,8 +262,9 @@ class Project(models.Model):
         else:
             return 'Ongoing'
 
+    @property
     def get_is_cofounded(self):
-        return True
+        return self.partners.count() > 1
 
     class Meta:
         db_table = 'projects'
@@ -277,11 +275,19 @@ class FundingByModality(models.Model):
     modality = models.ForeignKey(Modality, related_name='funding', on_delete=models.CASCADE)
     allocation = models.IntegerField()
 
+    class Meta:
+        verbose_name = "Funding Modality"
+        verbose_name_plural = "Funding Modality"
+
 
 class FundingByPhakhaoLaoCategory(models.Model):
     project = models.ForeignKey(Project, related_name='funding_by_phakhao_lao', on_delete=models.CASCADE)
     category = models.ForeignKey(PhakhaoLaoCategory, related_name='funding', on_delete=models.CASCADE)
     allocation = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Phakhao Lao"
+        verbose_name_plural = "Phakhao Lao"
 
 
 class FundingByForestPartnershipCategory(models.Model):
@@ -289,11 +295,19 @@ class FundingByForestPartnershipCategory(models.Model):
     category = models.ForeignKey(ForestPartnershipCategory, related_name='funding', on_delete=models.CASCADE)
     allocation = models.IntegerField()
 
+    class Meta:
+        verbose_name = "Forest Partnership"
+        verbose_name_plural = "Forest Partnership"
+
 
 class PartnerFunding(models.Model):
     partner = models.ForeignKey(Partner, related_name='partners', on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='partners', on_delete=models.CASCADE)
     planed_amount = models.FloatField()
+
+    class Meta:
+        verbose_name = "Funding by Partner"
+        verbose_name_plural = "Funding by Partner"
 
 
 class GreenSubCategoryFundingAllocation(models.Model):

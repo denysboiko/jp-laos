@@ -9,7 +9,6 @@ admin.site.site_title = '3W administration'
 class LocationInline(admin.TabularInline):
     model = Location
     extra = 1
-    classes = ['collapse']
 
 
 class PartnerInline(admin.TabularInline):
@@ -32,7 +31,6 @@ class PipelineAllocationInline(admin.TabularInline):
 class FundingByModalityInline(admin.TabularInline):
     model = FundingByModality
     extra = 1
-    classes = ['collapse']
 
 
 # PhakhaoLaoCategory
@@ -53,19 +51,41 @@ class FundingByForestPartnershipCategoryInline(admin.TabularInline):
     classes = ['collapse']
 
 
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     inlines = (
-        LocationInline,
         FundingByModalityInline,
+        LocationInline,
+        PartnerInline,
         FundingByPhakhaoLaoCategoryInline,
-        FundingByForestPartnershipCategoryInline,
-        GreenCategoryInline,
-        PartnerInline
+        FundingByForestPartnershipCategoryInline
     )
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'project_code',
+                'project_title',
+                ('start_date', 'end_date'),
+                'is_regional',
+                'implementing_partner',
+                'sector',
+                'cross_cutting_issues',
+
+            )
+        }),
+        ('Team Europe Initiative', {
+            'classes': ('collapse',),
+            'fields': ('complementary_area_categories', 'green_catalyzers_categories'),
+        }),
+    )
+
     list_filter = ['sector', 'is_regional']
     search_fields = ['project_title', 'project_code']
-    # filter_horizontal = ('implementing_partner',)
+    filter_horizontal = (
+    'implementing_partner', 'complementary_area_categories', 'green_catalyzers_categories', 'cross_cutting_issues')
+    # filter_vertical = ()
     list_display = [
         'id',
         'project_code',
@@ -145,15 +165,14 @@ class SectorAdmin(admin.ModelAdmin):
 
 admin.site.register([
     Partner,
-    Subsector,
     PriorityArea,
     CrossCuttingIssue,
     SustainableDevelopmentGoal,
     NSEDPOutput,
     NSEDPOutcome,
-    GreenCategory,
-    GreenSubCategory,
     ComplementaryAreaCategory,
-    GreenCatalysersCategory,
+    GreenCatalyzersCategory,
+    PhakhaoLaoCategory,
+    ForestPartnershipCategory,
     Modality
 ])
