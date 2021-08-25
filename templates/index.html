@@ -58,7 +58,7 @@
 
 </head>
 <body>
-<div class="ui stackable main menu">
+<div class="ui stackable menu">
     <div class="item">
         <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
     </div>
@@ -362,14 +362,14 @@
             </div>
             <div id="green-map-container"
                  class="sixteen wide mobile eight wide tablet four wide computer column">
-                <div class="ui middle aligned two column grid">
-                    <div class="column">
-                        <select name="admin-level" class="ui fluid dropdown">
-                            <option value="province">Province</option>
-                            <option value="district">District</option>
-                        </select>
-                    </div>
-                </div>
+                {#                <div class="ui middle aligned two column grid">#}
+                {#                    <div class="column">#}
+                {#                        <select name="admin-level" class="ui fluid dropdown">#}
+                {#                            <option value="province">Province</option>#}
+                {#                            <option value="district">District</option>#}
+                {#                        </select>#}
+                {#                    </div>#}
+                {#                </div>#}
 
                 <div id="green-map"></div>
                 <div id="" style="display: none"></div>
@@ -383,10 +383,10 @@
                          id="categories-chart-container">
                         <h2 class="ui header">Categories</h2>
                         <div class="ui grid">
-                            <div class="four wide column">
+                            <div class="four wide computer sixteen wide mobile column">
                                 <div id="green-chart-5"></div>
                             </div>
-                            <div class="twelve wide column">
+                            <div class="twelve wide computer sixteen wide mobile column">
                                 <div id="green-chart-1"></div>
                             </div>
                         </div>
@@ -394,10 +394,10 @@
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
                         <h2 class="ui header"></h2>
                         <div class="ui grid">
-                            <div class="four wide column">
+                            <div class="four wide computer sixteen wide mobile column">
                                 <div id="green-chart-6"></div>
                             </div>
-                            <div class="twelve wide column">
+                            <div class="twelve wide computer sixteen wide mobile column">
                                 <div id="green-chart-2"></div>
                             </div>
                         </div>
@@ -535,7 +535,7 @@
         action: 'nothing'
     });
     $('.ui.dropdown').dropdown();
-    $('.ui.sticky').sticky();
+    {#$('.ui.sticky').sticky();#}
     {#$('#filter')#}
     {#    .popup({#}
     {#        'hoverable': true#}
@@ -556,12 +556,14 @@
 
     const files = [
         '{% static "data/laos.geojson" %}',
-        "/funding",
+        "/data/",
         "/districts/",
         "/provinces/",
         '{% static "data/laos-districts.geojson" %}',
         "/pipelines/",
-        "/sectors/"
+        "/sectors/",
+        "/projects?status=ongoing",
+        "/green-data"
     ];
 
     let promises = [];
@@ -573,7 +575,9 @@
         data[3],
         data[4],
         data[5],
-        data[6]
+        data[6],
+        data[7],
+        data[8]
     ));
 
 

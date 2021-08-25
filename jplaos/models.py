@@ -190,7 +190,7 @@ class PhakhaoLaoCategory(models.Model):
 
     class Meta:
         db_table = 'phakhao_lao_categories'
-        verbose_name_plural = "Phakhao Lao Categories"
+        verbose_name_plural = "Phakhao Lao"
 
 
 class ForestPartnershipCategory(models.Model):
@@ -201,7 +201,7 @@ class ForestPartnershipCategory(models.Model):
 
     class Meta:
         db_table = 'forest_partnership_categories'
-        verbose_name_plural = "Forest Partnership Categories"
+        verbose_name_plural = "Forest Partnership"
 
 
 class ComplementaryAreaCategory(models.Model):
