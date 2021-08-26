@@ -173,7 +173,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     green_catalyzers_categories = serializers.StringRelatedField(many=True)
     funding_by_phakhao_lao = PhakhaoLaoSerializer(many=True)
     funding_by_forest_partnership = ForestPartnershipSerializer(many=True)
-
+    is_cofounded = serializers.BooleanField(source='get_is_cofounded')
     class Meta:
         model = Project
         fields = [
@@ -194,7 +194,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             'complementary_area_categories',
             'green_catalyzers_categories',
             'funding_by_phakhao_lao',
-            'funding_by_forest_partnership'
+            'funding_by_forest_partnership',
+            'is_cofounded'
         ]
 
 
@@ -216,6 +217,7 @@ class ProjectSerializer2(serializers.ModelSerializer):
     green_catalyzers_categories = serializers.StringRelatedField(many=True)
     funding_by_phakhao_lao = PhakhaoLaoSerializer(many=True)
     funding_by_forest_partnership = ForestPartnershipSerializer(many=True)
+    is_cofounded = serializers.BooleanField(source='get_is_cofounded')
 
     class Meta:
         model = Project

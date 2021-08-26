@@ -58,12 +58,12 @@
 
 </head>
 <body>
-<div class="ui stackable main menu">
+<div class="ui main menu">
     <div class="item">
         <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
     </div>
     <a class="item" href="/">Home</a>
-    <a class="item" href="/upload">Upload</a>
+    {#    <a class="item" href="/upload">Upload</a>#}
     <div class="right menu">
         {% if user.is_authenticated %}
             <div class="ui dropdown item">
@@ -91,7 +91,7 @@
     </div>
 
     <div class="ui tab active" data-tab="projects" id="projects-tab">
-        <div class="ui stackable grid">
+        <div class="ui grid">
             <div class="two column row">
                 <div class="column">
                     <button class="ui button left floated" id="download">
@@ -118,25 +118,38 @@
                                 <div class="grouped fields">
                                     <label>Status</label>
                                     <div class="field">
-                                        <div class="ui checkbox">
+                                        <div class="ui checkbox disabled">
                                             <input checked="checked" name="ongoing" type="checkbox">
                                             <label>Ongoing</label>
                                         </div>
                                     </div>
                                     <div class="field">
-                                        <div class="ui checkbox">
+                                        <div class="ui checkbox disabled">
                                             <input type="checkbox" name="planned">
                                             <label>Planned</label>
                                         </div>
                                     </div>
                                     <div class="field">
-                                        <div class="ui checkbox">
+                                        <div class="ui checkbox disabled">
                                             <input type="checkbox" name="closed">
                                             <label>Closed</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="grouped fields">
+                                    <label>View</label>
+                                    <div class="field">
+                                        <div id="regional-toggle" class="ui toggle checkbox">
+                                            <input type="checkbox" name="public">
+                                            <label>Regional</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div id="cofounded-toggle" class="ui toggle checkbox">
+                                            <input type="checkbox" name="public">
+                                            <label>Co-founded</label>
+                                        </div>
+                                    </div>
                                     <label>Measure</label>
                                     <div class="field">
                                         <div id="measure-toggle" class="ui toggle checkbox">
@@ -378,11 +391,13 @@
                 </div>
             </div>
             <div class="sixteen wide mobile eight wide tablet twelve wide computer column">
-                <div class="ui grid">
+                <div class="ui bottom aligned grid">
+                    <div class="sixteen wide column">
+                        <h2 class="ui header">Categories</h2>
+                    </div>
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
                          id="categories-chart-container">
-                        <h2 class="ui header">Categories</h2>
-                        <div class="ui grid">
+                        <div class="ui bottom aligned grid">
                             <div class="four wide computer sixteen wide mobile column">
                                 <div id="green-chart-5"></div>
                             </div>
@@ -393,7 +408,7 @@
                     </div>
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
                         <h2 class="ui header"></h2>
-                        <div class="ui grid">
+                        <div class="ui bottom aligned grid">
                             <div class="four wide computer sixteen wide mobile column">
                                 <div id="green-chart-6"></div>
                             </div>
@@ -428,7 +443,7 @@
     </div>
     <div class="ui tab" data-tab="pipeline">
         <div class="ui stackable grid">
-            <div class="four wide computer sixteen wide mobile column">
+            <div class="two wide computer sixteen wide mobile column">
                 {#                <div class="ui form">#}
                 {#                    <div class="grouped fields">#}
                 {#                        <label>Select Partners</label>#}

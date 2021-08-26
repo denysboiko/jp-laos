@@ -198,11 +198,11 @@ function wrap(text, width) {
         if (tspans[0] !== undefined && tspans[0].length > 0) {
             let tss = [];
             tspans[0].map(function (d) {
-                tss = tss.concat(d3.select(d).text().split(/\s+/));
+                tss = tss.concat(d3.select(d).text().split(" "));
             }).reverse();
             words = tss.reverse();
         } else {
-            words = text.text().split(/\s+/).reverse();
+            words = text.text().split(" ").reverse();
         }
         let word,
             line = [],
@@ -423,6 +423,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .transitionDuration(500)
         .centerBar(false)
         .on('postRender', function (chart) {
+            console.log("Rendered")
             chart.selectAll(".x text")
                 .call(wrap, 120);
         })
@@ -540,8 +541,6 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .elasticY(true)
         .yAxis();
 
-    dc.renderAll("green");
-
 
     $('#green-reset').on('click', function (e) {
         dc.filterAll("green");
@@ -648,7 +647,6 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         downloadData(green_partner, districtsNames, projects_by_id);
     });
 
-
 }
 
 function renderProjectsDashboard(geo_data, data, districts_list, provinces_list, districts, projects) {
@@ -703,20 +701,6 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .reduceSum(function (d) {
             return Math.round(d["planed_amount"] / projects_by_id[d.project].districts.length);
         });
-
-
-    // mapChart,
-    // mapDistrictChart,
-    // partnersChart,
-    // sectorChart,
-    // nsedcChart,
-    // issuesChart,
-    // sdgChart1,
-    // priorityChart,
-    // modalityChart,
-    // ipCategory,
-
-    // projectsDataGrid
 
     let sector = cf.dimension(retrieveSectorField);
     let partner = cf.dimension(d => d['partner']);
@@ -988,6 +972,8 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .ariaLiveRegion(true)
         .formatNumber(d3.format(""));
 
+
+    // let project = cf.dimension(d => d.id);
     projectsDataGrid
         .dimension(partner)
         .section(d => d.id)
@@ -1175,7 +1161,31 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         dc.redrawAll("projects");
     });
 
+    const regional = cf.dimension(d => projects_by_id[d.project]['is_regional']);
+    const co_founded = cf.dimension(d => projects_by_id[d.project]['is_cofounded']);
+    $('#regional-toggle')
+        .checkbox({
+            onChecked: () => {
+                regional.filter(true)
+                dc.renderAll("projects");
+            },
+            onUnchecked: () => {
+                regional.filterAll()
+                dc.renderAll("projects");
+            }
+        });
 
+    $('#cofounded-toggle')
+        .checkbox({
+            onChecked: () => {
+                co_founded.filter(true)
+                dc.renderAll("projects");
+            },
+            onUnchecked: () => {
+                co_founded.filterAll()
+                dc.renderAll("projects");
+            }
+        });
 }
 
 function downloadData(dimension, districtsNames, projects) {
