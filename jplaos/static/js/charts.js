@@ -396,7 +396,9 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .group(distinctCount)
         .valueAccessor(d => {
             return Object.keys(d.projects).length;
-        });
+        })
+        .ariaLiveRegion(true)
+        .formatNumber(d3.format(""));
     // .dimension(green_data_cf)
     // .group(green_data_cf.groupAll());
 
@@ -982,7 +984,9 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .group(distinctCount)
         .valueAccessor(d => {
             return Object.keys(d.projects).length;
-        });
+        })
+        .ariaLiveRegion(true)
+        .formatNumber(d3.format(""));
 
     projectsDataGrid
         .dimension(partner)
@@ -1302,7 +1306,8 @@ function renderPipelines(data, sectors) {
 
     pipelineTable
         .dimension(reversible_group(sector_group))
-        .section(d => priority_areas[d['sector']])
+        // .section(d => priority_areas[d['sector']])
+        .section(d => d['sector'])
         .showSections(false)
         .columns([
             d => priority_areas[d.key],
@@ -1327,7 +1332,7 @@ function renderPipelines(data, sectors) {
                     return total;
                 }, {});
         })
-        .sortBy(d => priority_areas[d['sector']]);
+        .sortBy(d => priority_areas[d['sector']] + d['sector']);
 
 
     pipelineFilter.render();
