@@ -71,7 +71,6 @@ const fundingTitle = p => {
 };
 
 const defaultTitle = p => {
-    console.log(p);
     return p.key + ': ' + Object.keys(p.value.projects).length;
 };
 
@@ -1319,7 +1318,6 @@ function renderPipelines(data, sectors) {
 
         ])
         .on('renderlet', (chart) => {
-            console.log(sector_group.top(Infinity));
             const pa_count = sector_group.top(Infinity)
                 .map(d => d.key)
                 .reduce((total, sector) => {
@@ -1328,7 +1326,6 @@ function renderPipelines(data, sectors) {
                     ++total[priority_areas[sector]];
                     return total;
                 }, {});
-            console.log(pa_count)
         })
         .sortBy(d => priority_areas[d['sector']]);
 
