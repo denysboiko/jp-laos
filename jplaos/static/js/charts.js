@@ -66,6 +66,15 @@ const initDistinctProjects = function () {
     return {projects: {}};
 };
 
+const fundingTitle = p => {
+    return p.key + ': ' + f(p.value);
+};
+
+const defaultTitle = p => {
+    console.log(p);
+    return p.key + ': ' + Object.keys(p.value.projects).length;
+};
+
 const fundingAccessor = d => d['planed_amount'];
 
 const fundingFunction = d => Math.round(d['planed_amount']);
@@ -358,10 +367,9 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                 return d.properties['pr_name2'];
             }
         )
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(fundingTitle)
         .projection(getProjection("green-map-container"));
+
 
 
     greenPartners
@@ -379,9 +387,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .colors(GREEN_COLORS[3])
         .x(d3.scaleBand())
         .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
@@ -419,9 +425,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
             chart.selectAll(".x text")
                 .call(wrap, 120);
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .xUnits(dc.units.ordinal)
         .elasticY(true)
@@ -443,9 +447,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
             chart.selectAll(".x text")
                 .call(wrap, 120);
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .xUnits(dc.units.ordinal)
         .elasticY(true)
@@ -463,9 +465,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .colors(GREEN_COLORS[3])
         .x(d3.scaleBand())
         .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
@@ -482,9 +482,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .colors(GREEN_COLORS[3])
         .x(d3.scaleBand())
         .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
@@ -509,9 +507,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
             chart.selectAll(".x text")
                 .call(wrap, 120);
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .xUnits(dc.units.ordinal)
         .elasticY(true)
@@ -537,9 +533,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
             chart.selectAll(".x text")
                 .call(wrap, 120);
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .xUnits(dc.units.ordinal)
         .elasticY(true)
@@ -576,29 +570,37 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                 current_measure = "funding"
                 greenMap
                     .group(gp_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 updateLegend(returnScale(gp_funding, GREEN_COLORS, d => d.value), greenMapLegend, d3.format(",.0f"));
                 greenPartners
                     .group(partner_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 greenChart1
                     .group(filteredGroup(pl_sub_funding))
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 greenChart2
                     .group(filteredGroup(fp_sub_funding))
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 greenChart3
                     .group(ca_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 greenChart4
                     .group(gc_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 greenChart5
                     .group(filteredGroup(pl_funding))
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 greenChart6
                     .group(filteredGroup(fp_funding))
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
 
                 dc.renderAll("green");
             },
@@ -606,29 +608,37 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                 current_measure = "count"
                 greenMap
                     .group(gp_count)
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(fundingTitle);
                 updateLegend(returnScale(gp_count, GREEN_COLORS, distinctCountAccessor), greenMapLegend, d3.format(",.0f"));
                 greenPartners
                     .group(partner_count)
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 greenChart1
                     .group(filteredGroup(pl_sub_count))
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 greenChart2
                     .group(filteredGroup(fp_sub_count))
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 greenChart3
                     .group(ca_count)
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 greenChart4
                     .group(gc_count)
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 greenChart5
                     .group(filteredGroup(pl_count))
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 greenChart6
                     .group(filteredGroup(fp_count))
-                    .valueAccessor(distinctCountAccessor);
+                    .valueAccessor(distinctCountAccessor)
+                    .title(defaultTitle);
                 dc.renderAll("green");
             }
         });
@@ -806,9 +816,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                 return d.properties['pr_name2'];
             }
         )
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(fundingTitle)
         .projection(getProjection("map-container"));
 
 
@@ -824,9 +832,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .colors(CHART_COLOR)
         .x(d3.scaleBand())
         .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
@@ -850,9 +856,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .on('filtered', function (chart, filter) {
 
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
@@ -873,9 +877,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
             chart.selectAll(".x text")
                 .call(wrap, 60);
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .elasticY(true)
         .xUnits(dc.units.ordinal);
@@ -895,9 +897,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .on('filtered', function (chart, filter) {
 
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .xAxis()
         .ticks(5)
         .tickFormat(d3.format('d'));
@@ -914,9 +914,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .colors(CHART_COLOR)
         .x(d3.scaleBand())
         .elasticX(true)
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         // .colorAccessor(d => d.key)
         .ordinalColors(sdg_colors)
         // .colors(d3.scaleOrdinal().range(sdg_colors))
@@ -925,7 +923,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .tickFormat(d3.format('d'));
 
     priorityChart
-        .title(d => d.key + ': ' + d.value)
+        .title(defaultTitle)
         .useViewBoxResizing(true)
         .height(200)
         .dimension(priority_area.dim)
@@ -938,7 +936,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .legend(dc.legend().x(200).y(60).gap(5));
 
     modalityChart
-        .title(d => d.key + ': ' + d.value)
+        .title(defaultTitle)
         .useViewBoxResizing(true)
         .height(200)
         .innerRadius(50)
@@ -968,9 +966,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
             chart.selectAll(".x text")
                 .call(wrap, 60);
         })
-        .title(function (p) {
-            return p.key + ': ' + f(p.value);
-        })
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .xUnits(dc.units.ordinal)
         .elasticY(true)
@@ -1046,35 +1042,45 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                 mapChart
                     .group(funding_by_province)
                     .valueAccessor(d => d.value)
-                    .colors(returnScale(funding_by_province, colors, d => d.value));
+                    .colors(returnScale(funding_by_province, colors, d => d.value))
+                    .title(fundingTitle);
                 mapDistrictChart
                     .group(funding_by_district)
                     .valueAccessor(d => d.value)
                     .colors(returnScale(funding_by_district, colors, d => d.value))
+                    .title(fundingTitle);
                 partnersChart
                     .group(partner_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 sectorChart
                     .group(sector_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 nsedcChart
                     .group(nsedc_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 issuesChart
                     .group(cci_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 sdgChart1
                     .group(sdg_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 modalityChart
                     .group(modality_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 priorityChart
                     .group(priority_area_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 ipCategory
                     .group(ip_category_funding)
-                    .valueAccessor(d => d.value);
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
 
                 updateLegend(returnScale(geoLevel === 'province' ? funding_by_province : funding_by_district, colors, d => d.value), mapLegend, f);
                 changeFormat('.2s');
@@ -1086,36 +1092,46 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                 mapChart
                     .group(count_by_province)
                     .valueAccessor(distinctCountAccessor)
-                    .colors(returnScale(count_by_province, colors, distinctCountAccessor));
+                    .colors(returnScale(count_by_province, colors, distinctCountAccessor))
+                    .title(fundingTitle);
                 mapDistrictChart
                     .group(count_by_district)
                     .valueAccessor(distinctCountAccessor)
                     .colors(returnScale(count_by_district, colors, distinctCountAccessor))
+                    .title(fundingTitle);
 
                 partnersChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(partner_count);
+                    .group(partner_count)
+                    .title(defaultTitle);
                 sectorChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(sector_count);
+                    .group(sector_count)
+                    .title(defaultTitle);
                 nsedcChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(nsedc_count);
+                    .group(nsedc_count)
+                    .title(defaultTitle);
                 issuesChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(cci_count);
+                    .group(cci_count)
+                    .title(defaultTitle);
                 sdgChart1
                     .valueAccessor(distinctCountAccessor)
-                    .group(sdg_count);
+                    .group(sdg_count)
+                    .title(defaultTitle);
                 priorityChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(pa_count);
+                    .group(pa_count)
+                    .title(defaultTitle);
                 modalityChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(modality_count);
+                    .group(modality_count)
+                    .title(defaultTitle);
                 ipCategory
                     .valueAccessor(distinctCountAccessor)
-                    .group(ipc_count);
+                    .group(ipc_count)
+                    .title(defaultTitle);
 
                 updateLegend(returnScale(geolevel === 'province' ? count_by_province : count_by_district, colors, distinctCountAccessor), mapLegend, f);
                 changeFormat('d');
