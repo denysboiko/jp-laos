@@ -704,12 +704,6 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
     let sector = cf.dimension(retrieveSectorField);
     let partner = cf.dimension(d => d['partner']);
-
-
-    let implementing_partner = cf.dimension(function (d) {
-        return d['implementing_partner'] ? d['implementing_partner'] : 'No implementing partner';
-    }, true);
-
     const priority_area_dim = cf.dimension(retrievePriorityArea);
 
     const priority_area = {
@@ -731,16 +725,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
     const cci_dim = cf.dimension(d => projects_by_id[d.project]['cross_cutting_issues'].map(d => d), true);
 
-
-    let funding_by_implementing_partner = implementing_partner.group()
-        .reduceSum(function (d) {
-            return Math.round(d['planed_amount'] / d.implementing_partner.length);
-        });
-
-
-    const ip_category_dim = cf.dimension((d) => {
-        return [...new Set(projects_by_id[d.project]['implementing_partner'].map(d => d['category']).map(d => d))];
-    }, true);
+    const ip_category_dim = cf.dimension(d => projects_by_id[d.project]['implementing_partner_categories'], true);
 
     const partner_funding = partner.group().reduceSum(fundingFunction);
     const sector_funding = sector.group().reduceSum(fundingFunction);

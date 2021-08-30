@@ -119,15 +119,6 @@ class ModalityFundingSerializer(serializers.ModelSerializer):
         fields = ('modality', 'allocation')
 
 
-class ImplementingPartnerSerializer(serializers.ModelSerializer):
-    implementing_partner_name = serializers.CharField(max_length=120)
-    category = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = ImplementingPartner
-        fields = ('implementing_partner_name', 'category')
-
-
 class PartnerSerializer(serializers.ModelSerializer):
     partner = serializers.StringRelatedField()
     planed_amount = serializers.FloatField()
@@ -160,7 +151,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_title = models.CharField(max_length=80)
     status = serializers.ReadOnlyField(source='status_code')
     total_funding = serializers.ReadOnlyField()
-    implementing_partner = ImplementingPartnerSerializer(many=True)
+    implementing_partner_categories = serializers.StringRelatedField(many=True)
     partners = PartnerSerializer(many=True)
     green_categories = GreenCategorySerializer(many=True)
     cross_cutting_issues = serializers.StringRelatedField(many=True)
@@ -181,7 +172,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'project_code',
             'project_title',
             'status',
-            'implementing_partner',
+            'implementing_partner_categories',
             'sector',
             'partners',
             'green_categories',
@@ -205,7 +196,6 @@ class ProjectSerializer2(serializers.ModelSerializer):
     project_title = models.CharField(max_length=80)
     status = serializers.ReadOnlyField(source='status_code')
     total_funding = serializers.ReadOnlyField()
-    implementing_partner = ImplementingPartnerSerializer(many=True)
     green_categories = GreenCategorySerializer(many=True)
     cross_cutting_issues = serializers.StringRelatedField(many=True)
     has_green_category = serializers.ReadOnlyField()
@@ -226,7 +216,6 @@ class ProjectSerializer2(serializers.ModelSerializer):
             'project_code',
             'project_title',
             'status',
-            'implementing_partner',
             'sector',
             'partners',
             'green_categories',

@@ -145,23 +145,14 @@ class ImplementingPartnerCategory(models.Model):
         db_table = 'implementing_partner_categories'
 
 
-class ImplementingPartner(models.Model):
-    implementing_partner_name = models.CharField(max_length=120)
-    category = models.ManyToManyField(ImplementingPartnerCategory)
-
-    def __str__(self):
-        return self.implementing_partner_name
-
-    class Meta:
-        db_table = 'implementing_partners'
-        ordering = ['implementing_partner_name']
-
-
 class GreenCategory(models.Model):
     category = models.CharField(max_length=250)
 
     def __str__(self):
         return self.category
+
+    class Meta:
+        db_table = 'green_categories'
 
 
 class GreenSubCategory(models.Model):
@@ -231,7 +222,7 @@ class Project(models.Model):
     project_title = models.TextField(max_length=280)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
-    implementing_partner = models.ManyToManyField(ImplementingPartner, blank=True)
+    implementing_partner_categories = models.ManyToManyField(ImplementingPartnerCategory)
     sector = models.ForeignKey(Sector, related_name='sector_id', on_delete=models.CASCADE)
     cross_cutting_issues = models.ManyToManyField(CrossCuttingIssue, blank=True)
     is_regional = models.BooleanField(default=False)
@@ -288,6 +279,16 @@ class FundingByPhakhaoLaoCategory(models.Model):
     class Meta:
         verbose_name = "Phakhao Lao"
         verbose_name_plural = "Phakhao Lao"
+
+
+class FundingByGreenCategory(models.Model):
+    project = models.ForeignKey(Project, related_name='funding_by_green_category', on_delete=models.CASCADE)
+    category = models.ForeignKey(GreenCategory, related_name='funding', on_delete=models.CASCADE)
+    allocation = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Funding by Green Category"
+        verbose_name_plural = "Funding by Green Category"
 
 
 class FundingByForestPartnershipCategory(models.Model):

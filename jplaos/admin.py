@@ -51,15 +51,18 @@ class FundingByForestPartnershipCategoryInline(admin.TabularInline):
     classes = ['collapse']
 
 
+class FundingByGreenCategoryInline(admin.TabularInline):
+    model = FundingByGreenCategory
+    extra = 1
+    classes = ['collapse']
+
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     inlines = (
-        FundingByModalityInline,
         LocationInline,
         PartnerInline,
-        FundingByPhakhaoLaoCategoryInline,
-        FundingByForestPartnershipCategoryInline
+        FundingByGreenCategoryInline
     )
 
     fieldsets = (
@@ -69,7 +72,6 @@ class ProjectAdmin(admin.ModelAdmin):
                 'project_title',
                 ('start_date', 'end_date'),
                 'is_regional',
-                'implementing_partner',
                 'sector',
                 'cross_cutting_issues',
 
@@ -83,8 +85,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     list_filter = ['sector', 'is_regional']
     search_fields = ['project_title', 'project_code']
-    filter_horizontal = (
-    'implementing_partner', 'complementary_area_categories', 'green_catalyzers_categories', 'cross_cutting_issues')
+    filter_horizontal = ('complementary_area_categories', 'green_catalyzers_categories', 'cross_cutting_issues')
     # filter_vertical = ()
     list_display = [
         'id',
@@ -119,16 +120,6 @@ class PipelineAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'partner'
-    ]
-
-
-@admin.register(ImplementingPartner)
-class ImplementingPartnersAdmin(admin.ModelAdmin):
-
-    search_fields = ['implementing_partner_name']
-    list_display = [
-        'id',
-        'implementing_partner_name'
     ]
 
 
@@ -174,5 +165,6 @@ admin.site.register([
     GreenCatalyzersCategory,
     PhakhaoLaoCategory,
     ForestPartnershipCategory,
-    Modality
+    Modality,
+    GreenCategory
 ])
