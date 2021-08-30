@@ -74,6 +74,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 'is_regional',
                 'sector',
                 'cross_cutting_issues',
+                'implementing_partner_categories'
 
             )
         }),
@@ -85,7 +86,9 @@ class ProjectAdmin(admin.ModelAdmin):
 
     list_filter = ['sector', 'is_regional']
     search_fields = ['project_title', 'project_code']
-    filter_horizontal = ('complementary_area_categories', 'green_catalyzers_categories', 'cross_cutting_issues')
+    filter_horizontal = (
+        'implementing_partner_categories', 'complementary_area_categories', 'green_catalyzers_categories',
+        'cross_cutting_issues')
     # filter_vertical = ()
     list_display = [
         'id',
@@ -115,8 +118,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Pipeline)
 class PipelineAdmin(admin.ModelAdmin):
-
-    inlines = (PipelineAllocationInline, )
+    inlines = (PipelineAllocationInline,)
     list_display = [
         'id',
         'partner'
@@ -125,7 +127,6 @@ class PipelineAdmin(admin.ModelAdmin):
 
 @admin.register(Province)
 class ProvinceAdmin(admin.ModelAdmin):
-
     search_fields = ['name']
     list_display = [
         'name',
