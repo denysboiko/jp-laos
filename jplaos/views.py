@@ -87,32 +87,14 @@ def data(request):
             'project__project_title'
         )
 
-        modality = FundingByModality.objects \
-            .filter(Q(project__start_date__lte=datetime.datetime.today().date(),
-                      project__end_date__gt=datetime.datetime.today().date())) \
-            .values(
-            'project',
-            'modality__modality',
-            'allocation'
-        )
-        ret = defaultdict(list)
-        for k in modality:
-            ret[k['project']].append(k)
-        dict(ret)
-
         results = []
         for d in data:
-            project_id = d['project']
-            modality = ret[project_id]
-            for m in modality:
-                result = dict()
-                result['partner'] = d['partner__partner_name']
-                result['project'] = d['project']
-                result['modality'] = m['modality__modality']
-                result['allocation'] = m['allocation'] / 100
-                result['total_amount'] = d['planed_amount']
-                result['planed_amount'] = d['planed_amount'] * (m['allocation'] / 100)
-                results.append(result)
+            result = dict()
+            result['partner'] = d['partner__partner_name']
+            result['project'] = d['project']
+            result['total_amount'] = d['planed_amount']
+            result['planed_amount'] = d['planed_amount']
+            results.append(result)
 
         return JsonResponse(results, safe=False)
 

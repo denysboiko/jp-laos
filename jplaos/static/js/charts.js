@@ -119,8 +119,8 @@ const sdgChart1 = dc.rowChart("#sdg1")
     .chartGroup("projects");
 const priorityChart = dc.pieChart('#priority-chart')
     .chartGroup("projects");
-const modalityChart = dc.pieChart('#modality-chart')
-    .chartGroup("projects");
+// const modalityChart = dc.pieChart('#modality-chart')
+//     .chartGroup("projects");
 // const dataTable = dc.dataTable("#data-table");
 const ipCategory = dc.rowChart("#ip-category")
     .chartGroup("projects");
@@ -173,7 +173,7 @@ const projectCharts = [
     issuesChart,
     sdgChart1,
     priorityChart,
-    modalityChart,
+    // modalityChart,
     ipCategory,
     projectsDataGrid
 ];
@@ -716,7 +716,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
             })
     }
 
-    const modality_dim = cf.dimension(d => d.modality);
+    // const modality_dim = cf.dimension(d => d.modality);
 
     const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
 
@@ -733,7 +733,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
     const cci_funding = cci_dim.group().reduceSum(fundingFunction);
     const sdg_funding = sdg_dim1.group().reduceSum(fundingFunction);
     const priority_area_funding = priority_area_dim.group().reduceSum(fundingFunction);
-    const modality_funding = modality_dim.group().reduceSum(fundingFunction);
+    // const modality_funding = modality_dim.group().reduceSum(fundingFunction);
     const ip_category_funding = ip_category_dim.group().reduceSum(fundingFunction);
 
     const partner_count = partner.group()
@@ -748,8 +748,8 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const pa_count = priority_area_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const modality_count = modality_dim.group()
-        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
+    // const modality_count = modality_dim.group()
+    //     .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const ipc_count = ip_category_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
 
@@ -904,19 +904,19 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .cx(80)
         .renderLabel(false)
         .legend(dc.legend().x(200).y(60).gap(5));
-
-    modalityChart
-        .title(defaultTitle)
-        .useViewBoxResizing(true)
-        .height(200)
-        .innerRadius(50)
-        .radius(80)
-        .cx(80)
-        .dimension(modality_dim)
-        .group(modality_count)
-        .valueAccessor(distinctCountAccessor)
-        .renderLabel(false)
-        .legend(dc.legend().x(200).y(60).gap(5));
+    //
+    // modalityChart
+    //     .title(defaultTitle)
+    //     .useViewBoxResizing(true)
+    //     .height(200)
+    //     .innerRadius(50)
+    //     .radius(80)
+    //     .cx(80)
+    //     .dimension(modality_dim)
+    //     .group(modality_count)
+    //     .valueAccessor(distinctCountAccessor)
+    //     .renderLabel(false)
+    //     .legend(dc.legend().x(200).y(60).gap(5));
 
     sectorChart
         .useViewBoxResizing(true)
@@ -1043,10 +1043,10 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                     .group(sdg_funding)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
-                modalityChart
-                    .group(modality_funding)
-                    .valueAccessor(d => d.value)
-                    .title(fundingTitle);
+                // modalityChart
+                //     .group(modality_funding)
+                //     .valueAccessor(d => d.value)
+                //     .title(fundingTitle);
                 priorityChart
                     .group(priority_area_funding)
                     .valueAccessor(d => d.value)
@@ -1098,10 +1098,10 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                     .valueAccessor(distinctCountAccessor)
                     .group(pa_count)
                     .title(defaultTitle);
-                modalityChart
-                    .valueAccessor(distinctCountAccessor)
-                    .group(modality_count)
-                    .title(defaultTitle);
+                // modalityChart
+                //     .valueAccessor(distinctCountAccessor)
+                //     .group(modality_count)
+                //     .title(defaultTitle);
                 ipCategory
                     .valueAccessor(distinctCountAccessor)
                     .group(ipc_count)
