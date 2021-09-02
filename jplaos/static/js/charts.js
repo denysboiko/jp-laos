@@ -119,8 +119,8 @@ const sdgChart1 = dc.rowChart("#sdg1")
     .chartGroup("projects");
 const priorityChart = dc.pieChart('#priority-chart')
     .chartGroup("projects");
-// const modalityChart = dc.pieChart('#modality-chart')
-//     .chartGroup("projects");
+const regionChart = dc.pieChart('#region-chart')
+    .chartGroup("projects");
 // const dataTable = dc.dataTable("#data-table");
 const ipCategory = dc.rowChart("#ip-category")
     .chartGroup("projects");
@@ -137,18 +137,20 @@ const greenMap = dc.geoChoroplethChart("#green-map")
     .chartGroup("green");
 const greenPartners = dc.rowChart("#green-partner")
     .chartGroup("green");
-const greenChart1 = dc.barChart("#green-chart-1")
-    .chartGroup("green");
-const greenChart2 = dc.barChart("#green-chart-2")
-    .chartGroup("green");
+// const greenChart1 = dc.barChart("#green-chart-1")
+//     .chartGroup("green");
+// const greenChart2 = dc.barChart("#green-chart-2")
+//     .chartGroup("green");
 const greenChart3 = dc.rowChart("#green-chart-3")
     .chartGroup("green");
 const greenChart4 = dc.rowChart("#green-chart-4")
     .chartGroup("green");
-const greenChart5 = dc.barChart("#green-chart-5")
+const greenCategoryChart = dc.pieChart("#green-chart-5")
     .chartGroup("green");
-const greenChart6 = dc.barChart("#green-chart-6")
+const greenRegionChart = dc.pieChart('#green-region-chart')
     .chartGroup("green");
+// const greenChart6 = dc.barChart("#green-chart-6")
+//     .chartGroup("green");
 // const greenCount = dc.dataCount('#green-count')
 //     .chartGroup("green");
 const greenCount = dc.numberDisplay('#green-count')
@@ -173,7 +175,7 @@ const projectCharts = [
     issuesChart,
     sdgChart1,
     priorityChart,
-    // modalityChart,
+    regionChart,
     ipCategory,
     projectsDataGrid
 ];
@@ -265,22 +267,6 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
     const distinctCount = green_data_cf.groupAll()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
 
-    const phakhao_lao_sub = green_data_cf.dimension(d => {
-        if (d["category"] === 'Phakhao Lao') {
-            return d["sub_category"]
-        } else {
-            return 'None'
-        }
-    });
-
-    const forest_partnership_sub = green_data_cf.dimension(d => {
-        if (d["category"] === 'Forest Partnership') {
-            return d["sub_category"]
-        } else {
-            return 'None'
-        }
-    });
-
     const complementary_areas = green_data_cf.dimension(d => {
         return projects_by_id[d.project]['complementary_area_categories'].map(d => d);
     }, true);
@@ -289,22 +275,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         return projects_by_id[d.project]['green_catalyzers_categories'].map(d => d);
     }, true);
 
-    const phakhao_lao = green_data_cf.dimension(d => {
-        if (d["category"] === 'Phakhao Lao') {
-            return d["category"]
-        } else {
-            return 'None'
-        }
-    });
-
-    const forest_partnership = green_data_cf.dimension(d => {
-        if (d["category"] === 'Forest Partnership') {
-            return d["category"]
-        } else {
-            return 'None'
-        }
-    });
-
+    const green_category_dim = green_data_cf.dimension(d => d["category"]);
 
     const green_partner = green_data_cf.dimension(d => d['partner']);
 
@@ -318,35 +289,35 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         };
     };
 
-    const fp_sub_count = forest_partnership_sub.group()
-        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
+    // const fp_sub_count = forest_partnership_sub.group()
+    //     .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const ca_count = complementary_areas.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const gc_count = green_catalyzers.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const fp_count = forest_partnership.group()
+    // const fp_count = forest_partnership.group()
+    //     .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
+    const pl_count = green_category_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const pl_count = phakhao_lao.group()
-        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const pl_sub_count = phakhao_lao_sub.group()
-        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
+    // const pl_sub_count = phakhao_lao_sub.group()
+    //     .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const partner_count = green_partner.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const gp_count = green_province.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
 
-    const fp_sub_funding = forest_partnership_sub.group()
-        .reduceSum(d => d["planed_amount"]);
+    // const fp_sub_funding = forest_partnership_sub.group()
+    //     .reduceSum(d => d["planed_amount"]);
     const ca_funding = complementary_areas.group()
         .reduceSum(d => d["planed_amount"]);
     const gc_funding = green_catalyzers.group()
         .reduceSum(d => d["planed_amount"]);
-    const fp_funding = forest_partnership.group()
+    // const fp_funding = forest_partnership.group()
+    //     .reduceSum(d => d["planed_amount"]);
+    const pl_funding = green_category_dim.group()
         .reduceSum(d => d["planed_amount"]);
-    const pl_funding = phakhao_lao.group()
-        .reduceSum(d => d["planed_amount"]);
-    const pl_sub_funding = phakhao_lao_sub.group()
-        .reduceSum(d => d["planed_amount"]);
+    // const pl_sub_funding = phakhao_lao_sub.group()
+    //     .reduceSum(d => d["planed_amount"]);
     const partner_funding = green_partner.group()
         .reduceSum(d => d["planed_amount"]);
     const gp_funding = green_province.group()
@@ -368,7 +339,6 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         )
         .title(fundingTitle)
         .projection(getProjection("green-map-container"));
-
 
 
     greenPartners
@@ -411,49 +381,49 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         }));
 
 
-    greenChart1
-        .useViewBoxResizing(true)
-        .height(300)
-        .margins({top: 10, right: 0, bottom: 50, left: 20})
-        .dimension(phakhao_lao_sub)
-        .group(filteredGroup(pl_sub_count))
-        .valueAccessor(distinctCountAccessor)
-        .colors(GREEN_COLORS[3])
-        .gap(10)
-        .transitionDuration(500)
-        .centerBar(false)
-        .on('postRender', function (chart) {
-            console.log("Rendered")
-            chart.selectAll(".x text")
-                .call(wrap, 120);
-        })
-        .title(defaultTitle)
-        .x(d3.scaleBand())
-        .xUnits(dc.units.ordinal)
-        .elasticY(true)
-        .yAxis();
-
-
-    greenChart2
-        .useViewBoxResizing(true)
-        .height(300)
-        .margins({top: 10, right: 0, bottom: 50, left: 20})
-        .dimension(forest_partnership_sub)
-        .group(filteredGroup(fp_sub_count))
-        .valueAccessor(distinctCountAccessor)
-        .colors(GREEN_COLORS[3])
-        .gap(10)
-        .transitionDuration(500)
-        .centerBar(false)
-        .on('postRender', function (chart) {
-            chart.selectAll(".x text")
-                .call(wrap, 120);
-        })
-        .title(defaultTitle)
-        .x(d3.scaleBand())
-        .xUnits(dc.units.ordinal)
-        .elasticY(true)
-        .yAxis();
+    // greenChart1
+    //     .useViewBoxResizing(true)
+    //     .height(300)
+    //     .margins({top: 10, right: 0, bottom: 50, left: 20})
+    //     .dimension(phakhao_lao_sub)
+    //     .group(filteredGroup(pl_sub_count))
+    //     .valueAccessor(distinctCountAccessor)
+    //     .colors(GREEN_COLORS[3])
+    //     .gap(10)
+    //     .transitionDuration(500)
+    //     .centerBar(false)
+    //     .on('postRender', function (chart) {
+    //         console.log("Rendered")
+    //         chart.selectAll(".x text")
+    //             .call(wrap, 120);
+    //     })
+    //     .title(defaultTitle)
+    //     .x(d3.scaleBand())
+    //     .xUnits(dc.units.ordinal)
+    //     .elasticY(true)
+    //     .yAxis();
+    //
+    //
+    // greenChart2
+    //     .useViewBoxResizing(true)
+    //     .height(300)
+    //     .margins({top: 10, right: 0, bottom: 50, left: 20})
+    //     .dimension(forest_partnership_sub)
+    //     .group(filteredGroup(fp_sub_count))
+    //     .valueAccessor(distinctCountAccessor)
+    //     .colors(GREEN_COLORS[3])
+    //     .gap(10)
+    //     .transitionDuration(500)
+    //     .centerBar(false)
+    //     .on('postRender', function (chart) {
+    //         chart.selectAll(".x text")
+    //             .call(wrap, 120);
+    //     })
+    //     .title(defaultTitle)
+    //     .x(d3.scaleBand())
+    //     .xUnits(dc.units.ordinal)
+    //     .elasticY(true)
+    //     .yAxis();
 
 
     greenChart3
@@ -490,56 +460,87 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .tickFormat(d3.format('d'));
 
 
-    greenChart5
-        // .useViewBoxResizing(true)
-        .width(150)
-        .height(350)
-        .margins({top: 10, right: 0, bottom: 50, left: 20})
-        .dimension(phakhao_lao)
+    greenCategoryChart
+        .title(defaultTitle)
+        .useViewBoxResizing(true)
+        .height(200)
+        .dimension(green_category_dim)
         .group(filteredGroup(pl_count))
         .valueAccessor(distinctCountAccessor)
-        .ordering(function (d) {
-            return d.key === 'None' ? 999 : 1;
-        })
-        .colors(GREEN_COLOR)
-        .gap(10)
-        .transitionDuration(500)
-        .centerBar(false)
-        .on('postRender', (chart) => {
-            chart.selectAll(".x text")
-                .call(wrap, 120);
-        })
+        .innerRadius(50)
+        .radius(80)
+        .ordinalColors(["#74c476", "#a1d99b"])
+        .cx(80)
+        .renderLabel(false)
+        .legend(dc.legend().x(200).y(60).gap(5));
+
+    const region_dim = green_data_cf.dimension(d => projects_by_id[d.project]['locations'].length > 0 ? "Local" : "National");
+    const region_funding = region_dim.group().reduceSum(fundingFunction);
+    const region_count = region_dim.group()
+        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
+    greenRegionChart
         .title(defaultTitle)
-        .x(d3.scaleBand())
-        .xUnits(dc.units.ordinal)
-        .elasticY(true)
-        .yAxis();
-
-
-    greenChart6
-        // .useViewBoxResizing(true)
-        .width(150)
-        .height(350)
-        .margins({top: 10, right: 0, bottom: 50, left: 20})
-        .dimension(forest_partnership)
-        .group(filteredGroup(fp_count))
+        .useViewBoxResizing(true)
+        .height(200)
+        .dimension(green_category_dim)
+        .group(region_count)
         .valueAccessor(distinctCountAccessor)
-        .ordering(function (d) {
-            return d.key === 'None' ? 999 : 1;
-        })
-        .colors(GREEN_COLOR)
-        .gap(10)
-        .transitionDuration(500)
-        .centerBar(false)
-        .on('postRender', function (chart) {
-            chart.selectAll(".x text")
-                .call(wrap, 120);
-        })
-        .title(defaultTitle)
-        .x(d3.scaleBand())
-        .xUnits(dc.units.ordinal)
-        .elasticY(true)
-        .yAxis();
+        .innerRadius(50)
+        .radius(80)
+        .ordinalColors(["#74c476", "#a1d99b"])
+        .cx(80)
+        .renderLabel(false)
+        .legend(dc.legend().x(200).y(60).gap(5));
+
+    // .useViewBoxResizing(true)
+    // .width(150)
+    // .height(350)
+    // .margins({top: 10, right: 0, bottom: 50, left: 20})
+    // .dimension(green_category_dim)
+    // .group(filteredGroup(pl_count))
+    // .valueAccessor(distinctCountAccessor)
+    // .ordering(function (d) {
+    //     return d.key === 'None' ? 999 : 1;
+    // })
+    // .colors(GREEN_COLOR)
+    // .gap(10)
+    // .transitionDuration(500)
+    // .centerBar(false)
+    // .on('postRender', (chart) => {
+    //     chart.selectAll(".x text")
+    //         .call(wrap, 120);
+    // })
+    // .title(defaultTitle)
+    // .x(d3.scaleBand())
+    // .xUnits(dc.units.ordinal)
+    // .elasticY(true)
+    // .yAxis();
+
+
+    // greenChart6
+    //     // .useViewBoxResizing(true)
+    //     .width(150)
+    //     .height(350)
+    //     .margins({top: 10, right: 0, bottom: 50, left: 20})
+    //     .dimension(forest_partnership)
+    //     .group(filteredGroup(fp_count))
+    //     .valueAccessor(distinctCountAccessor)
+    //     .ordering(function (d) {
+    //         return d.key === 'None' ? 999 : 1;
+    //     })
+    //     .colors(GREEN_COLOR)
+    //     .gap(10)
+    //     .transitionDuration(500)
+    //     .centerBar(false)
+    //     .on('postRender', function (chart) {
+    //         chart.selectAll(".x text")
+    //             .call(wrap, 120);
+    //     })
+    //     .title(defaultTitle)
+    //     .x(d3.scaleBand())
+    //     .xUnits(dc.units.ordinal)
+    //     .elasticY(true)
+    //     .yAxis();
 
 
     $('#green-reset').on('click', function (e) {
@@ -577,14 +578,14 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                     .group(partner_funding)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
-                greenChart1
-                    .group(filteredGroup(pl_sub_funding))
-                    .valueAccessor(d => d.value)
-                    .title(fundingTitle);
-                greenChart2
-                    .group(filteredGroup(fp_sub_funding))
-                    .valueAccessor(d => d.value)
-                    .title(fundingTitle);
+                // greenChart1
+                //     .group(filteredGroup(pl_sub_funding))
+                //     .valueAccessor(d => d.value)
+                //     .title(fundingTitle);
+                // greenChart2
+                //     .group(filteredGroup(fp_sub_funding))
+                //     .valueAccessor(d => d.value)
+                //     .title(fundingTitle);
                 greenChart3
                     .group(ca_funding)
                     .valueAccessor(d => d.value)
@@ -593,15 +594,14 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                     .group(gc_funding)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
-                greenChart5
+                greenCategoryChart
                     .group(filteredGroup(pl_funding))
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
-                greenChart6
-                    .group(filteredGroup(fp_funding))
+                greenRegionChart
+                    .group(region_funding)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
-
                 dc.renderAll("green");
             },
             onUnchecked: () => {
@@ -615,14 +615,14 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                     .group(partner_count)
                     .valueAccessor(distinctCountAccessor)
                     .title(defaultTitle);
-                greenChart1
-                    .group(filteredGroup(pl_sub_count))
-                    .valueAccessor(distinctCountAccessor)
-                    .title(defaultTitle);
-                greenChart2
-                    .group(filteredGroup(fp_sub_count))
-                    .valueAccessor(distinctCountAccessor)
-                    .title(defaultTitle);
+                // greenChart1
+                //     .group(filteredGroup(pl_sub_count))
+                //     .valueAccessor(distinctCountAccessor)
+                //     .title(defaultTitle);
+                // greenChart2
+                //     .group(filteredGroup(fp_sub_count))
+                //     .valueAccessor(distinctCountAccessor)
+                //     .title(defaultTitle);
                 greenChart3
                     .group(ca_count)
                     .valueAccessor(distinctCountAccessor)
@@ -631,12 +631,12 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
                     .group(gc_count)
                     .valueAccessor(distinctCountAccessor)
                     .title(defaultTitle);
-                greenChart5
+                greenCategoryChart
                     .group(filteredGroup(pl_count))
                     .valueAccessor(distinctCountAccessor)
                     .title(defaultTitle);
-                greenChart6
-                    .group(filteredGroup(fp_count))
+                greenRegionChart
+                    .group(region_count)
                     .valueAccessor(distinctCountAccessor)
                     .title(defaultTitle);
                 dc.renderAll("green");
@@ -716,8 +716,10 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
             })
     }
 
-    // const modality_dim = cf.dimension(d => d.modality);
-
+    const region_dim = cf.dimension(d => projects_by_id[d.project]['locations'].length > 0 ? "Local" : "National");
+    const region_funding = region_dim.group().reduceSum(fundingFunction);
+    const region_count = region_dim.group()
+        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
 
     const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['sector']['sdg']
@@ -733,7 +735,6 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
     const cci_funding = cci_dim.group().reduceSum(fundingFunction);
     const sdg_funding = sdg_dim1.group().reduceSum(fundingFunction);
     const priority_area_funding = priority_area_dim.group().reduceSum(fundingFunction);
-    // const modality_funding = modality_dim.group().reduceSum(fundingFunction);
     const ip_category_funding = ip_category_dim.group().reduceSum(fundingFunction);
 
     const partner_count = partner.group()
@@ -748,8 +749,6 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const pa_count = priority_area_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    // const modality_count = modality_dim.group()
-    //     .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const ipc_count = ip_category_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
 
@@ -904,19 +903,19 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .cx(80)
         .renderLabel(false)
         .legend(dc.legend().x(200).y(60).gap(5));
-    //
-    // modalityChart
-    //     .title(defaultTitle)
-    //     .useViewBoxResizing(true)
-    //     .height(200)
-    //     .innerRadius(50)
-    //     .radius(80)
-    //     .cx(80)
-    //     .dimension(modality_dim)
-    //     .group(modality_count)
-    //     .valueAccessor(distinctCountAccessor)
-    //     .renderLabel(false)
-    //     .legend(dc.legend().x(200).y(60).gap(5));
+
+    regionChart
+        .title(defaultTitle)
+        .useViewBoxResizing(true)
+        .height(200)
+        .innerRadius(50)
+        .radius(80)
+        .cx(80)
+        .dimension(region_dim)
+        .group(region_count)
+        .valueAccessor(distinctCountAccessor)
+        .renderLabel(false)
+        .legend(dc.legend().x(200).y(60).gap(5));
 
     sectorChart
         .useViewBoxResizing(true)
@@ -1043,10 +1042,10 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                     .group(sdg_funding)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
-                // modalityChart
-                //     .group(modality_funding)
-                //     .valueAccessor(d => d.value)
-                //     .title(fundingTitle);
+                regionChart
+                    .group(region_funding)
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 priorityChart
                     .group(priority_area_funding)
                     .valueAccessor(d => d.value)
@@ -1098,10 +1097,10 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                     .valueAccessor(distinctCountAccessor)
                     .group(pa_count)
                     .title(defaultTitle);
-                // modalityChart
-                //     .valueAccessor(distinctCountAccessor)
-                //     .group(modality_count)
-                //     .title(defaultTitle);
+                regionChart
+                    .valueAccessor(distinctCountAccessor)
+                    .group(region_count)
+                    .title(defaultTitle);
                 ipCategory
                     .valueAccessor(distinctCountAccessor)
                     .group(ipc_count)
@@ -1202,7 +1201,7 @@ function downloadData(dimension, districtsNames, projects) {
                 return districtsNames[d]
             }).join('; ')
         ];
-        });
+    });
 
     data.unshift(header);
     let result = d3.csvFormatRows(data);
@@ -1369,12 +1368,10 @@ function loadData(geodata, data, districts_list, provinces_list, districts, pipe
                     greenPartners.render();
                     greenCount.render();
                     greenFunding.render();
-                    greenChart1.render();
-                    greenChart2.render();
                     greenChart3.render();
                     greenChart4.render();
-                    greenChart5.render();
-                    greenChart6.render();
+                    greenCategoryChart.render();
+                    greenRegionChart.render();
                     break
                 case 'pipeline':
                     pipelineFilter.render();

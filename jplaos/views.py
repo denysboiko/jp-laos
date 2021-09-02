@@ -34,41 +34,41 @@ def green_data(request):
             'project',
             'planed_amount'
         ).annotate(
-            has_green1=Count('project__funding_by_forest_partnership'),
-            has_green2=Count('project__funding_by_phakhao_lao'),
+            has_green1=Count('project__funding_by_green_category'),
             has_green3=Count('project__complementary_area_categories'),
             has_green4=Count('project__green_catalyzers_categories'),
         )
 
-        data_with_green = filter(lambda d: d['has_green1'] + d['has_green2'] + d['has_green3'] + d['has_green4'] > 0,
-                                 data)
+        data_with_green = filter(lambda d: d['has_green1'] + d['has_green3'] + d['has_green4'] > 0, data)
 
-        fp = FundingByForestPartnershipCategory.objects.all().values('category__green_category', 'allocation',
-                                                                     'project')
-        pl = FundingByPhakhaoLaoCategory.objects.all().values('category__green_category', 'allocation', 'project')
+        fp = FundingByGreenCategory.objects.all().values('category__category', 'allocation', 'project')
 
         green_categories_by_project = defaultdict(list)
         for k in fp:
-            k['category'] = "Forest Partnership"
             green_categories_by_project[k['project']].append(k)
-        for k in pl:
-            k['category'] = "Phakhao Lao"
-            green_categories_by_project[k['project']].append(k)
-        dict(green_categories_by_project)
 
         results = []
         for d in data_with_green:
             project_id = d['project']
             green_categories = green_categories_by_project[project_id]
-            for green_category in green_categories:
+            if len(green_categories) > 0:
+                for green_category in green_categories:
+                    result = dict()
+                    result['partner'] = d['partner__partner_name']
+                    result['project'] = d['project']
+                    result['category'] = green_category['category__category']
+                    result['allocation'] = green_category['allocation'] / 100
+                    result['total_amount'] = d['planed_amount']
+                    result['planed_amount'] = d['planed_amount'] * (green_category['allocation'] / 100)
+                    results.append(result)
+            else:
                 result = dict()
                 result['partner'] = d['partner__partner_name']
                 result['project'] = d['project']
-                result['sub_category'] = green_category['category__green_category']
-                result['category'] = green_category['category']
-                result['allocation'] = green_category['allocation'] / 100
+                result['category'] = 'None'
+                result['allocation'] = 1
                 result['total_amount'] = d['planed_amount']
-                result['planed_amount'] = d['planed_amount'] * (green_category['allocation'] / 100)
+                result['planed_amount'] = d['planed_amount']
                 results.append(result)
 
         return JsonResponse(results, safe=False)

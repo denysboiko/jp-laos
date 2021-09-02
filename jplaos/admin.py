@@ -68,10 +68,9 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'project_code',
+                ('project_code', 'is_regional'),
                 'project_title',
                 ('start_date', 'end_date'),
-                'is_regional',
                 'sector',
                 'cross_cutting_issues',
                 'implementing_partner_categories'
