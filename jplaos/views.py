@@ -24,6 +24,11 @@ def home(request):
     )
 
 
+class ProjectLightViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjectLightSerializer
+    queryset = Project.objects.all()
+
+
 def green_data(request):
     if request.method == 'GET':
         data = PartnerFunding.objects \
@@ -74,18 +79,29 @@ def green_data(request):
         return JsonResponse(results, safe=False)
 
 
-@login_required(login_url='/admin/login/')
+# @login_required(login_url='/admin/login/')
 def data(request):
     if request.method == 'GET':
-        data = PartnerFunding.objects \
-            .filter(Q(project__start_date__lte=datetime.datetime.today().date(),
-                      project__end_date__gt=datetime.datetime.today().date())) \
-            .values(
-            'partner__partner_name',
-            'project',
-            'planed_amount',
-            'project__project_title'
-        )
+        status = request.GET.get('status')
+        data = None
+        if status is not None:
+            statuses = status.split(',')
+            data = PartnerFunding.objects \
+                .filter(get_dates_filter(statuses, get_status_filter_related)) \
+                .values(
+                'partner__partner_name',
+                'project',
+                'planed_amount',
+                'project__project_title'
+            )
+        else:
+            data = PartnerFunding.objects \
+                .all().values(
+                'partner__partner_name',
+                'project',
+                'planed_amount',
+                'project__project_title'
+            )
 
         results = []
         for d in data:
@@ -155,12 +171,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
         status = self.request.query_params.get('status')
         if status is not None:
             statuses = status.split(',')
-            queryset = queryset.filter(get_dates_filter(statuses))
+            queryset = queryset.filter(get_dates_filter(statuses, get_status_filter))
         return queryset
 
 
-def get_dates_filter(statuses):
-    queries = list(map(get_status_filter, statuses))
+def get_dates_filter(statuses, mapper):
+    queries = list(map(mapper, statuses))
     if len(queries) == 3:
         return queries[0] | queries[1] | queries[2]
     elif len(queries) == 2:
@@ -168,6 +184,18 @@ def get_dates_filter(statuses):
     elif len(queries) == 1:
         return queries[0]
 
+
+def get_status_filter_related(status):
+    today = datetime.datetime.today().date()
+    ongoing_filter = Q(project__start_date__lte=today, project__end_date__gt=today)
+    closed_filter = Q(project__end_date__lte=today)
+    planned_filter = Q(project__start_date__gte=today)
+    if status == 'ongoing':
+        return ongoing_filter
+    elif status == 'closed':
+        return closed_filter
+    elif status == 'planned':
+        return planned_filter
 
 def get_status_filter(status):
     today = datetime.datetime.today().date()

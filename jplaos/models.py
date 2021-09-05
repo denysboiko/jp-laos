@@ -1,9 +1,33 @@
 import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.db.models import Sum
 from smart_selects.db_fields import ChainedManyToManyField
+
+
+class Partner(models.Model):
+    partner_name = models.CharField(max_length=80)
+
+    def __str__(self):
+        return self.partner_name
+
+    class Meta:
+        db_table = 'partners'
+
+
+class PartnerUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    primary_partner = models.ForeignKey(Partner, related_name='primary_users', on_delete=models.CASCADE)
+    partners_access = models.ManyToManyField(Partner, related_name='users_with_access')
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        db_table = 'partner_user'
+        verbose_name = 'Partner User'
+        verbose_name_plural = 'Partner Users'
 
 
 class Status(models.Model):
@@ -122,17 +146,6 @@ class Responsible(models.Model):
 
     class Meta:
         db_table = 'responsible'
-
-
-class Partner(models.Model):
-    partner_name = models.CharField(max_length=80)
-    users_access = models.ManyToManyField(User, blank=True)
-
-    def __str__(self):
-        return self.partner_name
-
-    class Meta:
-        db_table = 'partners'
 
 
 class ImplementingPartnerCategory(models.Model):

@@ -136,6 +136,7 @@ class PhakhaoLaoSerializer(serializers.ModelSerializer):
         model = FundingByPhakhaoLaoCategory
         fields = ('category', 'allocation')
 
+
 class ForestPartnershipSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()
     allocation = serializers.IntegerField()
@@ -143,6 +144,12 @@ class ForestPartnershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = FundingByForestPartnershipCategory
         fields = ('category', 'allocation')
+
+
+class ProjectLightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = '__all__'
 
 
 class ProjectSerializer(serializers.ModelSerializer):

@@ -155,6 +155,7 @@ class SectorAdmin(admin.ModelAdmin):
 
 
 admin.site.register([
+    PartnerUser,
     Partner,
     PriorityArea,
     CrossCuttingIssue,

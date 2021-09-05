@@ -115,22 +115,22 @@
                         </div>
                         <div class="content">
                             <div class="ui form">
-                                <div class="grouped fields">
+                                <div class="grouped fields statuses">
                                     <label>Status</label>
                                     <div class="field">
-                                        <div class="ui checkbox disabled">
+                                        <div class="ui checkbox">
                                             <input checked="checked" name="ongoing" type="checkbox">
                                             <label>Ongoing</label>
                                         </div>
                                     </div>
                                     <div class="field">
-                                        <div class="ui checkbox disabled">
+                                        <div class="ui checkbox">
                                             <input type="checkbox" name="planned">
                                             <label>Planned</label>
                                         </div>
                                     </div>
                                     <div class="field">
-                                        <div class="ui checkbox disabled">
+                                        <div class="ui checkbox">
                                             <input type="checkbox" name="closed">
                                             <label>Closed</label>
                                         </div>
@@ -161,7 +161,7 @@
                             </div>
                         </div>
                         <div class="extra content">
-                            <button class="ui button disabled">Reload Data</button>
+                            <button id="reload" class="ui button disabled">Reload Data</button>
                         </div>
                     </div>
                 </div>
@@ -292,6 +292,25 @@
                 </table>
             </div>
         </div>
+        <div class="ui large modal" id="green-projects-table">
+            <div class="header">Data Preview</div>
+            <div class="scrolling content">
+                <table class="ui table" id="green-projects-data-grid">
+                    <thead>
+                    <tr>
+                        <th>Project Title</th>
+                        <th>Status</th>
+                        <th>Sector</th>
+                        <th>Partners</th>
+                        <th>Total Funding</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <div class="ui tab" data-tab="team-europe">
         <div class="ui grid">
@@ -299,6 +318,9 @@
                 <div class="column">
                     <button class="ui button left floated" id="green-download">
                         Download Data
+                    </button>
+                    <button class="ui button left floated" id="green-preview">
+                        Preview Data
                     </button>
                 </div>
                 <div class="column">
@@ -315,28 +337,41 @@
                         </div>
                         <div class="content">
                             <div class="ui form">
-                                {#                                <div class="grouped fields">#}
-                                {#                                    <label>Status</label>#}
-                                {#                                    <div class="field">#}
-                                {#                                        <div class="ui checkbox">#}
-                                {#                                            <input checked="checked" name="ongoing" type="checkbox">#}
-                                {#                                            <label>Ongoing</label>#}
-                                {#                                        </div>#}
-                                {#                                    </div>#}
-                                {#                                    <div class="field">#}
-                                {#                                        <div class="ui checkbox">#}
-                                {#                                            <input type="checkbox" name="planned">#}
-                                {#                                            <label>Planned</label>#}
-                                {#                                        </div>#}
-                                {#                                    </div>#}
-                                {#                                    <div class="field">#}
-                                {#                                        <div class="ui checkbox">#}
-                                {#                                            <input type="checkbox" name="closed">#}
-                                {#                                            <label>Closed</label>#}
-                                {#                                        </div>#}
-                                {#                                    </div>#}
-                                {#                                </div>#}
                                 <div class="grouped fields">
+                                    <label>Status</label>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input checked="checked" name="ongoing" type="checkbox">
+                                            <label>Ongoing</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" name="planned">
+                                            <label>Planned</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" name="closed">
+                                            <label>Closed</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grouped fields">
+                                    <label>View</label>
+                                    <div class="field">
+                                        <div id="green-regional-toggle" class="ui toggle checkbox">
+                                            <input type="checkbox" name="public">
+                                            <label>Regional</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div id="green-cofounded-toggle" class="ui toggle checkbox">
+                                            <input type="checkbox" name="public">
+                                            <label>Co-founded</label>
+                                        </div>
+                                    </div>
                                     <label>Measure</label>
                                     <div class="field">
                                         <div id="green-measure-toggle" class="ui toggle checkbox">
@@ -549,7 +584,10 @@
     {#$('.ui.modal').modal();#}
     $('#preview').on("click", () => {
         $('#projects-table').modal("show")
-    })
+    });
+    $('#green-preview').on("click", () => {
+        $('#green-projects-table').modal("show")
+    });
 </script>
 
 <script src="{% static 'js/charts.js' %}"></script>
@@ -558,7 +596,7 @@
 
     const files = [
         '{% static "data/laos.geojson" %}',
-        "/data/",
+        "/data?status=ongoing",
         "/districts/",
         "/provinces/",
         '{% static "data/laos-districts.geojson" %}',
@@ -570,17 +608,19 @@
 
     let promises = [];
     files.forEach(url => promises.push(d3.json(url)));
-    Promise.all(promises).then(data => loadData(
-        data[0],
-        data[1],
-        data[2],
-        data[3],
-        data[4],
-        data[5],
-        data[6],
-        data[7],
-        data[8]
-    ));
+    Promise.all(promises).then(data => {
+        loadData(
+            data[0],
+            data[1],
+            data[2],
+            data[3],
+            data[4],
+            data[5],
+            data[6],
+            data[7],
+            data[8]
+        );
+    });
 
 
 </script>

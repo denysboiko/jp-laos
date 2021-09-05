@@ -1,6 +1,33 @@
 const CHART_COLOR = "#026CB6";
+let CURRENT_STATUSES = new Set(['ongoing'])
+const NEW_STATUSES = new Set(CURRENT_STATUSES)
 
+let DISTRICTS_GEO,
+    PROVINCES_GEO;
+
+let allLocations;
+let districtsNames = {};
+let projects_by_id;
+
+// Initialize legend container with .legendQuant class
+const mapLegend = d3.select("#legend");
+mapLegend.append("g")
+    .attr("class", "legendQuant")
+    .attr("transform", "translate(20,20)");
 const f = d3.format(",.0f");
+let cf,
+    green_data_cf;
+
+function reversible_group(group, predicate) {
+    return {
+        top: function (N) {
+            return group.top(N).filter(predicate);
+        },
+        bottom: function (N) {
+            return group.top(Infinity).slice(-N).filter(predicate).reverse();
+        }
+    };
+}
 
 const list2 = [
     'Affordable and Clean Energy',
@@ -71,12 +98,12 @@ const fundingTitle = p => {
 };
 
 const defaultTitle = p => {
+    if (p.value.projects === undefined) {
+        return;
+    }
     return p.key + ': ' + Object.keys(p.value.projects).length;
 };
 
-const fundingAccessor = d => d['planed_amount'];
-
-const fundingFunction = d => Math.round(d['planed_amount']);
 const distinctCountAccessor = d => {
     return Object.keys(d.value.projects).length;
 };
@@ -132,7 +159,6 @@ const totalCount = dc.numberDisplay("#count")
     .chartGroup("projects");
 const projectsDataGrid = dc.dataTable("#projects-data-grid")
     .chartGroup("projects");
-
 const greenMap = dc.geoChoroplethChart("#green-map")
     .chartGroup("green");
 const greenPartners = dc.rowChart("#green-partner")
@@ -157,6 +183,10 @@ const greenCount = dc.numberDisplay('#green-count')
     .chartGroup("green");
 const greenFunding = dc.numberDisplay("#green-funding")
     .chartGroup("green");
+const greenDataGrid = dc.dataTable("#green-projects-data-grid")
+    .chartGroup("green");
+// green-projects-data-grid
+
 
 const pipelineTable = dc.dataTable("#pipeline-table")
     .chartGroup("pipeline");
@@ -179,11 +209,6 @@ const projectCharts = [
     ipCategory,
     projectsDataGrid
 ];
-
-function renderCharts(charts) {
-    charts.forEach((chart) => chart.render());
-}
-
 
 const GREEN_COLOR = "#31a354";
 const GREEN_COLORS = ["#edf8e9", "#c7e9c0", "#a1d99b", "#74c476",
@@ -248,21 +273,22 @@ function updateLegend(scale, svg, format) {
         .call(clearLabel)
 }
 
-function renderGreenDashboard(geo_data, data, districts_list, provinces_list, districts, projects, green_data) {
-
-    let districtsNames = {}
-    districts_list.forEach(function (e, i, arr) {
-        districtsNames[e['dcode']] = e.name;
-    });
+function renderGreenDashboard(projects, green_data) {
 
     let current_measure = "count"
     const projects_by_id = {}
     projects.filter(project => project['has_green_category'] === true)
         .forEach(project => {
+            if (project.locations.length === 0) {
+                project.locations = allLocations
+                project.scope = "National"
+            } else {
+                project.scope = "Local"
+            }
             projects_by_id[project.id] = project
         });
 
-    const green_data_cf = crossfilter(green_data);
+    green_data_cf = crossfilter(green_data);
     const green_province = green_data_cf.dimension(d => projects_by_id[d.project]['locations'].map(d => d.province), true);
     const distinctCount = green_data_cf.groupAll()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
@@ -331,7 +357,7 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .valueAccessor(distinctCountAccessor)
         .colors(returnScale(gp_count, GREEN_COLORS, distinctCountAccessor))
         .overlayGeoJson(
-            geo_data.features
+            PROVINCES_GEO.features
             , "state"
             , function (d) {
                 return d.properties['pr_name2'];
@@ -474,8 +500,8 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .renderLabel(false)
         .legend(dc.legend().x(200).y(60).gap(5));
 
-    const region_dim = green_data_cf.dimension(d => projects_by_id[d.project]['locations'].length > 0 ? "Local" : "National");
-    const region_funding = region_dim.group().reduceSum(fundingFunction);
+    const region_dim = green_data_cf.dimension(d => projects_by_id[d.project]['scope']);
+    const region_funding = region_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const region_count = region_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     greenRegionChart
@@ -491,6 +517,37 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         .cx(80)
         .renderLabel(false)
         .legend(dc.legend().x(200).y(60).gap(5));
+
+
+    const project = green_data_cf.dimension(d => d.project);
+
+    let groupedDimension = project.group().reduce(
+        function (p, v) {
+            ++p.number;
+            p.project = v.project;
+            return p;
+        },
+        function (p, v) {
+            --p.number;
+            p.project = v.project;
+            return p;
+        },
+        function () {
+            return {number: 0, project: {}}
+        });
+
+    greenDataGrid
+        .dimension(reversible_group(groupedDimension, d => d.value.number > 0))
+        .section(d => d.value.project)
+        .showSections(false)
+        .columns([
+            d => projects_by_id[d.value.project].project_title,
+            d => projects_by_id[d.value.project].status,
+            d => projects_by_id[d.value.project].sector.sector_name,
+            d => projects_by_id[d.value.project].partners.map(p => p.partner).join('; '),
+            d => projects_by_id[d.value.project].total_funding
+        ]);
+
 
     // .useViewBoxResizing(true)
     // .width(150)
@@ -564,6 +621,33 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
             updateLegend(returnScale(gp_count, GREEN_COLORS, distinctCountAccessor), greenMapLegend, d3.format(",.0f"));
         }
     });
+
+    const regional = green_data_cf.dimension(d => projects_by_id[d.project]['is_regional']);
+    const co_founded = green_data_cf.dimension(d => projects_by_id[d.project]['is_cofounded']);
+    $('#green-regional-toggle')
+        .checkbox({
+            onChecked: () => {
+                regional.filter(true)
+                dc.renderAll("green");
+            },
+            onUnchecked: () => {
+                regional.filterAll()
+                dc.renderAll("green");
+            }
+        });
+
+    $('#green-cofounded-toggle')
+        .checkbox({
+            onChecked: () => {
+                co_founded.filter(true)
+                dc.renderAll("green");
+            },
+            onUnchecked: () => {
+                co_founded.filterAll()
+                dc.renderAll("green");
+            }
+        });
+
 
     $('#green-measure-toggle')
         .checkbox({
@@ -644,52 +728,29 @@ function renderGreenDashboard(geo_data, data, districts_list, provinces_list, di
         });
 
     $('#green-download').on('click', function (e) {
-        downloadData(green_partner, districtsNames, projects_by_id);
+        downloadData(green_partner, projects_by_id);
     });
 
 }
 
-function renderProjectsDashboard(geo_data, data, districts_list, provinces_list, districts, projects) {
-
-
-    const projects_by_id = {}
-    projects.forEach(project => {
-        projects_by_id[project.id] = project
-    });
+function renderProjectsDashboard(data) {
 
     const retrieveSectorField = d => projects_by_id[d.project]['sector']['sector_name']
     const retrievePriorityArea = d => projects_by_id[d.project]['sector']['priority_area'];
-
-    let districtsNames = {};
-
-
-    data.forEach(d => {
-        // projects_by_id[d.project]
-        projects_by_id[d.project].districts = [].concat.apply([], projects_by_id[d.project].locations.map(function (d) {
-            return d.districts;
-        }));
-    });
-
-    districts_list.forEach(function (e, i, arr) {
-        districtsNames[e['dcode']] = e.name;
-    });
-
 
     let config = {
         level: 'province',
         measure: 'count'
     };
 
-    const cf = crossfilter(data);
+    cf = crossfilter(data);
     const distinctCount = cf.groupAll()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const province = cf.dimension(d => projects_by_id[d.project]['locations'].map(d => d.province), true);
     const count_by_province = province.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const funding_by_province = province.group()
-        .reduceSum(function (d) {
-            return Math.round(d.planed_amount / projects_by_id[d.project].locations.length);
-        });
+        .reduceSum(d => Math.round(d.planed_amount / projects_by_id[d.project].locations.length));
 
     const district = cf.dimension(d => {
         let districts = projects_by_id[d.project]['districts'].map(d => d);
@@ -716,8 +777,8 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
             })
     }
 
-    const region_dim = cf.dimension(d => projects_by_id[d.project]['locations'].length > 0 ? "Local" : "National");
-    const region_funding = region_dim.group().reduceSum(fundingFunction);
+    const region_dim = cf.dimension(d => projects_by_id[d.project]['scope']);
+    const region_funding = region_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const region_count = region_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
@@ -729,13 +790,13 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
     const ip_category_dim = cf.dimension(d => projects_by_id[d.project]['implementing_partner_categories'], true);
 
-    const partner_funding = partner.group().reduceSum(fundingFunction);
-    const sector_funding = sector.group().reduceSum(fundingFunction);
-    const nsedc_funding = nsedc_dim.group().reduceSum(fundingFunction);
-    const cci_funding = cci_dim.group().reduceSum(fundingFunction);
-    const sdg_funding = sdg_dim1.group().reduceSum(fundingFunction);
-    const priority_area_funding = priority_area_dim.group().reduceSum(fundingFunction);
-    const ip_category_funding = ip_category_dim.group().reduceSum(fundingFunction);
+    const partner_funding = partner.group().reduceSum(d => Math.round(d['planed_amount']));
+    const sector_funding = sector.group().reduceSum(d => Math.round(d['planed_amount']));
+    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['outputs'].length));
+    const cci_funding = cci_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['cross_cutting_issues'].length));
+    const sdg_funding = sdg_dim1.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['sdg'].length));
+    const priority_area_funding = priority_area_dim.group().reduceSum(d => Math.round(d['planed_amount']));
+    const ip_category_funding = ip_category_dim.group().reduceSum(d => Math.round(d['planed_amount']));
 
     const partner_count = partner.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
@@ -760,7 +821,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .valueAccessor(distinctCountAccessor)
         .colors(returnScale(count_by_district, colors, distinctCountAccessor))
         .overlayGeoJson(
-            districts.features
+            DISTRICTS_GEO.features
             , "state"
             , function (d) {
                 return d.properties['DCode'].toString(); // Code
@@ -779,7 +840,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .valueAccessor(distinctCountAccessor)
         .colors(returnScale(count_by_province, colors, distinctCountAccessor))
         .overlayGeoJson(
-            geo_data.features
+            PROVINCES_GEO.features
             , "state"
             , function (d) {
                 return d.properties['pr_name2'];
@@ -943,7 +1004,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
 
     totalFunding
-        .group(cf.groupAll().reduceSum(fundingAccessor))
+        .group(cf.groupAll().reduceSum(d => d['planed_amount']))
         .valueAccessor(function (d) {
             return Math.round(d);
         });
@@ -957,28 +1018,34 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
         .formatNumber(d3.format(""));
 
 
-    // let project = cf.dimension(d => d.id);
+    let project = cf.dimension(d => d.project).group().reduce(
+        function (p, v) {
+            ++p.number;
+            p.project = v.project;
+            return p;
+        },
+        function (p, v) {
+            --p.number;
+            p.project = v.project;
+            return p;
+        },
+        function () {
+            return {number: 0, project: {}}
+        });
+
     projectsDataGrid
-        .dimension(partner)
+        .dimension(reversible_group(project, d => d.value.number > 0))
         .section(d => d.id)
         .showSections(false)
         .columns([
-            d => projects_by_id[d.project].project_title,
-            d => projects_by_id[d.project].status,
-            d => projects_by_id[d.project].sector.sector_name,
-            d => projects_by_id[d.project].partners.map(p => p.partner).join('; '),
-            d => projects_by_id[d.project].total_funding
-
+            d => projects_by_id[d.value.project].project_title,
+            d => projects_by_id[d.value.project].status,
+            d => projects_by_id[d.value.project].sector.sector_name,
+            d => projects_by_id[d.value.project].partners.map(p => p.partner).join('; '),
+            d => projects_by_id[d.value.project].total_funding
         ]);
 
-    renderCharts(projectCharts);
-
-    // Initialize legend container with .legendQuant class
-    let mapLegend = d3.select("#legend");
-
-    mapLegend.append("g")
-        .attr("class", "legendQuant")
-        .attr("transform", "translate(20,20)");
+    dc.renderAll("projects");
 
     updateLegend(returnScale(count_by_province, colors, distinctCountAccessor), mapLegend, f);
 
@@ -1057,7 +1124,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
                 updateLegend(returnScale(geoLevel === 'province' ? funding_by_province : funding_by_district, colors, d => d.value), mapLegend, f);
                 changeFormat('.2s');
-                renderCharts(projectCharts);
+                dc.renderAll("projects");
             },
             onUnchecked: () => {
                 let geolevel = config.level;
@@ -1108,7 +1175,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
                 updateLegend(returnScale(geolevel === 'province' ? count_by_province : count_by_district, colors, distinctCountAccessor), mapLegend, f);
                 changeFormat('d');
-                renderCharts(projectCharts);
+                dc.renderAll("projects");
             }
         });
 
@@ -1137,7 +1204,7 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
 
 
     $('#download').on('click', function (e) {
-        downloadData(partner, districtsNames, projects_by_id);
+        downloadData(partner, projects_by_id);
     });
 
     $('#reset').on('click', function (e) {
@@ -1170,9 +1237,82 @@ function renderProjectsDashboard(geo_data, data, districts_list, provinces_list,
                 dc.renderAll("projects");
             }
         });
+
+
+    $('.statuses .checkbox')
+        .checkbox({
+            onChecked: () => {
+
+                let $checkbox = $('.statuses .checkbox');
+                $checkbox.each(function () {
+                    if ($(this).checkbox('is checked')) {
+                        const status = $(this).children('input').attr("name");
+                        if (!NEW_STATUSES.has(status)) {
+                            NEW_STATUSES.add(status)
+                        }
+                    }
+                });
+                if (!setsEqual(CURRENT_STATUSES, NEW_STATUSES)) {
+                    $('#reload').removeClass("disabled");
+                } else {
+                    $('#reload').addClass("disabled");
+                }
+            },
+            onUnchecked: () => {
+                let $checkbox = $('.statuses .checkbox');
+                $checkbox.each(function () {
+                    if ($(this).checkbox('is unchecked')) {
+                        const status = $(this).children('input').attr("name");
+                        if (NEW_STATUSES.has(status)) {
+                            NEW_STATUSES.delete(status)
+                        }
+                    }
+                });
+                if (!setsEqual(CURRENT_STATUSES, NEW_STATUSES)) {
+                    $('#reload').removeClass("disabled");
+                } else {
+                    $('#reload').addClass("disabled");
+                }
+            }
+        })
+
+    $('#reload').on('click', () => {
+        reloadData();
+    });
 }
 
-function downloadData(dimension, districtsNames, projects) {
+function setsEqual(as, bs) {
+    if (as.size !== bs.size) return false;
+    for (var a of as) if (!bs.has(a)) return false;
+    return true;
+}
+
+function reloadData() {
+    const projectsUrl = "/projects";
+    const statusesParam = "?status=";
+    $('#loader').toggleClass('active');
+    const statuses = [...NEW_STATUSES];
+    let urlFilter = statuses.length > 0 ? statusesParam + statuses.join(",") : "";
+    let urls = [
+        'data/' + urlFilter,
+        projectsUrl + urlFilter
+    ]
+    let promises = [];
+    urls.forEach(url => promises.push(d3.json(url)));
+    Promise.all(promises).then(data => {
+        CURRENT_STATUSES = new Set(NEW_STATUSES);
+        $('#reload').addClass("disabled");
+        transformData(data[1]);
+        cf.remove(() => true);
+        cf.add(data[0]);
+
+        dc.redrawAll("projects");
+        $('#loader').toggleClass('active');
+    });
+}
+
+
+function downloadData(dimension, projects) {
     let header = [
         'id',
         'project_code',
@@ -1216,7 +1356,7 @@ function renderPipelines(data, sectors) {
         sectors.map(e => [e.sector_name, e.priority_area])
     )
 
-    const cf = crossfilter(data);
+    cf = crossfilter(data);
     const partner_dim = cf.dimension(d => d['partner']);
     const sector_dim = cf.dimension(d => d['sector']);
 
@@ -1273,17 +1413,6 @@ function renderPipelines(data, sectors) {
             })
         .order(p => priority_areas[p.key]);
 
-    function reversible_group(group) {
-        return {
-            top: function (N) {
-                return group.top(N);
-            },
-            bottom: function (N) {
-                return group.top(Infinity).slice(-N).reverse();
-            }
-        };
-    }
-
     pipelineFilter
         .dimension(partner_dim)
         .group(partner_dim.group())
@@ -1299,7 +1428,7 @@ function renderPipelines(data, sectors) {
     const percentageFormat = d3.format(".0%");
 
     pipelineTable
-        .dimension(reversible_group(sector_group))
+        .dimension(reversible_group(sector_group, () => true))
         // .section(d => priority_areas[d['sector']])
         .section(d => d['sector'])
         .showSections(false)
@@ -1333,25 +1462,49 @@ function renderPipelines(data, sectors) {
     pipelineTable.render();
 }
 
+function transformData(projects) {
+    projects_by_id = {}
+    projects.forEach(project => {
+        if (project.locations.length === 0) {
+            project.locations = allLocations
+            project.scope = "National"
+        } else {
+            project.scope = "Local"
+        }
+        project.districts = [].concat.apply([], project.locations.map(d => d.districts))
+        projects_by_id[project.id] = project
+    });
+}
+
 function loadData(geodata, data, districts_list, provinces_list, districts, pipelines, sectors, projects, green_data) {
 
-    dc.config.defaultColors(d3.schemeBlues[10]);
+    allLocations = provinces_list.map(d => {
+        return {
+            province: d.name,
+            districts: d.districts
+        }
+    });
+    districts_list.forEach(function (district) {
+        districtsNames[district['dcode']] = district.name;
+    });
+    DISTRICTS_GEO = districts;
+    PROVINCES_GEO = geodata;
+    transformData(projects);
+
+    // dc.config.defaultColors(d3.schemeBlues[10]);
 
     $('#loader').toggleClass('active');
 
     $('#dashboard').css('visibility', 'visible');
     $('#footer').css('visibility', 'visible');
 
-    renderProjectsDashboard(geodata, data, districts_list, provinces_list, districts, projects);
+    renderProjectsDashboard(data);
 
     $('.menu .item').tab({
         'onFirstLoad': (path) => {
             switch (path) {
-                case 'projects':
-                    renderProjectsDashboard(geodata, data, districts_list, provinces_list, districts, projects);
-                    break
                 case 'team-europe':
-                    renderGreenDashboard(geodata, data, districts_list, provinces_list, districts, projects, green_data);
+                    renderGreenDashboard(projects, green_data);
                     break
                 case 'pipeline':
                     renderPipelines(pipelines, sectors);
@@ -1361,17 +1514,10 @@ function loadData(geodata, data, districts_list, provinces_list, districts, pipe
         'onLoad': (path) => {
             switch (path) {
                 case 'projects':
-                    renderCharts(projectCharts);
+                    dc.renderAll("projects");
                     break
                 case 'team-europe':
-                    greenMap.render();
-                    greenPartners.render();
-                    greenCount.render();
-                    greenFunding.render();
-                    greenChart3.render();
-                    greenChart4.render();
-                    greenCategoryChart.render();
-                    greenRegionChart.render();
+                    dc.renderAll("green");
                     break
                 case 'pipeline':
                     pipelineFilter.render();
