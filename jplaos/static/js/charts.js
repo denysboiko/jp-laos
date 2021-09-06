@@ -194,22 +194,6 @@ const pipelineFilter = dc.cboxMenu("#pipeline-partner-filter")
     .multiple(true)
     .chartGroup("pipeline");
 
-const projectCharts = [
-    totalCount,
-    totalFunding,
-    mapChart,
-    mapDistrictChart,
-    partnersChart,
-    sectorChart,
-    nsedcChart,
-    issuesChart,
-    sdgChart1,
-    priorityChart,
-    regionChart,
-    ipCategory,
-    projectsDataGrid
-];
-
 const GREEN_COLOR = "#31a354";
 const GREEN_COLORS = ["#edf8e9", "#c7e9c0", "#a1d99b", "#74c476",
     "#31a354", "#006d2c"];
@@ -781,7 +765,7 @@ function renderProjectsDashboard(data) {
     const region_funding = region_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const region_count = region_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['sector']['outputs'].map(o => o['outcome']).filter((v, i, a) => a.indexOf(v) === i), true)
+    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['sector']['outcomes'].map(o => o), true)
 
     const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['sector']['sdg']
         .map(d => d), true);
@@ -792,7 +776,7 @@ function renderProjectsDashboard(data) {
 
     const partner_funding = partner.group().reduceSum(d => Math.round(d['planed_amount']));
     const sector_funding = sector.group().reduceSum(d => Math.round(d['planed_amount']));
-    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['outputs'].length));
+    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['outcomes'].length));
     const cci_funding = cci_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['cross_cutting_issues'].length));
     const sdg_funding = sdg_dim1.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['sdg'].length));
     const priority_area_funding = priority_area_dim.group().reduceSum(d => Math.round(d['planed_amount']));
@@ -823,13 +807,10 @@ function renderProjectsDashboard(data) {
         .overlayGeoJson(
             DISTRICTS_GEO.features
             , "state"
-            , function (d) {
-                return d.properties['DCode'].toString(); // Code
-            }
+            , d => d.properties['DCode'].toString() // Code
+
         )
-        .title(function (p) {
-            return districtsNames[p.key] + ': ' + f(p.value);
-        })
+        .title(p => districtsNames[p.key] + ': ' + f(p.value))
         .projection(getProjection("map-container"));
 
     mapChart
@@ -1050,21 +1031,23 @@ function renderProjectsDashboard(data) {
     updateLegend(returnScale(count_by_province, colors, distinctCountAccessor), mapLegend, f);
 
     cf.onChange(() => {
-        let groups = {
-            'count': {
-                'province': count_by_province,
-                'district': count_by_district,
-                'accessor': distinctCountAccessor
-            },
-            'funding': {
-                'province': funding_by_province,
-                'district': funding_by_district,
-                'accessor': d => d.value
+        if (cf.size() > 0) {
+            let groups = {
+                'count': {
+                    'province': count_by_province,
+                    'district': count_by_district,
+                    'accessor': distinctCountAccessor
+                },
+                'funding': {
+                    'province': funding_by_province,
+                    'district': funding_by_district,
+                    'accessor': d => d.value
+                }
             }
+            mapChart.colors(returnScale(groups[config.measure]['province'], colors, groups[config.measure]['accessor']));
+            mapDistrictChart.colors(returnScale(groups[config.measure]['district'], colors, groups[config.measure]['accessor']));
+            updateLegend(returnScale(groups[config.measure][config.level], colors, groups[config.measure]['accessor']), mapLegend, d3.format(",.0f"));
         }
-        mapChart.colors(returnScale(groups[config.measure]['province'], colors, groups[config.measure]['accessor']));
-        mapDistrictChart.colors(returnScale(groups[config.measure]['district'], colors, groups[config.measure]['accessor']));
-        updateLegend(returnScale(groups[config.measure][config.level], colors, groups[config.measure]['accessor']), mapLegend, d3.format(",.0f"));
     });
 
     function changeFormat(format) {
@@ -1088,7 +1071,7 @@ function renderProjectsDashboard(data) {
                     .group(funding_by_district)
                     .valueAccessor(d => d.value)
                     .colors(returnScale(funding_by_district, colors, d => d.value))
-                    .title(fundingTitle);
+                // .title(fundingTitle);
                 partnersChart
                     .group(partner_funding)
                     .valueAccessor(d => d.value)
@@ -1138,7 +1121,7 @@ function renderProjectsDashboard(data) {
                     .group(count_by_district)
                     .valueAccessor(distinctCountAccessor)
                     .colors(returnScale(count_by_district, colors, distinctCountAccessor))
-                    .title(fundingTitle);
+                // .title(fundingTitle);
 
                 partnersChart
                     .valueAccessor(distinctCountAccessor)
@@ -1361,54 +1344,21 @@ function renderPipelines(data, sectors) {
     const sector_dim = cf.dimension(d => d['sector']);
 
     var total = cf.groupAll()
-        .reduceSum(dc.pluck("total_funding"));
+        .reduceSum(dc.pluck("amount"));
 
     let sector_group = sector_dim.group()
         .reduce(
             function (p, v) {
-                p.planed_amount_2021 += +v.planed_amount_2021;
-                p.planed_amount_2022 += +v.planed_amount_2022;
-                p.planed_amount_2023 += +v.planed_amount_2023;
-                p.planed_amount_2024 += +v.planed_amount_2024;
-                p.planed_amount_2025 += +v.planed_amount_2025;
-                p.planed_amount_2026 += +v.planed_amount_2026;
-                p.planed_amount_2027 += +v.planed_amount_2027;
-                p.total_amount += +v.planed_amount_2021 +
-                    +v.planed_amount_2022 +
-                    +v.planed_amount_2023 +
-                    +v.planed_amount_2024 +
-                    +v.planed_amount_2025 +
-                    +v.planed_amount_2026 +
-                    +v.planed_amount_2027
+                p.amount += +v.amount;
                 return p;
             },
             function (p, v) {
-                p.planed_amount_2021 -= +v.planed_amount_2021;
-                p.planed_amount_2022 -= +v.planed_amount_2022;
-                p.planed_amount_2023 -= +v.planed_amount_2023;
-                p.planed_amount_2024 -= +v.planed_amount_2024;
-                p.planed_amount_2025 -= +v.planed_amount_2025;
-                p.planed_amount_2026 -= +v.planed_amount_2026;
-                p.planed_amount_2027 -= +v.planed_amount_2027;
-                p.total_amount -= +v.planed_amount_2021 +
-                    +v.planed_amount_2022 +
-                    +v.planed_amount_2023 +
-                    +v.planed_amount_2024 +
-                    +v.planed_amount_2025 +
-                    +v.planed_amount_2026 +
-                    +v.planed_amount_2027
+                p.amount -= +v.amount;
                 return p;
             },
             function () {
                 return {
-                    planed_amount_2021: 0,
-                    planed_amount_2022: 0,
-                    planed_amount_2023: 0,
-                    planed_amount_2024: 0,
-                    planed_amount_2025: 0,
-                    planed_amount_2026: 0,
-                    planed_amount_2027: 0,
-                    total_amount: 0
+                    amount: 0
                 }
             })
         .order(p => priority_areas[p.key]);
@@ -1429,20 +1379,19 @@ function renderPipelines(data, sectors) {
 
     pipelineTable
         .dimension(reversible_group(sector_group, () => true))
-        // .section(d => priority_areas[d['sector']])
         .section(d => d['sector'])
         .showSections(false)
         .columns([
             d => priority_areas[d.key],
             d => d.key,
-            d => percentageFormat(d.value.total_amount / total.value()),
-            d => d.value.planed_amount_2021,
-            d => d.value.planed_amount_2022,
-            d => d.value.planed_amount_2023,
-            d => d.value.planed_amount_2024,
-            d => d.value.planed_amount_2025,
-            d => d.value.planed_amount_2026,
-            d => d.value.planed_amount_2027
+            d => percentageFormat(d.value.amount / total.value()),
+            d => d.value.amount,
+            d => d.value.amount,
+            d => d.value.amount,
+            d => d.value.amount,
+            d => d.value.amount,
+            d => d.value.amount,
+            d => d.value.amount
 
         ])
         .on('renderlet', (chart) => {

@@ -129,7 +129,7 @@ class Sector(models.Model):
     sector_name = models.CharField(max_length=120)
     priority_area = models.ForeignKey(PriorityArea, related_name='sectors', on_delete=models.CASCADE)
     sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='sectors')
-    outputs = models.ManyToManyField(NSEDPOutput, related_name='sectors')
+    outcomes = models.ManyToManyField(NSEDPOutcome, related_name='sectors')
 
     def __str__(self):
         return self.sector_name
@@ -358,24 +358,6 @@ class Pipeline(models.Model):
 class PipelinePlannedAmount(models.Model):
     sector = models.ForeignKey(Sector, related_name='pipeline_by_partners', blank=True, null=True,
                                on_delete=models.CASCADE)
-    partner = models.ForeignKey(Partner, related_name='pipelines_by_sector', blank=True, null=True,
-                                on_delete=models.CASCADE)
-    planed_amount_2021 = models.FloatField()
-    planed_amount_2022 = models.FloatField()
-    planed_amount_2023 = models.FloatField()
-    planed_amount_2024 = models.FloatField()
-    planed_amount_2025 = models.FloatField()
-    planed_amount_2026 = models.FloatField()
-    planed_amount_2027 = models.FloatField()
+    amount = models.FloatField(blank=False, null=False)
     pipeline = models.ForeignKey(Pipeline, blank=True, null=True, related_name='planned_amount',
                                  on_delete=models.CASCADE)
-
-    @property
-    def total_funding(self):
-        return self.planed_amount_2021 \
-               + self.planed_amount_2022 \
-               + self.planed_amount_2023 \
-               + self.planed_amount_2024 \
-               + self.planed_amount_2025 \
-               + self.planed_amount_2026 \
-               + self.planed_amount_2027

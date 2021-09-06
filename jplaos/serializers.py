@@ -4,7 +4,7 @@ from .models import *
 
 
 class PipelineFundingSerializer(serializers.ModelSerializer):
-    partner = serializers.StringRelatedField()
+    partner = serializers.CharField(read_only=True, source="pipeline.partner.partner_name")
     sector = serializers.StringRelatedField()
 
     class Meta:
@@ -12,14 +12,7 @@ class PipelineFundingSerializer(serializers.ModelSerializer):
         fields = (
             'partner',
             'sector',
-            'planed_amount_2021',
-            'planed_amount_2022',
-            'planed_amount_2023',
-            'planed_amount_2024',
-            'planed_amount_2025',
-            'planed_amount_2026',
-            'planed_amount_2027',
-            'total_funding',
+            'amount'
         )
 
 
@@ -92,11 +85,11 @@ class SectorSerializer(serializers.ModelSerializer):
     sector_name = serializers.CharField()
     priority_area = serializers.StringRelatedField()
     sdg = serializers.StringRelatedField(many=True)
-    outputs = OutputSerializer(many=True)
+    outcomes = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Sector
-        fields = ('sector_name', 'priority_area', 'sdg', 'outputs',)
+        fields = ('sector_name', 'priority_area', 'sdg', 'outcomes',)
 
 
 class GreenCategorySerializer(serializers.ModelSerializer):
