@@ -14,6 +14,13 @@ class LocationInline(admin.TabularInline):
 class PartnerInline(admin.TabularInline):
     model = PartnerFunding
     extra = 1
+    #
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     if db_field.name == 'partner':
+    #         if not request.user.is_superuser:
+    #             user_primary_partner = request.user.partner_user.primary_partner.id
+    #             kwargs["queryset"] = Partner.objects.filter(id=user_primary_partner)
+    #     return super(PartnerInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class GreenCategoryInline(admin.StackedInline):
@@ -104,15 +111,11 @@ class ProjectAdmin(admin.ModelAdmin):
         qs = super(ProjectAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
+        user_primary_partner = request.user.partner_user.primary_partner
+        projects = PartnerFunding.objects.filter(partner=user_primary_partner).values_list('project_id')
+        return qs.filter(id__in=projects)
 
-        return qs.filter(partner__in=request.user.partner_set.values_list('pk'))
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'partner':
-            if not request.user.is_superuser:
-                kwargs["queryset"] = Partner.objects.filter(id__in=request.user.partner_set.values_list('pk'))
-        return super(ProjectAdmin, self).formfield_for_foreignkey(
-            db_field, request, **kwargs)
 
 
 @admin.register(Pipeline)
@@ -122,6 +125,18 @@ class PipelineAdmin(admin.ModelAdmin):
         'id',
         'partner'
     ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            self.exclude = ('partner',)
+        form = super(PipelineAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        if not request.user.is_superuser:
+            partner = request.user.partner_user.primary_partner
+            obj.partner = partner
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Province)

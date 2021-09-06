@@ -17,7 +17,7 @@ class Partner(models.Model):
 
 
 class PartnerUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='partner_user', on_delete=models.CASCADE)
     primary_partner = models.ForeignKey(Partner, related_name='primary_users', on_delete=models.CASCADE)
     partners_access = models.ManyToManyField(Partner, related_name='users_with_access')
 
@@ -348,8 +348,7 @@ class Location(models.Model):
 
 
 class Pipeline(models.Model):
-
-    partner = models.ForeignKey(Partner, blank=True, null=True, related_name='pipelines', on_delete=models.CASCADE)
+    partner = models.ForeignKey(Partner, blank=False, null=False, related_name='pipelines', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'pipeline'
