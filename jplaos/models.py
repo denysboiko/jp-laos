@@ -75,7 +75,7 @@ class SustainableDevelopmentGoal(models.Model):
     goal = models.CharField(max_length=120)
 
     def __str__(self):
-        return self.goal
+        return f"{self.short_name}: {self.goal}"
 
     class Meta:
         db_table = 'sustainable_development_goals'

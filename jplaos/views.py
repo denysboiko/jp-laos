@@ -24,6 +24,11 @@ def home(request):
     )
 
 
+class SDGViewSet(viewsets.ModelViewSet):
+    serializer_class = SDGSerializer
+    queryset = SustainableDevelopmentGoal.objects.all()
+
+
 class ProjectLightViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectLightSerializer
     queryset = Project.objects.all()

@@ -4,6 +4,7 @@ from .models import *
 
 
 class PipelineFundingSerializer(serializers.ModelSerializer):
+    priority_area = serializers.CharField(read_only=True, source="sector.priority_area.priority_area")
     partner = serializers.CharField(read_only=True, source="pipeline.partner.partner_name")
     sector = serializers.StringRelatedField()
 
@@ -12,6 +13,7 @@ class PipelineFundingSerializer(serializers.ModelSerializer):
         fields = (
             'partner',
             'sector',
+            'priority_area',
             'amount'
         )
 
@@ -81,10 +83,16 @@ class SectorByPriorityAreaSerializer(serializers.ModelSerializer):
         fields = ('sector_name', 'priority_area')
 
 
+class SDGSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SustainableDevelopmentGoal
+        fields = ('id', 'goal', 'short_name',)
+
+
 class SectorSerializer(serializers.ModelSerializer):
     sector_name = serializers.CharField()
     priority_area = serializers.StringRelatedField()
-    sdg = serializers.StringRelatedField(many=True)
+    # sdg = SDGSerializer(many=True)
     outcomes = serializers.StringRelatedField(many=True)
 
     class Meta:

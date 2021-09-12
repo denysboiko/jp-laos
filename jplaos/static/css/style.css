@@ -95,3 +95,15 @@ body {
 .column {
     /*min-height: 150px*/
 }
+
+.dc-chart g.row text {
+    /*fill: #000;*/
+    /*text-shadow: none;*/
+    font-size: 14px;
+    /*font-family: Lato, sans-serif;*/
+    fill: #050709;
+    /*font-weight: 600;*/
+    /*stroke: #ffffff*/
+    /*text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;*/
+}
+
