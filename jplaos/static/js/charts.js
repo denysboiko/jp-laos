@@ -1,5 +1,6 @@
-// const CHART_COLOR = "#026CB6";
-const CHART_COLOR = "#569ae9";
+const CHART_COLOR = "#026CB6";
+// const CHART_COLOR = "#569ae9";
+// const CHART_COLOR = "#9BB1DC";
 let CURRENT_STATUSES = new Set(['ongoing'])
 const NEW_STATUSES = new Set(CURRENT_STATUSES)
 
@@ -191,9 +192,10 @@ const pipelineFilter = dc.cboxMenu("#pipeline-partner-filter")
     .multiple(true)
     .chartGroup("pipeline");
 
-const GREEN_COLOR = "#31a354";
 const GREEN_COLORS = ["#edf8e9", "#c7e9c0", "#a1d99b", "#74c476",
     "#31a354", "#006d2c"];
+// const colors = ['#003399', '#2b56ac', '#5477bd', '#7d98cf', '#a7bae0', '#d2dcef'];
+// '#bccadd', '#dde5df', '#ffffe0'];
 const colors = ['#ece7f2', '#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#034e7b'];
 
 
@@ -351,7 +353,7 @@ function renderGreenDashboard(projects, green_data) {
         .useViewBoxResizing(true)
         .height(380)
         .gap(10)
-        .margins({top: 10, right: 5, bottom: 35, left: 5})
+        .margins({top: 10, right: 5, bottom: 35, left: 10})
         .dimension(green_partner)
         .group(partner_count)
         .valueAccessor(distinctCountAccessor)
@@ -389,7 +391,7 @@ function renderGreenDashboard(projects, green_data) {
     greenChart3
         .useViewBoxResizing(true)
         .gap(10)
-        .margins({top: 10, right: 5, bottom: 35, left: 5})
+        .margins({top: 10, right: 5, bottom: 35, left: 10})
         .dimension(complementary_areas)
         .group(ca_count)
         .valueAccessor(distinctCountAccessor)
@@ -405,7 +407,7 @@ function renderGreenDashboard(projects, green_data) {
     greenChart4
         .useViewBoxResizing(true)
         .gap(10)
-        .margins({top: 10, right: 5, bottom: 35, left: 5})
+        .margins({top: 10, right: 5, bottom: 35, left: 10})
         .dimension(green_catalyzers)
         .group(gc_count)
         .valueAccessor(distinctCountAccessor)
@@ -617,8 +619,8 @@ function renderGreenDashboard(projects, green_data) {
 }
 
 function renderProjectsDashboard(data) {
-    const retrieveSectorField = d => projects_by_id[d.project]['sector']['sector_name']
-    const retrievePriorityArea = d => projects_by_id[d.project]['sector']['priority_area'];
+    const retrieveSectorField = d => projects_by_id[d.project]['sector']
+    const retrievePriorityArea = d => projects_by_id[d.project]['priority_area']['priority_area'];
 
     let config = {
         level: 'province',
@@ -663,9 +665,9 @@ function renderProjectsDashboard(data) {
     const region_funding = region_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const region_count = region_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['sector']['outcomes'].map(o => o), true)
+    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['priority_area']['outcomes'].map(o => o), true)
 
-    const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['sector']['sdg'], true);
+    const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['priority_area']['sdg'], true);
 
     const cci_dim = cf.dimension(d => projects_by_id[d.project]['cross_cutting_issues'].map(d => d), true);
 
@@ -673,9 +675,9 @@ function renderProjectsDashboard(data) {
 
     const partner_funding = partner.group().reduceSum(d => Math.round(d['planed_amount']));
     const sector_funding = sector.group().reduceSum(d => Math.round(d['planed_amount']));
-    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['outcomes'].length));
+    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['priority_area']['outcomes'].length));
     const cci_funding = cci_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['cross_cutting_issues'].length));
-    const sdg_funding = sdg_dim1.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['sector']['sdg'].length));
+    const sdg_funding = sdg_dim1.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['priority_area']['sdg'].length));
     const priority_area_funding = priority_area_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const ip_category_funding = ip_category_dim.group().reduceSum(d => Math.round(d['planed_amount']));
 
@@ -732,7 +734,7 @@ function renderProjectsDashboard(data) {
         .useViewBoxResizing(true)
         .height(380)
         .gap(10)
-        .margins({top: 10, right: 0, bottom: 35, left: 5})
+        .margins({top: 10, right: 0, bottom: 35, left: 10})
         .dimension(ip_category_dim)
         .group(ipc_count)
         .valueAccessor(distinctCountAccessor)
@@ -750,7 +752,7 @@ function renderProjectsDashboard(data) {
         .useViewBoxResizing(true)
         .height(380)
         .gap(10)
-        .margins({top: 10, right: 5, bottom: 35, left: 5})
+        .margins({top: 10, right: 5, bottom: 35, left: 10})
         .dimension(partner)
         .group(partner_count)
         .valueAccessor(distinctCountAccessor)
@@ -773,7 +775,7 @@ function renderProjectsDashboard(data) {
     nsedcChart
         .useViewBoxResizing(true)
         .height(400)
-        .margins({top: 10, right: 0, bottom: 60, left: 0})
+        .margins({top: 10, right: 0, bottom: 60, left: 50})
         .dimension(nsedc_dim)
         .group(nsedc_count)
         .valueAccessor(distinctCountAccessor)
@@ -794,7 +796,7 @@ function renderProjectsDashboard(data) {
         .useViewBoxResizing(true)
         .height(380)
         .gap(10)
-        .margins({top: 10, right: 0, bottom: 35, left: 0})
+        .margins({top: 10, right: 5, bottom: 35, left: 10})
         .dimension(cci_dim)
         .group(cci_count)
         .valueAccessor(distinctCountAccessor)
@@ -802,9 +804,6 @@ function renderProjectsDashboard(data) {
         .colors(CHART_COLOR)
         .x(d3.scaleBand())
         .elasticX(true)
-        .on('filtered', function (chart, filter) {
-
-        })
         .title(defaultTitle)
         .xAxis()
         .ticks(5)
@@ -814,7 +813,7 @@ function renderProjectsDashboard(data) {
         .useViewBoxResizing(true)
         .height(400)
         .gap(10)
-        .margins({top: 10, right: 0, bottom: 35, left: 0})
+        .margins({top: 10, right: 0, bottom: 35, left: 10})
         .dimension(sdg_dim1)
         .group(sdg_count)
         .valueAccessor(distinctCountAccessor)
@@ -822,11 +821,10 @@ function renderProjectsDashboard(data) {
         .transitionDuration(500)
         .ordering(d => d.key)
         .colorCalculator(d => sdg_colors[d.key - 1])
+        .title(defaultTitle)
         .x(d3.scaleBand())
         .elasticX(true)
-        .title(defaultTitle)
         .xAxis()
-        .ticks(5)
         .tickFormat(countFormat);
 
     priorityChart
@@ -858,7 +856,7 @@ function renderProjectsDashboard(data) {
     sectorChart
         .useViewBoxResizing(true)
         .height(350)
-        .margins({top: 10, right: 0, bottom: 60, left: 20})
+        .margins({top: 10, right: 0, bottom: 60, left: 50})
         .dimension(sector)
         .group(sector_count)
         .valueAccessor(distinctCountAccessor)
@@ -1206,7 +1204,7 @@ function downloadData(dimension, projects) {
             projects[id]['project_code'],
             projects[id]['project_title'],
             projects[id]['status'],
-            projects[id]['sector']['sector_name'],
+            projects[id]['sector'],
             projects[id]['partners'].map(d => {
                 return d.partner + ': ' + fundingFormat(d.planed_amount)
             }).join('; '),

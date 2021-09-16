@@ -117,6 +117,8 @@ class NSEDPOutput(models.Model):
 
 class PriorityArea(models.Model):
     priority_area = models.CharField(max_length=120)
+    sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='priority_areas')
+    outcomes = models.ManyToManyField(NSEDPOutcome, related_name='priority_areas')
 
     def __str__(self):
         return self.priority_area
@@ -241,6 +243,7 @@ class Project(models.Model):
     is_regional = models.BooleanField(default=False)
     complementary_area_categories = models.ManyToManyField(ComplementaryAreaCategory, blank=True)
     green_catalyzers_categories = models.ManyToManyField(GreenCatalyzersCategory, blank=True)
+    additional_info = models.TextField(blank=True)
 
     def __str__(self):
         return self.project_title

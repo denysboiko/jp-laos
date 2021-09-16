@@ -80,8 +80,8 @@ class ProjectAdmin(admin.ModelAdmin):
                 ('start_date', 'end_date'),
                 'sector',
                 'cross_cutting_issues',
-                'implementing_partner_categories'
-
+                'implementing_partner_categories',
+                'additional_info',
             )
         }),
         ('Team Europe Initiative', {

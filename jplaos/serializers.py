@@ -100,6 +100,14 @@ class SectorSerializer(serializers.ModelSerializer):
         fields = ('sector_name', 'priority_area', 'sdg', 'outcomes',)
 
 
+class PriorityAreaSerializer(serializers.ModelSerializer):
+    outcomes = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = PriorityArea
+        fields = ('priority_area', 'sdg', 'outcomes',)
+
+
 class GreenCategorySerializer(serializers.ModelSerializer):
     funding_allocation = serializers.IntegerField(min_value=0)
     sub_category = serializers.StringRelatedField()
@@ -164,7 +172,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     green_categories = GreenCategorySerializer(many=True)
     cross_cutting_issues = serializers.StringRelatedField(many=True)
     has_green_category = serializers.ReadOnlyField()
-    sector = SectorSerializer()
+    sector = serializers.StringRelatedField()
     locations = LocationSerializer(many=True)
     is_regional = serializers.BooleanField()
     funding_by_modality = ModalityFundingSerializer(many=True)
@@ -173,6 +181,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     funding_by_phakhao_lao = PhakhaoLaoSerializer(many=True)
     funding_by_forest_partnership = ForestPartnershipSerializer(many=True)
     is_cofounded = serializers.BooleanField(source='get_is_cofounded')
+    priority_area = PriorityAreaSerializer(source='sector.priority_area')
+
     class Meta:
         model = Project
         fields = [
@@ -194,7 +204,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             'green_catalyzers_categories',
             'funding_by_phakhao_lao',
             'funding_by_forest_partnership',
-            'is_cofounded'
+            'is_cofounded',
+            'priority_area'
         ]
 
 
@@ -237,7 +248,8 @@ class ProjectSerializer2(serializers.ModelSerializer):
             'green_catalyzers_categories',
             'funding_by_phakhao_lao',
             'funding_by_forest_partnership',
-            'get_is_cofounded'
+            'get_is_cofounded',
+            'priority_area'
         ]
 
 
