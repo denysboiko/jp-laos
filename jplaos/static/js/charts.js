@@ -916,7 +916,7 @@ function renderProjectsDashboard(data) {
         .columns([
             d => projects_by_id[d.value.project].project_title,
             d => projects_by_id[d.value.project].status,
-            d => projects_by_id[d.value.project].sector.sector_name,
+            d => projects_by_id[d.value.project].sector,
             d => projects_by_id[d.value.project].partners.map(p => p.partner).join('; '),
             d => fundingFormat(projects_by_id[d.value.project].total_funding)
         ]);
