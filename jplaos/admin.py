@@ -7,11 +7,13 @@ admin.site.site_title = '3W administration'
 
 
 class LocationInline(admin.TabularInline):
+    insert_after = 'cross_cutting_issues'
     model = Location
     extra = 1
 
 
 class PartnerInline(admin.TabularInline):
+    insert_before = 'sector'
     model = PartnerFunding
     extra = 1
     #
@@ -40,12 +42,6 @@ class FundingByModalityInline(admin.TabularInline):
     extra = 1
 
 
-# PhakhaoLaoCategory
-# ForestPartnershipCategory
-# forest_partnership_categories
-# phakhao_lao_categories
-# FundingByPhakhaoLaoCategory
-# FundingByForestPartnershipCategory
 class FundingByPhakhaoLaoCategoryInline(admin.TabularInline):
     model = FundingByPhakhaoLaoCategory
     extra = 1
@@ -59,9 +55,9 @@ class FundingByForestPartnershipCategoryInline(admin.TabularInline):
 
 
 class FundingByGreenCategoryInline(admin.TabularInline):
+    insert_before = 'complementary_area_categories'
     model = FundingByGreenCategory
     extra = 1
-    classes = ['collapse']
 
 
 @admin.register(Project)
@@ -79,15 +75,19 @@ class ProjectAdmin(admin.ModelAdmin):
                 'project_title',
                 ('start_date', 'end_date'),
                 'sector',
-                'cross_cutting_issues',
-                'implementing_partner_categories',
-                'additional_info',
+                'cross_cutting_issues'
             )
         }),
         ('Team Europe Initiative', {
             'classes': ('collapse',),
             'fields': ('complementary_area_categories', 'green_catalyzers_categories'),
         }),
+        (None, {
+            'fields': (
+                'implementing_partner_categories',
+                'additional_info'
+            )
+        })
     )
 
     list_filter = ['sector', 'is_regional']
@@ -106,6 +106,14 @@ class ProjectAdmin(admin.ModelAdmin):
         'get_is_cofounded',
         'total_funding'
     ]
+    change_form_template = 'admin/custom/change_form.html'
+
+    class Media:
+        css = {
+            'all': (
+                'css/admin.css',
+            )
+        }
 
     def get_queryset(self, request):
         qs = super(ProjectAdmin, self).get_queryset(request)
