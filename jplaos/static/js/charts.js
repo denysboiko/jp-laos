@@ -259,17 +259,6 @@ function updateLegend(scale, svg, format) {
 function renderGreenDashboard(projects, green_data) {
 
     let current_measure = "count"
-    const projects_by_id = {}
-    projects.filter(project => project['has_green_category'] === true)
-        .forEach(project => {
-            if (project.locations.length === 0) {
-                project.locations = allLocations
-                project.scope = "National"
-            } else {
-                project.scope = "Subnational"
-            }
-            projects_by_id[project.id] = project
-        });
 
     green_data_cf = crossfilter(green_data);
     const green_province = green_data_cf.dimension(d => projects_by_id[d.project]['locations'].map(d => d.province), true);
