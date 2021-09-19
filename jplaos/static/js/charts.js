@@ -1194,6 +1194,8 @@ function downloadData(dimension, projects) {
             projects[id]['project_code'],
             projects[id]['project_title'],
             projects[id]['status'],
+            projects[id]['start_date'],
+            projects[id]['end_date'],
             projects[id]['sector'],
             projects[id]['partners'].map(d => {
                 return d.partner + ': ' + fundingFormat(d.planed_amount)
@@ -1204,7 +1206,15 @@ function downloadData(dimension, projects) {
             }).join('; '),
             projects[id]['districts'].map(function (d) {
                 return districtsNames[d]
-            }).join('\n')
+            })
+                // .join('\n'),
+                .join('; '),
+            projects[id]['funding_by_green_category'].map(d => {
+                return d.category + ': ' + fundingFormat(d.allocation * projects[id]['total_funding'])
+            }).join('; '),
+            projects[id]['complementary_area_categories'].join('; '),
+            projects[id]['green_catalyzers_categories'].join('; '),
+            projects[id]['additional_info']
         ];
     });
 
@@ -1352,7 +1362,24 @@ function renderPipelines(data, sectors) {
             cols: ["priority_area", "sector"],
             aggregator: sumOverSum(["amount"])
         });
-    // ui celled structured table dc-chart
+
+
+    d3.select(".pvtTable")
+        .select('thead')
+        .selectAll('.pvtAxisLabel')
+        .remove();
+    d3.select(".pvtTable")
+        .select('thead')
+        .select('tr')
+        .select('th')
+        .attr("rowspan", 3)
+        .attr("colspan", 2)
+        .text('Partners');
+    const headerRows = d3.select(".pvtTable")
+        .select('thead')
+        .selectAll('tr');
+    headerRows.nodes()[headerRows.size() - 1].remove()
+
     $('.pvtTable')
         .addClass('ui')
         .addClass('celled')
@@ -1374,6 +1401,21 @@ function renderPipelines(data, sectors) {
             .addClass('celled')
             .addClass('structured')
             .addClass('table');
+        d3.select(".pvtTable")
+            .select('thead')
+            .selectAll('.pvtAxisLabel')
+            .remove();
+        d3.select(".pvtTable")
+            .select('thead')
+            .select('tr')
+            .select('th')
+            .attr("rowspan", 3)
+            .attr("colspan", 2)
+            .text('Partners');
+        const headerRows = d3.select(".pvtTable")
+            .select('thead')
+            .selectAll('tr');
+        headerRows.nodes()[headerRows.size() - 1].remove()
     });
     pieChart.render();
     rowChart.render();

@@ -6,13 +6,23 @@
     <title>JP Laos – 3W Dashboard</title>
 
     {% load static %}
-
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'img/favicon/site.webmanifest' %}">
-    <link href='https://fonts.googleapis.com/css?family=Lato&subset=latin' rel='stylesheet' type='text/css'>
-
+    <style>
+        .logo svg {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            max-height: 90vh;
+            margin: 5vh auto;
+            display: block;
+        }
+    </style>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/static/img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto" type='text/css'>
     <!-- ... -->
@@ -109,15 +119,15 @@
             <div class="two column row">
                 <div class="column">
                     <button class="ui button left floated" id="download">
-                        Download Data
+                        <i class="download icon"></i> Download Data
                     </button>
                     <button class="ui button left floated" id="preview">
-                        Preview Data
+                        <i class="table icon"></i> Preview Data
                     </button>
                 </div>
                 <div class="column">
                     <button class="ui button right floated" id="reset">
-                        Clear
+                        <i class="eraser icon"></i> Clear
                     </button>
                     <button class="ui right floated labeled icon button filter" id="filter">
                         <i class="filter icon"></i>
@@ -282,6 +292,7 @@
         </div>
 
         <div class="ui large modal" id="projects-table">
+            <i class="close icon"></i>
             <div class="header">Data Preview</div>
             <div class="scrolling content">
                 <table class="ui table" id="projects-data-grid">
