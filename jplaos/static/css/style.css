@@ -107,3 +107,11 @@ body {
     /*text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;*/
 }
 
+.ui.table tr > th {
+    padding: .78571429em;
+    padding-top: 0.785714em;
+    padding-right: 0.785714em;
+    padding-bottom: 0.785714em;
+    padding-left: 0.785714em;
+    text-align: inherit;
+}

@@ -186,11 +186,11 @@ const greenDataGrid = dc.dataTable("#green-projects-data-grid")
 // green-projects-data-grid
 
 
-const pipelineTable = dc.dataTable("#pipeline-table")
-    .chartGroup("pipeline");
-const pipelineFilter = dc.cboxMenu("#pipeline-partner-filter")
-    .multiple(true)
-    .chartGroup("pipeline");
+// const pipelineTable = dc.dataTable("#pipeline-table")
+//     .chartGroup("pipeline");
+// const pipelineFilter = dc.cboxMenu("#pipeline-partner-filter")
+//     .multiple(true)
+//     .chartGroup("pipeline");
 
 const GREEN_COLORS = ["#edf8e9", "#c7e9c0", "#a1d99b", "#74c476",
     "#31a354", "#006d2c"];
@@ -1223,73 +1223,162 @@ function renderPipelines(data, sectors) {
     cf = crossfilter(data);
     const partner_dim = cf.dimension(d => d['partner']);
     const sector_dim = cf.dimension(d => d['sector']);
+    const priorityArea = cf.dimension(d => d['priority_area']);
 
     var total = cf.groupAll()
         .reduceSum(dc.pluck("amount"));
 
-    let sector_group = sector_dim.group()
-        .reduce(
-            function (p, v) {
-                p.amount += +v.amount;
-                return p;
-            },
-            function (p, v) {
-                p.amount -= +v.amount;
-                return p;
-            },
-            function () {
-                return {
-                    amount: 0
-                }
-            })
-        .order(p => priority_areas[p.key]);
+    // let sector_group = sector_dim.group()
+    //     .reduce(
+    //         function (p, v) {
+    //             p.amount += +v.amount;
+    //             return p;
+    //         },
+    //         function (p, v) {
+    //             p.amount -= +v.amount;
+    //             return p;
+    //         },
+    //         function () {
+    //             return {
+    //                 amount: 0
+    //             }
+    //         })
+    //     .order(p => priority_areas[p.key]);
 
-    pipelineFilter
-        .dimension(partner_dim)
-        .group(partner_dim.group())
-        .on('renderlet', (chart) => {
-            chart.selectAll(".dc-cbox-group")
-                .classed("grouped", true)
-                .classed("fields", true)
-            chart.selectAll(".dc-cbox-item")
-                .classed("ui", true)
-                .classed("checkbox", true);
-        });
+    // pipelineFilter
+    //     .dimension(partner_dim)
+    //     .group(partner_dim.group())
+    //     .on('renderlet', (chart) => {
+    //         chart.selectAll(".dc-cbox-group")
+    //             .classed("grouped", true)
+    //             .classed("fields", true)
+    //         chart.selectAll(".dc-cbox-item")
+    //             .classed("ui", true)
+    //             .classed("checkbox", true);
+    //     });
 
-    const percentageFormat = d3.format(".0%");
+    // const percentageFormat = d3.format(".0%");
 
-    pipelineTable
-        .dimension(reversible_group(sector_group, () => true))
-        .section(d => d['sector'])
-        .showSections(false)
-        .columns([
-            d => priority_areas[d.key],
-            d => d.key,
-            d => percentageFormat(d.value.amount / total.value()),
-            d => d.value.amount,
-            d => d.value.amount,
-            d => d.value.amount,
-            d => d.value.amount,
-            d => d.value.amount,
-            d => d.value.amount,
-            d => d.value.amount
+    // pipelineTable
+    //     .dimension(reversible_group(sector_group, () => true))
+    //     .section(d => d['sector'])
+    //     .showSections(false)
+    //     .columns([
+    //         d => priority_areas[d.key],
+    //         d => d.key,
+    //         d => percentageFormat(d.value.amount / total.value()),
+    //         d => d.value.amount,
+    //         d => d.value.amount,
+    //         d => d.value.amount,
+    //         d => d.value.amount,
+    //         d => d.value.amount,
+    //         d => d.value.amount,
+    //         d => d.value.amount
+    //
+    //     ])
+    //     .on('renderlet', (chart) => {
+    //         const pa_count = sector_group.top(Infinity)
+    //             .map(d => d.key)
+    //             .reduce((total, sector) => {
+    //
+    //                 total[priority_areas[sector]] = total[priority_areas[sector]] || 0;
+    //                 ++total[priority_areas[sector]];
+    //                 return total;
+    //             }, {});
+    //     })
+    //     .sortBy(d => priority_areas[d['sector']] + d['sector']);
+    const pieChart = dc.pieChart('#pipeline-priority-area');
+    pieChart
+        .group("pipelines")
+        .useViewBoxResizing(true)
+        .height(200)
+        .dimension(priorityArea)
+        .group(priorityArea.group().reduceSum(d => d.amount))
+        .innerRadius(50)
+        .radius(80)
+        .cx(80)
+        .renderLabel(false)
+        .legend(dc.legend().x(200).y(60).gap(5));
 
-        ])
-        .on('renderlet', (chart) => {
-            const pa_count = sector_group.top(Infinity)
-                .map(d => d.key)
-                .reduce((total, sector) => {
-
-                    total[priority_areas[sector]] = total[priority_areas[sector]] || 0;
-                    ++total[priority_areas[sector]];
-                    return total;
-                }, {});
+    const barChart = dc.barChart('#pipeline-sector');
+    barChart
+        .group("pipelines")
+        .useViewBoxResizing(true)
+        .height(350)
+        .margins({top: 10, right: 0, bottom: 60, left: 50})
+        .dimension(sector_dim)
+        .group(sector_dim.group().reduceSum(d => d.amount))
+        .ordering(function (d) {
+            return d.key === 'Other' ? 999 : 1;
         })
-        .sortBy(d => priority_areas[d['sector']] + d['sector']);
+        .colors(CHART_COLOR)
+        .gap(10)
+        .transitionDuration(500)
+        .centerBar(false)
+        .on('postRender', (chart) => {
+            chart.selectAll(".x text")
+                .call(wrap, 60);
+        })
+        .x(d3.scaleBand())
+        .xUnits(dc.units.ordinal)
+        .elasticY(true)
+        .yAxis();
+    const rowChart = dc.rowChart('#pipeline-partner');
+    rowChart
+        .useViewBoxResizing(true)
+        .height(380)
+        .gap(10)
+        .margins({top: 10, right: 5, bottom: 35, left: 10})
+        .dimension(partner_dim)
+        // .reduceSum(function(d) { return d.total; })
+        .group(partner_dim.group().reduceSum(d => d.amount))
+        .ordering(function (d) {
+            return -d.value;
+        })
+        .transitionDuration(500)
+        .colors(CHART_COLOR)
+        .x(d3.scaleBand())
+        .elasticX(true)
+        .xAxis()
+        .ticks(5)
+        .tickFormat(countFormat);
+    var utils = $.pivotUtilities;
+    var sumOverSum = utils.aggregators["Sum"];
 
+    $("#pipeline-table").pivot(
+        cf.all(), {
+            rows: ["partner"],
+            cols: ["priority_area", "sector"],
+            aggregator: sumOverSum(["amount"])
+        });
+    // ui celled structured table dc-chart
+    $('.pvtTable')
+        .addClass('ui')
+        .addClass('celled')
+        .addClass('structured')
+        .addClass('table');
+    cf.onChange(() => {
+        // console.log(sector_dim.group());
+        // console.log(sector_dim.group().all());
+        console.log(sector_dim.top(Infinity));
+        // console.log(partner_dim.top(Infinity));
+        $("#pipeline-table").pivot(
+            sector_dim.top(Infinity), {
+                rows: ["partner"],
+                cols: ["priority_area", "sector"],
+                aggregator: sumOverSum(["amount"])
+            });
+        $('.pvtTable')
+            .addClass('ui')
+            .addClass('celled')
+            .addClass('structured')
+            .addClass('table');
+    });
+    pieChart.render();
+    rowChart.render();
+    barChart.render();
+    // dc.renderAll("pipelines");
 
-    pipelineFilter.render();
-    pipelineTable.render();
 }
 
 function transformData(projects) {
@@ -1350,8 +1439,6 @@ function loadData(geodata, data, districts_list, provinces_list, districts, pipe
                     dc.renderAll("green");
                     break
                 case 'pipeline':
-                    pipelineFilter.render();
-                    pipelineTable.render();
                     break
             }
         }
