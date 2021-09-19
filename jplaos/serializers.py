@@ -109,14 +109,13 @@ class PriorityAreaSerializer(serializers.ModelSerializer):
 
 
 class GreenCategorySerializer(serializers.ModelSerializer):
-    funding_allocation = serializers.IntegerField(min_value=0)
-    sub_category = serializers.StringRelatedField()
     category = serializers.StringRelatedField()
+    allocation = serializers.IntegerField(min_value=0)
 
     class Meta:
-        model = GreenSubCategoryFundingAllocation
+        model = FundingByGreenCategory
         depth = 1
-        fields = ('funding_allocation', 'sub_category', 'category')
+        fields = ('category', 'allocation')
 
 
 class ModalityFundingSerializer(serializers.ModelSerializer):
@@ -137,24 +136,6 @@ class PartnerSerializer(serializers.ModelSerializer):
         fields = ('partner', 'planed_amount')
 
 
-class PhakhaoLaoSerializer(serializers.ModelSerializer):
-    category = serializers.StringRelatedField()
-    allocation = serializers.IntegerField()
-
-    class Meta:
-        model = FundingByPhakhaoLaoCategory
-        fields = ('category', 'allocation')
-
-
-class ForestPartnershipSerializer(serializers.ModelSerializer):
-    category = serializers.StringRelatedField()
-    allocation = serializers.IntegerField()
-
-    class Meta:
-        model = FundingByForestPartnershipCategory
-        fields = ('category', 'allocation')
-
-
 class ProjectLightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
@@ -169,17 +150,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     total_funding = serializers.ReadOnlyField()
     implementing_partner_categories = serializers.StringRelatedField(many=True)
     partners = PartnerSerializer(many=True)
-    green_categories = GreenCategorySerializer(many=True)
     cross_cutting_issues = serializers.StringRelatedField(many=True)
     has_green_category = serializers.ReadOnlyField()
     sector = serializers.StringRelatedField()
     locations = LocationSerializer(many=True)
     is_regional = serializers.BooleanField()
-    funding_by_modality = ModalityFundingSerializer(many=True)
+    funding_by_green_category = GreenCategorySerializer(many=True)
     complementary_area_categories = serializers.StringRelatedField(many=True)
     green_catalyzers_categories = serializers.StringRelatedField(many=True)
-    funding_by_phakhao_lao = PhakhaoLaoSerializer(many=True)
-    funding_by_forest_partnership = ForestPartnershipSerializer(many=True)
     is_cofounded = serializers.BooleanField(source='get_is_cofounded')
     priority_area = PriorityAreaSerializer(source='sector.priority_area')
 
@@ -190,73 +168,20 @@ class ProjectSerializer(serializers.ModelSerializer):
             'project_code',
             'project_title',
             'status',
+            'start_date',
+            'end_date',
             'implementing_partner_categories',
             'sector',
             'partners',
-            'green_categories',
             'cross_cutting_issues',
             'locations',
             'has_green_category',
             'total_funding',
-            'funding_by_modality',
             'is_regional',
+            'funding_by_green_category',
             'complementary_area_categories',
             'green_catalyzers_categories',
-            'funding_by_phakhao_lao',
-            'funding_by_forest_partnership',
             'is_cofounded',
-            'priority_area'
+            'priority_area',
+            'additional_info'
         ]
-
-
-class ProjectSerializer2(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
-    project_code = serializers.ReadOnlyField()
-    project_title = models.CharField(max_length=80)
-    status = serializers.ReadOnlyField(source='status_code')
-    total_funding = serializers.ReadOnlyField()
-    green_categories = GreenCategorySerializer(many=True)
-    cross_cutting_issues = serializers.StringRelatedField(many=True)
-    has_green_category = serializers.ReadOnlyField()
-    sector = SectorSerializer()
-    locations = LocationSerializer(many=True)
-    is_regional = serializers.BooleanField()
-    funding_by_modality = ModalityFundingSerializer(many=True)
-    complementary_area_categories = serializers.StringRelatedField(many=True)
-    green_catalyzers_categories = serializers.StringRelatedField(many=True)
-    funding_by_phakhao_lao = PhakhaoLaoSerializer(many=True)
-    funding_by_forest_partnership = ForestPartnershipSerializer(many=True)
-    is_cofounded = serializers.BooleanField(source='get_is_cofounded')
-
-    class Meta:
-        model = Project
-        fields = [
-            'id',
-            'project_code',
-            'project_title',
-            'status',
-            'sector',
-            'partners',
-            'green_categories',
-            'cross_cutting_issues',
-            'locations',
-            'has_green_category',
-            'total_funding',
-            'funding_by_modality',
-            'is_regional',
-            'complementary_area_categories',
-            'green_catalyzers_categories',
-            'funding_by_phakhao_lao',
-            'funding_by_forest_partnership',
-            'get_is_cofounded',
-            'priority_area'
-        ]
-
-
-class PartnerSerializer2(serializers.ModelSerializer):
-    partner = serializers.StringRelatedField()
-    project = ProjectSerializer2()
-
-    class Meta:
-        model = PartnerFunding
-        fields = ('partner', 'planed_amount', 'project')

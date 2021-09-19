@@ -2,8 +2,8 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.site_header = 'JP Laos - 3W Dashboard'
-admin.site.site_title = '3W administration'
+admin.site.site_header = 'Team Europe Dashboard'
+admin.site.site_title = 'Team Europe Dashboard'
 
 
 class LocationInline(admin.TabularInline):
@@ -25,12 +25,6 @@ class PartnerInline(admin.TabularInline):
     #     return super(PartnerInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class GreenCategoryInline(admin.StackedInline):
-    model = GreenSubCategoryFundingAllocation
-    extra = 1
-    classes = ['collapse']
-
-
 class PipelineAllocationInline(admin.TabularInline):
     model = PipelinePlannedAmount
     extra = 1
@@ -40,18 +34,6 @@ class PipelineAllocationInline(admin.TabularInline):
 class FundingByModalityInline(admin.TabularInline):
     model = FundingByModality
     extra = 1
-
-
-class FundingByPhakhaoLaoCategoryInline(admin.TabularInline):
-    model = FundingByPhakhaoLaoCategory
-    extra = 1
-    classes = ['collapse']
-
-
-class FundingByForestPartnershipCategoryInline(admin.TabularInline):
-    model = FundingByForestPartnershipCategory
-    extra = 1
-    classes = ['collapse']
 
 
 class FundingByGreenCategoryInline(admin.TabularInline):

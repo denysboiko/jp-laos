@@ -287,16 +287,6 @@ class FundingByModality(models.Model):
         verbose_name_plural = "Funding Modality"
 
 
-class FundingByPhakhaoLaoCategory(models.Model):
-    project = models.ForeignKey(Project, related_name='funding_by_phakhao_lao', on_delete=models.CASCADE)
-    category = models.ForeignKey(PhakhaoLaoCategory, related_name='funding', on_delete=models.CASCADE)
-    allocation = models.IntegerField()
-
-    class Meta:
-        verbose_name = "Phakhao Lao"
-        verbose_name_plural = "Phakhao Lao"
-
-
 class FundingByGreenCategory(models.Model):
     project = models.ForeignKey(Project, related_name='funding_by_green_category', on_delete=models.CASCADE)
     category = models.ForeignKey(GreenCategory, related_name='funding', on_delete=models.CASCADE)
@@ -307,16 +297,6 @@ class FundingByGreenCategory(models.Model):
         verbose_name_plural = "Funding by Green Category"
 
 
-class FundingByForestPartnershipCategory(models.Model):
-    project = models.ForeignKey(Project, related_name='funding_by_forest_partnership', on_delete=models.CASCADE)
-    category = models.ForeignKey(ForestPartnershipCategory, related_name='funding', on_delete=models.CASCADE)
-    allocation = models.IntegerField()
-
-    class Meta:
-        verbose_name = "Forest Partnership"
-        verbose_name_plural = "Forest Partnership"
-
-
 class PartnerFunding(models.Model):
     partner = models.ForeignKey(Partner, related_name='partners', on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='partners', on_delete=models.CASCADE)
@@ -325,13 +305,6 @@ class PartnerFunding(models.Model):
     class Meta:
         verbose_name = "Funding by Partner"
         verbose_name_plural = "Funding by Partner"
-
-
-class GreenSubCategoryFundingAllocation(models.Model):
-    sub_category = models.ForeignKey(GreenSubCategory, related_name='funding_allocation', on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, blank=True, null=True, related_name='green_categories',
-                                on_delete=models.CASCADE)
-    funding_allocation = models.PositiveIntegerField()
 
 
 class Location(models.Model):

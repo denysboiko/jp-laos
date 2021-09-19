@@ -196,7 +196,8 @@ const GREEN_COLORS = ["#edf8e9", "#c7e9c0", "#a1d99b", "#74c476",
     "#31a354", "#006d2c"];
 // const colors = ['#003399', '#2b56ac', '#5477bd', '#7d98cf', '#a7bae0', '#d2dcef'];
 // '#bccadd', '#dde5df', '#ffffe0'];
-const colors = ['#ece7f2', '#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#034e7b'];
+const colors = ['#ece7f2', '#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0',
+    '#0570b0', '#034e7b'];
 
 
 function wrap(text, width) {
