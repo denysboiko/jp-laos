@@ -76,18 +76,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/style/dc.min.css"
           integrity="sha512-t38Qn1jREPvzPvDLgIP2fjtOayaA1KKBuNpNj9BGgiMi+tGLOdvDB+aWLMe2BvokHg1OxRLQLE7qrlLo+A+MLA=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
-
+    <script>
+        dc.config.defaultColors(['#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0'].reverse());
+    </script>
     <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 <body class="dx-viewport">
-<div class="ui main menu">
-    <div class="item">
-        <img height="35px" src="{% static 'img/jp_logo_square.png' %}" alt="JP Laos">
+<div class="ui fixed menu" style="z-index: 999">
+    <div class="header item">
+        <img class="ui" height="24px" src="{% static 'img/flag_yellow_low.jpeg' %}" alt="JP Laos">
     </div>
     <a class="item" href="/">Home</a>
-    {#    <a class="item" href="/upload">Upload</a>#}
     <div class="right menu">
         {% if user.is_authenticated %}
             <div class="ui dropdown item">
@@ -107,7 +108,7 @@
     </div>
 </div>
 
-<div id="dashboard" class="ui" style="visibility: hidden">
+<div id="dashboard" class="ui" style="visibility: hidden; margin-top: 64px">
     <div class="ui secondary pointing menu">
         <div class="item active" data-tab="projects" id="projects">Projects</div>
         <div class="item" data-tab="team-europe" id="team-europe">Team Europe</div>
@@ -318,6 +319,7 @@
             </div>
         </div>
         <div class="ui large modal" id="green-projects-table">
+            <i class="close icon"></i>
             <div class="header">Data Preview</div>
             <div class="scrolling content">
                 <table class="ui table" id="green-projects-data-grid">
@@ -342,15 +344,15 @@
             <div class="two column row">
                 <div class="column">
                     <button class="ui button left floated" id="green-download">
-                        Download Data
+                        <i class="download icon"></i> Download Data
                     </button>
                     <button class="ui button left floated" id="green-preview">
-                        Preview Data
+                        <i class="table icon"></i> Preview Data
                     </button>
                 </div>
                 <div class="column">
                     <button class="ui button right floated" id="green-reset">
-                        Clear
+                        <i class="eraser icon"></i> Clear
                     </button>
                     <button class="ui right floated labeled icon button filter" id="green-filter">
                         <i class="filter icon"></i>
@@ -452,12 +454,9 @@
             </div>
             <div class="sixteen wide mobile eight wide tablet twelve wide computer column">
                 <div class="ui bottom aligned grid">
-                    <div class="sixteen wide column">
-                        <h2 class="ui header">Categories</h2>
-                    </div>
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
                          id="categories-chart-container">
-                        <h2 class="ui header"></h2>
+                        <h2 class="ui header">Categories</h2>
                         <div id="green-chart-5"></div>
                     </div>
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
@@ -466,8 +465,7 @@
                     </div>
                 </div>
                 <div class="ui grid">
-                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column"
-                         id="">
+                    <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
                         <div class="ui one column grid">
                             <div class="column">
                                 <h2 class="ui header">Complementary Areas</h2>
@@ -521,8 +519,23 @@
                     </ul>
                 </div>
             </div>
-            <div class="sixteen wide mobile seven wide computer column">
-                <img src="{% static 'img/jp_logo.png' %}" height="140px" class="ui centered image">
+            <div class="sixteen wide mobile seven wide computer column logo middle aligned">
+                <svg width="100%" viewBox="0 0 300 40">
+                    <defs>
+                        <linearGradient id="rainbow" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#DBD2CC" offset="0%"></stop>
+                            <stop stop-color="#F5CE2A" offset="25%"></stop>
+                            <stop stop-color="#FA6E25" offset="50%"></stop>
+                            <stop stop-color="#003399" offset="75%"></stop>
+                            <stop stop-color="#9BB1DC" offset="100%"></stop>
+                        </linearGradient>
+                    </defs>
+                    <text fill="url(#rainbow)">
+                        <tspan font-size="30" x="0" y="30">
+                            #TEAMEUROPE
+                        </tspan>
+                    </text>
+                </svg>
             </div>
         </div>
     </div>

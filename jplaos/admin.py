@@ -8,6 +8,7 @@ admin.site.site_title = 'Team Europe Dashboard'
 
 class LocationInline(admin.TabularInline):
     insert_after = 'cross_cutting_issues'
+    help_text = "If this parameter is left blank, the project is considered to be national"
     model = Location
     extra = 1
 
@@ -89,6 +90,10 @@ class ProjectAdmin(admin.ModelAdmin):
         'total_funding'
     ]
     change_form_template = 'admin/custom/change_form.html'
+
+    class Meta:
+        help_texts = {
+            'cross_cutting_issues': "If this parameter is left blank, the project is considered to be national"}
 
     class Media:
         css = {

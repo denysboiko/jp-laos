@@ -1176,16 +1176,23 @@ function reloadData() {
 
 function downloadData(dimension, projects) {
     let header = [
-        'id',
-        'project_code',
-        'project_title',
-        'status',
-        'sector',
-        'partner',
-        'total_funding',
-        'provinces',
-        'districts'
+        'ID',
+        'Project Code',
+        'Project Title',
+        'Status',
+        'Start Date',
+        'End Date',
+        'Sector',
+        'Funding by Partner',
+        'Total Funding',
+        'Provinces',
+        'Districts',
+        'Funding by Green Category',
+        'Complementary Areas',
+        'Green Catalyzers',
+        'Additional Info'
     ];
+
     let ids = [...new Set(dimension.top(Infinity).map(d => d.project))];
 
     let data = ids.map(function (id) {

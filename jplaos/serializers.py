@@ -147,6 +147,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_code = serializers.ReadOnlyField()
     project_title = models.CharField(max_length=80)
     status = serializers.ReadOnlyField(source='status_code')
+    start_date = serializers.DateField(format="%d/%m/%Y")
+    end_date = serializers.DateField(format="%d/%m/%Y")
     total_funding = serializers.ReadOnlyField()
     implementing_partner_categories = serializers.StringRelatedField(many=True)
     partners = PartnerSerializer(many=True)

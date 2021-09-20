@@ -11,6 +11,7 @@
                 {% for inline_admin_formset in inline_admin_formsets %}
                     {% if inline_admin_formset.opts.insert_before == field.field.name %}
                         {% include inline_admin_formset.opts.template %}
+                        <div class="help">{{ inline_admin_formset.opts.help_text|safe }}</div>
                     {% endif %}
                 {% endfor %}
                 <div{% if not line.fields|length_is:'1' %}
@@ -35,6 +36,7 @@
                 {% for inline_admin_formset in inline_admin_formsets %}
                     {% if inline_admin_formset.opts.insert_after == field.field.name %}
                         {% include inline_admin_formset.opts.template %}
+                        <div class="help">{{ inline_admin_formset.opts.help_text|safe }}</div>
                     {% endif %}
                 {% endfor %}
             {% endfor %}

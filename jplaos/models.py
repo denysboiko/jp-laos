@@ -290,7 +290,7 @@ class FundingByModality(models.Model):
 class FundingByGreenCategory(models.Model):
     project = models.ForeignKey(Project, related_name='funding_by_green_category', on_delete=models.CASCADE)
     category = models.ForeignKey(GreenCategory, related_name='funding', on_delete=models.CASCADE)
-    allocation = models.IntegerField()
+    allocation = models.IntegerField(verbose_name="Allocation (%)")
 
     class Meta:
         verbose_name = "Funding by Green Category"
@@ -300,7 +300,7 @@ class FundingByGreenCategory(models.Model):
 class PartnerFunding(models.Model):
     partner = models.ForeignKey(Partner, related_name='partners', on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='partners', on_delete=models.CASCADE)
-    planed_amount = models.FloatField()
+    planed_amount = models.FloatField(verbose_name='Planned Amount (€)')
 
     class Meta:
         verbose_name = "Funding by Partner"
@@ -333,6 +333,6 @@ class Pipeline(models.Model):
 class PipelinePlannedAmount(models.Model):
     sector = models.ForeignKey(Sector, related_name='pipeline_by_partners', blank=True, null=True,
                                on_delete=models.CASCADE)
-    amount = models.FloatField(blank=False, null=False)
+    amount = models.FloatField(blank=False, null=False, verbose_name="Planned Amounet (€)")
     pipeline = models.ForeignKey(Pipeline, blank=True, null=True, related_name='planned_amount',
                                  on_delete=models.CASCADE)
