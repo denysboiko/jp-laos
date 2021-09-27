@@ -1307,7 +1307,7 @@ function renderPipelines(data, sectors) {
     //     .sortBy(d => priority_areas[d['sector']] + d['sector']);
     const pieChart = dc.pieChart('#pipeline-priority-area');
     pieChart
-        .group("pipelines")
+        .chartGroup("pipelines")
         .useViewBoxResizing(true)
         .height(200)
         .dimension(priorityArea)
@@ -1320,9 +1320,9 @@ function renderPipelines(data, sectors) {
 
     const barChart = dc.barChart('#pipeline-sector');
     barChart
-        .group("pipelines")
+        .chartGroup("pipelines")
         .useViewBoxResizing(true)
-        .height(350)
+        .height(460)
         .margins({top: 10, right: 0, bottom: 60, left: 50})
         .dimension(sector_dim)
         .group(sector_dim.group().reduceSum(d => d.amount))
@@ -1340,13 +1340,16 @@ function renderPipelines(data, sectors) {
         .x(d3.scaleBand())
         .xUnits(dc.units.ordinal)
         .elasticY(true)
-        .yAxis();
+        .yAxis()
+        .tickFormat(fundingTickFormat);
+
     const rowChart = dc.rowChart('#pipeline-partner');
     rowChart
+        .chartGroup("pipelines")
         .useViewBoxResizing(true)
-        .height(380)
+        .height(460)
         .gap(10)
-        .margins({top: 10, right: 5, bottom: 35, left: 10})
+        .margins({top: 10, right: 5, bottom: 60, left: 10})
         .dimension(partner_dim)
         // .reduceSum(function(d) { return d.total; })
         .group(partner_dim.group().reduceSum(d => d.amount))
@@ -1359,9 +1362,21 @@ function renderPipelines(data, sectors) {
         .elasticX(true)
         .xAxis()
         .ticks(5)
-        .tickFormat(countFormat);
+        .tickFormat(fundingTickFormat);
+
     var utils = $.pivotUtilities;
     var sumOverSum = utils.aggregators["Sum"];
+
+    const totalFunding = dc.numberDisplay("#pipeline-total")
+        .chartGroup("pipelines");
+    totalFunding
+        .group(cf.groupAll().reduceSum(d => d['amount']))
+        .valueAccessor(d => Math.round(d));
+
+    $('#pipeline-reset').on('click', function (e) {
+        dc.filterAll("pipelines");
+        dc.redrawAll("pipelines");
+    });
 
     $("#pipeline-table").pivot(
         cf.all(), {
@@ -1424,10 +1439,10 @@ function renderPipelines(data, sectors) {
             .selectAll('tr');
         headerRows.nodes()[headerRows.size() - 1].remove()
     });
-    pieChart.render();
-    rowChart.render();
-    barChart.render();
-    // dc.renderAll("pipelines");
+    // pieChart.render();
+    // rowChart.render();
+    // barChart.render();
+    dc.renderAll("pipelines");
 
 }
 

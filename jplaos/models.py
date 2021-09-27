@@ -158,6 +158,8 @@ class ImplementingPartnerCategory(models.Model):
 
     class Meta:
         db_table = 'implementing_partner_categories'
+        verbose_name = "Implementing Partner Category"
+        verbose_name_plural = "Implementing Partner Categories"
 
 
 class GreenCategory(models.Model):

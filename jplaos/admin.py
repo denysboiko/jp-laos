@@ -169,6 +169,7 @@ admin.site.register([
     Partner,
     PriorityArea,
     CrossCuttingIssue,
+    ImplementingPartnerCategory,
     SustainableDevelopmentGoal,
     NSEDPOutput,
     NSEDPOutcome,
