@@ -34,11 +34,17 @@
     <!-- DevExtreme theme -->
     <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/21.1.5/css/dx.light.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"
+            integrity="sha512-tVYBzEItJit9HXaWTPo8vveXlkK62LbA+wez9IgzjTmFNLMBO1BEYladBw2wnM3YURZSMUyhayPCoLtjGh84NQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- DevExtreme library -->
     <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/21.1.5/js/dx.all.js"></script>
     <!-- <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/21.1.5/js/dx.web.js"></script> -->
     <!-- <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/21.1.5/js/dx.viz.js"></script> -->
-    <script src="{% static 'lib/semantic/semantic.min.js' %}"></script>
+    {#    <script src="{% static 'lib/semantic/semantic.min.js' %}"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"
+            integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'lib/FileSaver.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reductio/1.0.0/reductio.min.js"
             integrity="sha512-dpNFXYxfvCC775pj8TELHq4usthTiHrwSx4IcgZBnsHvBTIU1pm8jWXQaNhzY+AxjrlxgLXVtxktAWOo/0oCKA=="
@@ -79,7 +85,10 @@
     <script>
         dc.config.defaultColors(['#d0d1e6', '#a6bddb', '#74a9cf', '#3690c0'].reverse());
     </script>
-    <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">
+    {#    <link rel="stylesheet" href="{% static 'lib/semantic/semantic.min.css' %}">#}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+          integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
@@ -121,6 +130,9 @@
                 <div class="column">
                     <button class="ui button left floated" id="download">
                         <i class="download icon"></i> Download Data
+                    </button>
+                    <button class="ui button left floated" id="pdf">
+                        <i class="camera icon"></i> Export as PNG
                     </button>
                     <button class="ui button left floated" id="preview">
                         <i class="table icon"></i> Preview Data
@@ -243,7 +255,7 @@
                         <div id="region-chart"></div>
                     </div>
                 </div>
-                <div class="ui grid">
+                <div class="ui stackable mobile reversed grid">
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
                         <h2 class="ui header">Implementing Partner Category</h2>
                         <div id="ip-category"></div>
@@ -464,7 +476,7 @@
                         <div id="green-region-chart"></div>
                     </div>
                 </div>
-                <div class="ui grid">
+                <div class="ui stackable mobile reversed grid">
                     <div class="sixteen wide mobile sixteen wide tablet eight wide computer column">
                         <div class="ui one column grid">
                             <div class="column">
@@ -487,40 +499,40 @@
         </div>
     </div>
     <div class="ui tab" data-tab="pipeline">
-        <div class="ui stackable grid">
-            <div class="row">
-                <div class="sixteen wide column">
-                    <h1 class="ui header">Indicative Financial Commitments for 2021-2025</h1>
-                </div>
-                <div class="six wide computer sixteen wide mobile column" id="pipeline-sector"></div>
-                <div class="six wide computer sixteen wide mobile column" id="pipeline-partner"></div>
-                <div class="four wide computer sixteen wide mobile column">
-                    <div class="ui grid center aligned">
-                        <div class="row">
-                            <button class="ui button right floated" id="pipeline-reset">
-                                <i class="eraser icon"></i> Clear
-                            </button>
-                        </div>
-                        <div class="row">
-                            <div class="ui statistic">
-                                <div class="value">
-                                    <span class="filter-funding" id="pipeline-total"></span>
-                                </div>
-                                <div class="label">
-                                    funding
-                                </div>
+        <div class="ui stackable mobile reversed grid">
+            <div class="sixteen wide column">
+                <h1 class="ui header">Indicative Financial Commitments for 2021-2025</h1>
+            </div>
+            <div class="six wide computer sixteen wide mobile column" id="pipeline-sector"></div>
+            <div class="six wide computer sixteen wide mobile column" id="pipeline-partner"></div>
+            <div class="four wide computer sixteen wide mobile column">
+                <div class="ui grid center aligned">
+                    <div class="row">
+                        <button class="ui button right floated" id="pipeline-reset">
+                            <i class="eraser icon"></i> Clear
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="ui statistic">
+                            <div class="value">
+                                <span class="filter-funding" id="pipeline-total"></span>
+                            </div>
+                            <div class="label">
+                                funding
                             </div>
                         </div>
-                        <div class="column center middle aligned">
-
-                        </div>
-                        <div class="column">
-
-                        </div>
                     </div>
-                    <div id="pipeline-priority-area"></div>
+                    <div class="column center middle aligned">
+
+                    </div>
+                    <div class="column">
+
+                    </div>
                 </div>
+                <div id="pipeline-priority-area"></div>
             </div>
+        </div>
+        <div class="ui grid">
             <div class="twelve wide computer sixteen wide mobile column" id="pipeline-table"></div>
         </div>
     </div>
@@ -633,6 +645,26 @@
         );
     });
 
+    $('#pdf').on('click', () => {
+        $('#loader').toggleClass('active');
+        html2canvas(document.querySelector("#dashboard")).then(canvas => {
+            saveAs(canvas.toDataURL(), 'file-name.png');
+            $('#loader').toggleClass('active');
+        });
+    });
+
+    function saveAs(uri, filename) {
+        let link = document.createElement('a');
+        if (typeof link.download === 'string') {
+            link.href = uri;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            window.open(uri);
+        }
+    }
 
 </script>
 

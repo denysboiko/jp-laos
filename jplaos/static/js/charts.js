@@ -1406,6 +1406,7 @@ function renderPipelines(data, sectors) {
         .addClass('ui')
         .addClass('celled')
         .addClass('structured')
+        .addClass('unstackable')
         .addClass('table');
     cf.onChange(() => {
         // console.log(sector_dim.group());

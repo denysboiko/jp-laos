@@ -96,6 +96,10 @@ body {
     /*min-height: 150px*/
 }
 
+#pipeline-table {
+    overflow: auto;
+}
+
 .dc-chart g.row text {
     /*fill: #000;*/
     /*text-shadow: none;*/
