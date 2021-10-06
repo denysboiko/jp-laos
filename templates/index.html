@@ -129,22 +129,26 @@
             <div class="two column row">
                 <div class="column">
                     <button class="ui button left floated" id="preview">
-                        <i class="table icon"></i> Preview Data
+                        <i class="table icon"></i>
+                        <span>Preview</span>
                     </button>
                     <button class="ui button left floated" id="download">
-                        <i class="download icon"></i> Download Data
+                        <i class="download icon"></i>
+                        <span>Download</span>
                     </button>
                     <button class="ui button left floated" id="pdf">
-                        <i class="camera icon"></i> Export as PNG
+                        <i class="camera icon"></i>
+                        <span>Screenshot</span>
                     </button>
                 </div>
                 <div class="column">
                     <button class="ui button right floated" id="reset">
-                        <i class="eraser icon"></i> Clear
+                        <i class="eraser icon"></i>
+                        <span>Clear</span>
                     </button>
                     <button class="ui right floated labeled icon button filter" id="filter">
                         <i class="filter icon"></i>
-                        <span class="text ">Filters</span>
+                        <span class="text">Filters</span>
                     </button>
                     <div class="ui flowing popup top left transition hidden card">
                         <div class="content">
@@ -355,11 +359,15 @@
         <div class="ui grid">
             <div class="two column row">
                 <div class="column">
-                    <button class="ui button left floated" id="green-download">
-                        <i class="download icon"></i> Download Data
-                    </button>
                     <button class="ui button left floated" id="green-preview">
-                        <i class="table icon"></i> Preview Data
+                        <i class="table icon"></i> Preview
+                    </button>
+                    <button class="ui button left floated" id="green-download">
+                        <i class="download icon"></i> Download
+                    </button>
+                    <button class="ui button left floated" id="green-png">
+                        <i class="camera icon"></i>
+                        <span>Screenshot</span>
                     </button>
                 </div>
                 <div class="column">
@@ -368,7 +376,7 @@
                     </button>
                     <button class="ui right floated labeled icon button filter" id="green-filter">
                         <i class="filter icon"></i>
-                        <span class="text ">Filters</span>
+                        <span class="text">Filters</span>
                     </button>
                     <div class="ui flowing popup top left transition hidden card">
                         <div class="content">
@@ -511,6 +519,10 @@
                         <button class="ui button right floated" id="pipeline-reset">
                             <i class="eraser icon"></i> Clear
                         </button>
+                        <button class="ui button left floated" id="pipeline-png">
+                            <i class="camera icon"></i>
+                            <span>Screenshot</span>
+                        </button>
                     </div>
                     <div class="row">
                         <div class="ui statistic">
@@ -648,7 +660,23 @@
     $('#pdf').on('click', () => {
         $('#loader').toggleClass('active');
         html2canvas(document.querySelector("#dashboard")).then(canvas => {
-            saveAs(canvas.toDataURL(), 'file-name.png');
+            saveAs(canvas.toDataURL(), 'team-europe-laos-projects.png');
+            $('#loader').toggleClass('active');
+        });
+    });
+
+    $('#pipeline-png').on('click', () => {
+        $('#loader').toggleClass('active');
+        html2canvas(document.querySelector("#dashboard")).then(canvas => {
+            saveAs(canvas.toDataURL(), 'team-europe-laos-pipeline.png');
+            $('#loader').toggleClass('active');
+        });
+    });
+
+    $('#green-png').on('click', () => {
+        $('#loader').toggleClass('active');
+        html2canvas(document.querySelector("#dashboard")).then(canvas => {
+            saveAs(canvas.toDataURL(), 'team-europe-laos-green.png');
             $('#loader').toggleClass('active');
         });
     });

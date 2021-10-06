@@ -58,6 +58,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 'project_title',
                 ('start_date', 'end_date'),
                 'sector',
+                'implementing_partner_categories',
                 'cross_cutting_issues'
             )
         }),
@@ -67,8 +68,7 @@ class ProjectAdmin(admin.ModelAdmin):
         }),
         (None, {
             'fields': (
-                'implementing_partner_categories',
-                'additional_info'
+                'additional_info',
             )
         })
     )

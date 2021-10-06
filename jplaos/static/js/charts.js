@@ -657,7 +657,7 @@ function renderProjectsDashboard(data) {
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['priority_area']['outcomes'].map(o => o), true)
 
-    const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['priority_area']['sdg'], true);
+    const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['priority_area']['sdg'].map(o => o), true);
 
     const cci_dim = cf.dimension(d => projects_by_id[d.project]['cross_cutting_issues'].map(d => d), true);
 
