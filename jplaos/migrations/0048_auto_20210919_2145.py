@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='pipelineplannedamount',
             name='amount',
-            field=models.FloatField(verbose_name='Planned Amounet (€)'),
+            field=models.FloatField(verbose_name='Planned Amount (€)'),
         ),
     ]

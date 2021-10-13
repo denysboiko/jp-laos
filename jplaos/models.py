@@ -335,6 +335,6 @@ class Pipeline(models.Model):
 class PipelinePlannedAmount(models.Model):
     sector = models.ForeignKey(Sector, related_name='pipeline_by_partners', blank=True, null=True,
                                on_delete=models.CASCADE)
-    amount = models.FloatField(blank=False, null=False, verbose_name="Planned Amounet (€)")
+    amount = models.FloatField(blank=False, null=False, verbose_name="Planned Amount (€)")
     pipeline = models.ForeignKey(Pipeline, blank=True, null=True, related_name='planned_amount',
                                  on_delete=models.CASCADE)

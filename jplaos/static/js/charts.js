@@ -78,6 +78,8 @@ const addDistinctProject = (p, d) => {
     return p;
 };
 
+const defaultFormatter = n => '€' + d3.format('.2s')(n);
+
 const removeDistinctProject = (p, d) => {
     p.projects[d.project]--;
     if (p.projects[d.project] === 0)
@@ -150,6 +152,7 @@ const regionChart = dc.pieChart('#region-chart')
 const ipCategory = dc.rowChart("#ip-category")
     .chartGroup("projects");
 const totalFunding = dc.numberDisplay("#funding-total")
+    .formatNumber(defaultFormatter)
     .chartGroup("projects");
 // const totalCount = dc.dataCount("#count")
 //     .chartGroup("projects");
@@ -180,6 +183,7 @@ const greenRegionChart = dc.pieChart('#green-region-chart')
 const greenCount = dc.numberDisplay('#green-count')
     .chartGroup("green");
 const greenFunding = dc.numberDisplay("#green-funding")
+    .formatNumber(defaultFormatter)
     .chartGroup("green");
 const greenDataGrid = dc.dataTable("#green-projects-data-grid")
     .chartGroup("green");
@@ -1369,9 +1373,12 @@ function renderPipelines(data, sectors) {
 
     const totalFunding = dc.numberDisplay("#pipeline-total")
         .chartGroup("pipelines");
+    const customFormatter = n => '€' + d3.format('.2s')(n) + 'M'
+
     totalFunding
         .group(cf.groupAll().reduceSum(d => d['amount']))
-        .valueAccessor(d => Math.round(d));
+        .valueAccessor(d => Math.round(d))
+        .formatNumber(customFormatter)
 
     $('#pipeline-reset').on('click', function (e) {
         dc.filterAll("pipelines");

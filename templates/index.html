@@ -660,7 +660,7 @@
     $('#pdf').on('click', () => {
         $('#loader').toggleClass('active');
         html2canvas(document.querySelector("#dashboard")).then(canvas => {
-            saveAs(canvas.toDataURL(), 'team-europe-laos-projects.png');
+            saveScreenshot(canvas.toDataURL(), 'team-europe-laos-projects.png');
             $('#loader').toggleClass('active');
         });
     });
@@ -668,7 +668,7 @@
     $('#pipeline-png').on('click', () => {
         $('#loader').toggleClass('active');
         html2canvas(document.querySelector("#dashboard")).then(canvas => {
-            saveAs(canvas.toDataURL(), 'team-europe-laos-pipeline.png');
+            saveScreenshot(canvas.toDataURL(), 'team-europe-laos-pipeline.png');
             $('#loader').toggleClass('active');
         });
     });
@@ -676,12 +676,12 @@
     $('#green-png').on('click', () => {
         $('#loader').toggleClass('active');
         html2canvas(document.querySelector("#dashboard")).then(canvas => {
-            saveAs(canvas.toDataURL(), 'team-europe-laos-green.png');
+            saveScreenshot(canvas.toDataURL(), 'team-europe-laos-green.png');
             $('#loader').toggleClass('active');
         });
     });
 
-    function saveAs(uri, filename) {
+    function saveScreenshot(uri, filename) {
         let link = document.createElement('a');
         if (typeof link.download === 'string') {
             link.href = uri;
