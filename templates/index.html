@@ -97,7 +97,24 @@
     <div class="header item">
         <img class="ui" height="24px" src="{% static 'img/flag_yellow_low.jpeg' %}" alt="JP Laos">
     </div>
-    <a class="item" href="/">Home</a>
+    <div class="header item">
+        <svg width="100%" viewBox="0 0 180 26" width="180" height="24">
+            <defs>
+                <linearGradient id="rainbow" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#DBD2CC" offset="0%"></stop>
+                    <stop stop-color="#F5CE2A" offset="25%"></stop>
+                    <stop stop-color="#FA6E25" offset="50%"></stop>
+                    <stop stop-color="#003399" offset="75%"></stop>
+                    <stop stop-color="#9BB1DC" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <text fill="url(#rainbow)">
+                <tspan font-size="24" x="0" y="24">
+                    #TEAMEUROPE
+                </tspan>
+            </text>
+        </svg>
+    </div>
     <div class="right menu">
         {% if user.is_authenticated %}
             <div class="ui dropdown item">
@@ -126,7 +143,7 @@
 
     <div class="ui tab active" data-tab="projects" id="projects-tab">
         <div class="ui grid">
-            <div class="two column row">
+            <div class="two column row controls">
                 <div class="column">
                     <button class="ui button left floated" id="preview">
                         <i class="table icon"></i>
@@ -357,7 +374,7 @@
     </div>
     <div class="ui tab" data-tab="team-europe">
         <div class="ui grid">
-            <div class="two column row">
+            <div class="two column row controls">
                 <div class="column">
                     <button class="ui button left floated" id="green-preview">
                         <i class="table icon"></i> Preview
@@ -516,13 +533,15 @@
             <div class="four wide computer sixteen wide mobile column">
                 <div class="ui grid center aligned">
                     <div class="row">
-                        <button class="ui button right floated" id="pipeline-reset">
-                            <i class="eraser icon"></i> Clear
-                        </button>
-                        <button class="ui button left floated" id="pipeline-png">
-                            <i class="camera icon"></i>
-                            <span>Screenshot</span>
-                        </button>
+                        <div class="controls">
+                            <button class="ui button right floated" id="pipeline-reset">
+                                <i class="eraser icon"></i> Clear
+                            </button>
+                            <button class="ui button left floated" id="pipeline-png">
+                                <i class="camera icon"></i>
+                                <span>Screenshot</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="ui statistic">

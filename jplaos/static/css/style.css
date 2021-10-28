@@ -3,6 +3,10 @@
     flex: 1;
 }
 
+.controls .button {
+    margin-bottom: 0.25em;
+    min-width: 135px;
+}
 
 .dc-cbox-group {
     list-style: none;
