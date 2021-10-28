@@ -11,6 +11,8 @@ let allLocations;
 let districtsNames = {};
 let projects_by_id;
 const SDGs = {};
+const SDG_COLORS_MAP = {};
+const SDG_ORDER = {};
 // Initialize legend container with .legendQuant class
 const mapLegend = d3.select("#legend");
 mapLegend.append("g")
@@ -659,11 +661,11 @@ function renderProjectsDashboard(data) {
     const region_funding = region_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const region_count = region_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['priority_area']['outcomes'].map(o => o), true)
+    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['priority_area']['outcomes'], true)
 
-    const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['priority_area']['sdg'].map(o => o), true);
+    const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['priority_area']['sdg'].map(id => SDGs[id]), true);
 
-    const cci_dim = cf.dimension(d => projects_by_id[d.project]['cross_cutting_issues'].map(d => d), true);
+    const cci_dim = cf.dimension(d => projects_by_id[d.project]['cross_cutting_issues'], true);
 
     const ip_category_dim = cf.dimension(d => projects_by_id[d.project]['implementing_partner_categories'], true);
 
@@ -811,10 +813,9 @@ function renderProjectsDashboard(data) {
         .dimension(sdg_dim1)
         .group(sdg_count)
         .valueAccessor(distinctCountAccessor)
-        .keyAccessor(d => SDGs[d.key])
         .transitionDuration(500)
-        .ordering(d => d.key)
-        .colorCalculator(d => sdg_colors[d.key - 1])
+        .ordering(d => SDG_ORDER[d.key])
+        .colorCalculator(d => SDG_COLORS_MAP[d.key])
         .title(defaultTitle)
         .x(d3.scaleBand())
         .elasticX(true)
@@ -1470,7 +1471,12 @@ function transformData(projects) {
 
 function loadData(geodata, data, districts_list, provinces_list, districts, pipelines, sectors, projects, green_data, sdgs) {
 
-    sdgs.forEach(sdg => SDGs[sdg.id] = sdg.short_name + ': ' + sdg.goal)
+    sdgs.forEach(sdg => {
+        const description = sdg.short_name + ': ' + sdg.goal;
+        SDGs[sdg.id] = description;
+        SDG_COLORS_MAP[description] = sdg_colors[sdg.id - 1];
+        SDG_ORDER[description] = sdg.id;
+    })
 
     allLocations = provinces_list.map(d => {
         return {
