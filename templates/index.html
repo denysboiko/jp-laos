@@ -6,16 +6,6 @@
     <title>Team Europe Laos Projects</title>
 
     {% load static %}
-    <style>
-        .logo svg {
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-            text-transform: uppercase;
-            max-height: 90vh;
-            margin: 5vh auto;
-            display: block;
-        }
-    </style>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto" type='text/css'>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -69,22 +59,7 @@
 <body class="dx-viewport">
 <div class="ui fixed menu" style="z-index: 999">
     <div class="header item">
-        <svg width="100%" viewBox="0 0 180 26" width="180" height="24">
-            <defs>
-                <linearGradient id="rainbow" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#DBD2CC" offset="0%"></stop>
-                    <stop stop-color="#F5CE2A" offset="25%"></stop>
-                    <stop stop-color="#FA6E25" offset="50%"></stop>
-                    <stop stop-color="#003399" offset="75%"></stop>
-                    <stop stop-color="#9BB1DC" offset="100%"></stop>
-                </linearGradient>
-            </defs>
-            <text fill="url(#rainbow)">
-                <tspan font-size="24" x="0" y="24">
-                    #TEAMEUROPE
-                </tspan>
-            </text>
-        </svg>
+        <img class="ui" height="24px" src="{% static 'img/team-europe-logo.svg' %}" alt="Team Europe">
     </div>
     <div class="header item">
         <img class="ui" height="24px" src="{% static 'img/flag_yellow_low.jpeg' %}" alt="EU">
@@ -105,10 +80,10 @@
         <img class="ui" height="24px" src="{% static 'img/ge.png' %}" alt="Germany">
     </div>
     <div class="header item">
-        <img class="ui" height="24px" src="{% static 'img/hu.png' %}" alt="Hungary">
+        <img class="ui" width="40px" height="24px" src="{% static 'img/hu.png' %}" alt="Hungary">
     </div>
     <div class="header item">
-        <img class="ui" height="24px" src="{% static 'img/ir.png' %}" alt="Ireland">
+        <img class="ui" width="40px" height="24px" src="{% static 'img/ir.png' %}" alt="Ireland">
     </div>
     <div class="header item">
         <img class="ui" height="24px" src="{% static 'img/lu.png' %}" alt="Luxembourg">
@@ -593,22 +568,8 @@
                 </div>
             </div>
             <div class="sixteen wide mobile seven wide computer column logo middle aligned">
-                <svg width="100%" viewBox="0 0 300 40">
-                    <defs>
-                        <linearGradient id="rainbow" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#DBD2CC" offset="0%"></stop>
-                            <stop stop-color="#F5CE2A" offset="25%"></stop>
-                            <stop stop-color="#FA6E25" offset="50%"></stop>
-                            <stop stop-color="#003399" offset="75%"></stop>
-                            <stop stop-color="#9BB1DC" offset="100%"></stop>
-                        </linearGradient>
-                    </defs>
-                    <text fill="url(#rainbow)">
-                        <tspan font-size="30" x="0" y="30">
-                            #TEAMEUROPE
-                        </tspan>
-                    </text>
-                </svg>
+                <img class="ui" height="40px" src="{% static 'img/team-europe-logo.svg' %}"
+                     style="display: block" alt="Team Europe">
             </div>
         </div>
     </div>

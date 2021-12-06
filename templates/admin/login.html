@@ -3,16 +3,6 @@
 
 {% block extrastyle %}{{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}"/>
-    <style>
-        svg {
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-            text-transform: uppercase;
-            max-height: 90vh;
-            margin: 5vh auto;
-            display: block;
-        }
-    </style>
     {{ form.media }}
 {% endblock %}
 
@@ -53,27 +43,8 @@
             </p>
         {% endif %}
 
-        <div style="margin: 10px 15px">
-            <svg viewBox="0 0 300 36">
-                <defs>
-                    <linearGradient id="rainbow" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#DBD2CC" offset="0%"/>
-                        <stop stop-color="#F5CE2A" offset="20%"/>
-                        <stop stop-color="#FA6E25" offset="40%"/>
-                        <stop stop-color="#003399" offset="60%"/>
-                        <stop stop-color="#9BB1DC" offset="80%"/>
-                    </linearGradient>
-                </defs>
-                <text fill="url(#rainbow)">
-                    <tspan
-                            font-size="36"
-                            x="0"
-                            y="30">
-                        #TEAMEUROPE
-                    </tspan>
-                </text>
-            </svg>
-        </div>
+        <img class="ui" height="36px" src="{% static 'img/team-europe-logo.svg' %}"
+             style="margin: 10px auto; display: block" alt="Team Europe">
 
         <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
             <div class="form-row">
