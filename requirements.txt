@@ -5,8 +5,6 @@ djangorestframework
 django-filter
 django-smart-selects
 django_excel
-mysqlclient
-django-mysql
 setuptools
 gunicorn
 dj-database-url

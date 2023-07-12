@@ -661,7 +661,7 @@ function renderProjectsDashboard(data) {
     const region_funding = region_dim.group().reduceSum(d => Math.round(d['planed_amount']));
     const region_count = region_dim.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
-    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['priority_area']['outcomes'], true)
+    const nsedc_dim = cf.dimension(d => projects_by_id[d.project]['outcomes'], true)
 
     const sdg_dim1 = cf.dimension(d => projects_by_id[d.project]['priority_area']['sdg'].map(id => SDGs[id]), true);
 
@@ -671,7 +671,7 @@ function renderProjectsDashboard(data) {
 
     const partner_funding = partner.group().reduceSum(d => Math.round(d['planed_amount']));
     const sector_funding = sector.group().reduceSum(d => Math.round(d['planed_amount']));
-    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['priority_area']['outcomes'].length));
+    const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['outcomes'].length));
     const cci_funding = cci_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['cross_cutting_issues'].length));
     const sdg_funding = sdg_dim1.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['priority_area']['sdg'].length));
     const priority_area_funding = priority_area_dim.group().reduceSum(d => Math.round(d['planed_amount']));

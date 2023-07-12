@@ -7,7 +7,7 @@ admin.site.site_title = 'Team Europe Dashboard'
 
 
 class LocationInline(admin.TabularInline):
-    insert_after = 'cross_cutting_issues'
+    insert_after = 'outcomes'
     help_text = "If this parameter is left blank, the project is considered to be national"
     model = Location
     extra = 1
@@ -59,7 +59,8 @@ class ProjectAdmin(admin.ModelAdmin):
                 ('start_date', 'end_date'),
                 'sector',
                 'implementing_partner_categories',
-                'cross_cutting_issues'
+                'cross_cutting_issues',
+                'outcomes'
             )
         }),
         ('Team Europe Initiative', {
@@ -77,7 +78,7 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ['project_title', 'project_code']
     filter_horizontal = (
         'implementing_partner_categories', 'complementary_area_categories', 'green_catalyzers_categories',
-        'cross_cutting_issues')
+        'cross_cutting_issues', 'outcomes')
     # filter_vertical = ()
     list_display = [
         'id',

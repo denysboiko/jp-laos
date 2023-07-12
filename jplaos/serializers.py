@@ -89,17 +89,6 @@ class SDGSerializer(serializers.ModelSerializer):
         fields = ('id', 'goal', 'short_name',)
 
 
-class SectorSerializer(serializers.ModelSerializer):
-    sector_name = serializers.CharField()
-    priority_area = serializers.StringRelatedField()
-    # sdg = SDGSerializer(many=True)
-    outcomes = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Sector
-        fields = ('sector_name', 'priority_area', 'sdg', 'outcomes',)
-
-
 class PriorityAreaSerializer(serializers.ModelSerializer):
     outcomes = serializers.StringRelatedField(many=True)
 
@@ -159,6 +148,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     is_regional = serializers.BooleanField()
     funding_by_green_category = GreenCategorySerializer(many=True)
     complementary_area_categories = serializers.StringRelatedField(many=True)
+    outcomes = serializers.StringRelatedField(many=True)
     green_catalyzers_categories = serializers.StringRelatedField(many=True)
     is_cofounded = serializers.BooleanField(source='get_is_cofounded')
     priority_area = PriorityAreaSerializer(source='sector.priority_area')
@@ -177,6 +167,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'partners',
             'cross_cutting_issues',
             'locations',
+            'outcomes',
             'has_green_category',
             'total_funding',
             'is_regional',

@@ -130,8 +130,6 @@ class PriorityArea(models.Model):
 class Sector(models.Model):
     sector_name = models.CharField(max_length=120)
     priority_area = models.ForeignKey(PriorityArea, related_name='sectors', on_delete=models.CASCADE)
-    sdg = models.ManyToManyField(SustainableDevelopmentGoal, related_name='sectors')
-    outcomes = models.ManyToManyField(NSEDPOutcome, related_name='sectors')
 
     def __str__(self):
         return self.sector_name
@@ -242,6 +240,7 @@ class Project(models.Model):
     implementing_partner_categories = models.ManyToManyField(ImplementingPartnerCategory)
     sector = models.ForeignKey(Sector, related_name='sector_id', on_delete=models.CASCADE)
     cross_cutting_issues = models.ManyToManyField(CrossCuttingIssue, blank=True)
+    outcomes = models.ManyToManyField(NSEDPOutcome, blank=True, verbose_name='NSEDP Outcome')
     is_regional = models.BooleanField(default=False)
     complementary_area_categories = models.ManyToManyField(ComplementaryAreaCategory, blank=True)
     green_catalyzers_categories = models.ManyToManyField(GreenCatalyzersCategory, blank=True)
