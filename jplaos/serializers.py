@@ -152,6 +152,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     green_catalyzers_categories = serializers.StringRelatedField(many=True)
     is_cofounded = serializers.BooleanField(source='get_is_cofounded')
     priority_area = PriorityAreaSerializer(source='sector.priority_area')
+    programming_cycle = serializers.StringRelatedField()
 
     class Meta:
         model = Project
@@ -176,5 +177,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             'green_catalyzers_categories',
             'is_cofounded',
             'priority_area',
-            'additional_info'
+            'additional_info',
+            'programming_cycle'
         ]

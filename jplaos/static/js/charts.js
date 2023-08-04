@@ -272,6 +272,18 @@ function renderGreenDashboard(projects, green_data) {
     const distinctCount = green_data_cf.groupAll()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
 
+    const programmingCycle = green_data_cf.dimension(d => projects_by_id[d.project]['programming_cycle'])
+    const programmingCycleFilter = dc.cboxMenu("#green-programming-cycle")
+     .chartGroup("green")
+        .group(programmingCycle.group())
+        .dimension(programmingCycle)
+        .on('renderlet', chart => {
+            chart.selectAll(".dc-cbox-item")
+                .classed("ui", true)
+                .classed("checkbox", true);
+        })
+        .title(d => d.key)
+        .multiple(true);
     const complementary_areas = green_data_cf.dimension(d => {
         return projects_by_id[d.project]['complementary_area_categories'].map(d => d);
     }, true);
@@ -624,6 +636,19 @@ function renderProjectsDashboard(data) {
     };
 
     cf = crossfilter(data);
+    const programmingCycle = cf.dimension(d => projects_by_id[d.project]['programming_cycle'])
+    const programmingCycleFilter = dc.cboxMenu("#programming-cycle")
+     .chartGroup("projects")
+        .group(programmingCycle.group())
+        .dimension(programmingCycle)
+        .on('renderlet', chart => {
+            chart.selectAll(".dc-cbox-item")
+                .classed("ui", true)
+                .classed("checkbox", true);
+        })
+        .title(d => d.key)
+        .multiple(true);
+
     const distinctCount = cf.groupAll()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const province = cf.dimension(d => projects_by_id[d.project]['locations'].map(d => d.province), true);
@@ -848,6 +873,16 @@ function renderProjectsDashboard(data) {
         .renderLabel(false)
         .legend(dc.legend().x(200).y(60).gap(5));
 
+    const secotrsOrderingMap = {
+        'Agriculture and Rural Development': 1,
+        'Natural Resources and Environment': 2,
+        'Private Sector Development, Trade and Tourism': 3,
+        'Education / TVET': 4,
+        'Health': 5,
+        'Good Governance': 6,
+        'Other': 9
+    }
+
     sectorChart
         .useViewBoxResizing(true)
         .height(350)
@@ -855,9 +890,7 @@ function renderProjectsDashboard(data) {
         .dimension(sector)
         .group(sector_count)
         .valueAccessor(distinctCountAccessor)
-        .ordering(function (d) {
-            return d.key === 'Other' ? 999 : 1;
-        })
+        .ordering(d => secotrsOrderingMap[d.key])
         .colors(CHART_COLOR)
         .gap(10)
         .transitionDuration(500)
@@ -1247,6 +1280,8 @@ function renderPipelines(data, sectors) {
     const partner_dim = cf.dimension(d => d['partner']);
     const sector_dim = cf.dimension(d => d['sector']);
     const priorityArea = cf.dimension(d => d['priority_area']);
+
+
 
     var total = cf.groupAll()
         .reduceSum(dc.pluck("amount"));
