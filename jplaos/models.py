@@ -232,6 +232,17 @@ class GreenCatalyzersCategory(models.Model):
         verbose_name_plural = "Green Catalyzers"
 
 
+class ProgrammingCycle(models.Model):
+    programming_cycle = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.programming_cycle
+
+    class Meta:
+        db_table = 'programming_cycle'
+        verbose_name_plural = "Programming Cycles"
+
+
 class Project(models.Model):
     project_code = models.CharField(max_length=40, blank=True, null=True)
     project_title = models.TextField(max_length=280)
@@ -245,6 +256,13 @@ class Project(models.Model):
     complementary_area_categories = models.ManyToManyField(ComplementaryAreaCategory, blank=True)
     green_catalyzers_categories = models.ManyToManyField(GreenCatalyzersCategory, blank=True)
     additional_info = models.TextField(blank=True)
+    programming_cycle = models.ForeignKey(
+        ProgrammingCycle,
+        on_delete=models.CASCADE,
+        related_name='projects',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.project_title

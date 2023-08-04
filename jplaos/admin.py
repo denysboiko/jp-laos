@@ -60,7 +60,8 @@ class ProjectAdmin(admin.ModelAdmin):
                 'sector',
                 'implementing_partner_categories',
                 'cross_cutting_issues',
-                'outcomes'
+                'outcomes',
+                'programming_cycle'
             )
         }),
         ('Team Europe Initiative', {
