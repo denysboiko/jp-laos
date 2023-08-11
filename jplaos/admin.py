@@ -57,11 +57,11 @@ class ProjectAdmin(admin.ModelAdmin):
                 ('project_code', 'is_regional'),
                 'project_title',
                 ('start_date', 'end_date'),
+                'programming_cycle',
                 'sector',
                 'implementing_partner_categories',
                 'cross_cutting_issues',
                 'outcomes',
-                'programming_cycle'
             )
         }),
         ('Team Europe Initiative', {
