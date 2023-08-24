@@ -347,6 +347,9 @@ class Pipeline(models.Model):
 
     class Meta:
         db_table = 'pipeline'
+        verbose_name = 'Indicative Financial Commitment'
+        verbose_name_plural = 'Indicative Financial Commitments'
+
 
 
 class PipelinePlannedAmount(models.Model):
