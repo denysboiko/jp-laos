@@ -7,7 +7,6 @@ admin.site.site_title = 'Team Europe Dashboard'
 
 
 class LocationInline(admin.TabularInline):
-    insert_after = 'outcomes'
     help_text = "If this parameter is left blank, the project is considered to be national"
     model = Location
     extra = 1
