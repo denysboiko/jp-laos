@@ -8,6 +8,10 @@
     min-width: 135px;
 }
 
+.dc-legend .dc-legend-item text {
+    transform: translate(0, 5px);
+}
+
 .dc-cbox-group {
     list-style: none;
     padding: 0;
