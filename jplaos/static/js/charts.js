@@ -148,6 +148,8 @@ const sdgChart1 = dc.rowChart("#sdg1")
     .chartGroup("projects");
 const priorityChart = dc.pieChart('#priority-chart')
     .chartGroup("projects");
+const fundingTypeChart = dc.pieChart('#funding-type-chart')
+    .chartGroup("projects");
 const regionChart = dc.pieChart('#region-chart')
     .chartGroup("projects");
 // const dataTable = dc.dataTable("#data-table");
@@ -860,6 +862,19 @@ function renderProjectsDashboard(data) {
         .renderLabel(false)
         .legend(dc.legend().x(200).y(60).gap(5));
 
+    fundingTypeChart
+        .title(defaultTitle)
+        .useViewBoxResizing(true)
+        .height(200)
+        .dimension(cf.dimension(d => projects_by_id[d.project]['funding_type']))
+        .group(cf.dimension(d => projects_by_id[d.project]['funding_type']).group().reduce(addDistinctProject, removeDistinctProject, initDistinctProjects))
+        .valueAccessor(distinctCountAccessor)
+        .innerRadius(50)
+        .radius(80)
+        .cx(80)
+        .renderLabel(false)
+        .legend(dc.legend().x(200).y(60).gap(5));
+
     regionChart
         .title(defaultTitle)
         .useViewBoxResizing(true)
@@ -1017,6 +1032,10 @@ function renderProjectsDashboard(data) {
                     .group(priority_area_funding)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
+                fundingTypeChart
+                    .group(cf.dimension(d => projects_by_id[d.project]['funding_type']).group().reduceSum(d => Math.round(d['planed_amount'])))
+                    .valueAccessor(d => d.value)
+                    .title(fundingTitle);
                 ipCategory
                     .group(ip_category_funding)
                     .valueAccessor(d => d.value)
@@ -1063,6 +1082,11 @@ function renderProjectsDashboard(data) {
                 priorityChart
                     .valueAccessor(distinctCountAccessor)
                     .group(pa_count)
+                    .title(defaultTitle);
+                fundingTypeChart
+                    .valueAccessor(distinctCountAccessor)
+                    .group(cf.dimension(d => projects_by_id[d.project]['funding_type']).group()
+        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects))
                     .title(defaultTitle);
                 regionChart
                     .valueAccessor(distinctCountAccessor)

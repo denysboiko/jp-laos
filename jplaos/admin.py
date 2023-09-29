@@ -54,6 +54,7 @@ class ProjectAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 ('project_code', 'is_regional'),
+                'funding_type',
                 'project_title',
                 ('start_date', 'end_date'),
                 'programming_cycle',

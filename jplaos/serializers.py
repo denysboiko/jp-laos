@@ -135,6 +135,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     project_code = serializers.ReadOnlyField()
     project_title = models.CharField(max_length=80)
+    funding_type = serializers.StringRelatedField()
     status = serializers.ReadOnlyField(source='status_code')
     start_date = serializers.DateField(format="%d/%m/%Y")
     end_date = serializers.DateField(format="%d/%m/%Y")
@@ -161,6 +162,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'project_code',
             'project_title',
             'status',
+            'funding_type',
             'start_date',
             'end_date',
             'implementing_partner_categories',

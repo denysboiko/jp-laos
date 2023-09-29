@@ -243,6 +243,18 @@ class ProgrammingCycle(models.Model):
         verbose_name_plural = "Programming Cycles"
 
 
+class FundingType(models.Model):
+    funding_type = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.funding_type
+
+    class Meta:
+        db_table = 'funding_type'
+        verbose_name = "Funding Type"
+        verbose_name_plural = "Funding Types"
+
+
 class Project(models.Model):
     project_code = models.CharField(max_length=40, blank=True, null=True)
     project_title = models.TextField(max_length=280)
@@ -256,6 +268,7 @@ class Project(models.Model):
     complementary_area_categories = models.ManyToManyField(ComplementaryAreaCategory, blank=True)
     green_catalyzers_categories = models.ManyToManyField(GreenCatalyzersCategory, blank=True)
     additional_info = models.TextField(blank=True)
+    funding_type = models.ForeignKey(FundingType, related_name='projects', null=True, on_delete=models.CASCADE)
     programming_cycle = models.ForeignKey(
         ProgrammingCycle,
         on_delete=models.CASCADE,
@@ -349,7 +362,6 @@ class Pipeline(models.Model):
         db_table = 'pipeline'
         verbose_name = 'Indicative Financial Commitment'
         verbose_name_plural = 'Indicative Financial Commitments'
-
 
 
 class PipelinePlannedAmount(models.Model):
