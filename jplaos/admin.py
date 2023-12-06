@@ -17,13 +17,6 @@ class PartnerInline(admin.TabularInline):
     insert_before = 'sector'
     model = PartnerFunding
     extra = 1
-    #
-    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
-    #     if db_field.name == 'partner':
-    #         if not request.user.is_superuser:
-    #             user_primary_partner = request.user.partner_user.primary_partner.id
-    #             kwargs["queryset"] = Partner.objects.filter(id=user_primary_partner)
-    #     return super(PartnerInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class PipelineAllocationInline(admin.TabularInline):
@@ -55,7 +48,6 @@ class ProjectAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 ('project_code', 'is_regional'),
-                'funding_type',
                 'project_title',
                 ('start_date', 'end_date'),
                 'programming_cycle',

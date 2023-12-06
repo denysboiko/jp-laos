@@ -268,7 +268,6 @@ class Project(models.Model):
     complementary_area_categories = models.ManyToManyField(ComplementaryAreaCategory, blank=True)
     green_catalyzers_categories = models.ManyToManyField(GreenCatalyzersCategory, blank=True)
     additional_info = models.TextField(blank=True)
-    funding_type = models.ForeignKey(FundingType, related_name='projects', null=True, on_delete=models.CASCADE)
     programming_cycle = models.ForeignKey(
         ProgrammingCycle,
         on_delete=models.CASCADE,
@@ -331,9 +330,12 @@ class FundingByGreenCategory(models.Model):
 
 class PartnerFunding(models.Model):
     partner = models.ForeignKey(Partner, related_name='partners', on_delete=models.CASCADE)
+    funding_type = models.ForeignKey(FundingType, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, related_name='partners', on_delete=models.CASCADE)
     planed_amount = models.FloatField(verbose_name='Planned Amount (€)')
 
+    def __str__(self):
+        return "Funding by Partner"
     class Meta:
         verbose_name = "Funding by Partner"
         verbose_name_plural = "Funding by Partner"

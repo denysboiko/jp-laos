@@ -88,36 +88,37 @@ def green_data(request):
 def data(request):
     if request.method == 'GET':
         status = request.GET.get('status')
-        data = None
         if status is not None:
             statuses = status.split(',')
-            data = PartnerFunding.objects \
+            fetched_results = PartnerFunding.objects \
                 .filter(get_dates_filter(statuses, get_status_filter_related)) \
                 .values(
                 'partner__partner_name',
                 'project',
+                'funding_type__funding_type',
                 'planed_amount',
                 'project__project_title'
             )
         else:
-            data = PartnerFunding.objects \
+            fetched_results = PartnerFunding.objects \
                 .all().values(
                 'partner__partner_name',
                 'project',
+                'funding_type__funding_type',
                 'planed_amount',
                 'project__project_title'
             )
 
-        results = []
-        for d in data:
+        data_objects = []
+        for d in fetched_results:
             result = dict()
             result['partner'] = d['partner__partner_name']
             result['project'] = d['project']
-            result['total_amount'] = d['planed_amount']
+            result['funding_type'] = d['funding_type__funding_type']
             result['planed_amount'] = d['planed_amount']
-            results.append(result)
+            data_objects.append(result)
 
-        return JsonResponse(results, safe=False)
+        return JsonResponse(data_objects, safe=False)
 
 
 class PipelineView(viewsets.ModelViewSet):
@@ -195,6 +196,7 @@ def get_status_filter_related(status):
         return closed_filter
     elif status == 'planned':
         return planned_filter
+
 
 def get_status_filter(status):
     today = datetime.datetime.today().date()

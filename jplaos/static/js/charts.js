@@ -672,6 +672,7 @@ function renderProjectsDashboard(data) {
 
     let sector = cf.dimension(retrieveSectorField);
     let partner = cf.dimension(d => d['partner']);
+    let funding_type = cf.dimension(d => d['funding_type']);
     const priority_area_dim = cf.dimension(retrievePriorityArea);
 
     const priority_area = {
@@ -697,6 +698,7 @@ function renderProjectsDashboard(data) {
     const ip_category_dim = cf.dimension(d => projects_by_id[d.project]['implementing_partner_categories'], true);
 
     const partner_funding = partner.group().reduceSum(d => Math.round(d['planed_amount']));
+    const funding_by_type = funding_type.group().reduceSum(d => Math.round(d['planed_amount']));
     const sector_funding = sector.group().reduceSum(d => Math.round(d['planed_amount']));
     const nsedc_funding = nsedc_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['outcomes'].length));
     const cci_funding = cci_dim.group().reduceSum(d => Math.round(d['planed_amount'] / projects_by_id[d.project]['cross_cutting_issues'].length));
@@ -705,6 +707,8 @@ function renderProjectsDashboard(data) {
     const ip_category_funding = ip_category_dim.group().reduceSum(d => Math.round(d['planed_amount']));
 
     const partner_count = partner.group()
+        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
+    const count_by_funding_type = funding_type.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
     const sector_count = sector.group()
         .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects);
@@ -866,8 +870,8 @@ function renderProjectsDashboard(data) {
         .title(defaultTitle)
         .useViewBoxResizing(true)
         .height(200)
-        .dimension(cf.dimension(d => projects_by_id[d.project]['funding_type']))
-        .group(cf.dimension(d => projects_by_id[d.project]['funding_type']).group().reduce(addDistinctProject, removeDistinctProject, initDistinctProjects))
+        .dimension(funding_type)
+        .group(count_by_funding_type)
         .valueAccessor(distinctCountAccessor)
         .innerRadius(50)
         .radius(80)
@@ -1033,7 +1037,7 @@ function renderProjectsDashboard(data) {
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
                 fundingTypeChart
-                    .group(cf.dimension(d => projects_by_id[d.project]['funding_type']).group().reduceSum(d => Math.round(d['planed_amount'])))
+                    .group(funding_by_type)
                     .valueAccessor(d => d.value)
                     .title(fundingTitle);
                 ipCategory
@@ -1085,8 +1089,7 @@ function renderProjectsDashboard(data) {
                     .title(defaultTitle);
                 fundingTypeChart
                     .valueAccessor(distinctCountAccessor)
-                    .group(cf.dimension(d => projects_by_id[d.project]['funding_type']).group()
-        .reduce(addDistinctProject, removeDistinctProject, initDistinctProjects))
+                    .group(count_by_funding_type)
                     .title(defaultTitle);
                 regionChart
                     .valueAccessor(distinctCountAccessor)

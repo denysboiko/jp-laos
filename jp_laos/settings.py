@@ -31,7 +31,6 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,8 +46,6 @@ INSTALLED_APPS = [
 
     'jplaos.apps.JplaosConfig',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,16 +77,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'jp_laos.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 if DEVELOPMENT_MODE is True:
     DATABASES = {
